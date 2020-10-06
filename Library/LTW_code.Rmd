@@ -1,0 +1,37 @@
+---
+title: "Replication of Figure 1 in Ligon, Thomas & Worrall (2002)"
+author: "Mizuhiro Suzuki"
+date: "5/9/2018"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(nleqslv)
+library(ggplot2)
+library(ggrepel)
+library(shiny)
+library(shinythemes)
+library(rootSolve)
+library(BB)
+library(pracma)
+
+#knit: (function(input_file, encoding) {
+#  out_dir <- 'docs';
+#  rmarkdown::render(input = input_file,
+#                   output_format = "html_document",
+#                   encoding = encoding,
+#                   output_dir = out_dir,
+#                   output_file = 'index.html')})
+#output: github_document
+```
+
+## Replicate Figure 1 of Ligon, Thomas & Worrall (2002)
+
+In this document, my goal is to replicate Figure 1 of Ligon, Thomas & Worrall (2002).
+For this, I need to derive upper and lower bounds of intervals of the ratio of marginal utilities.
+I derive them by considering 4 cases separately; autarky case, non-overlapping case, overlapping case, and first best case.
+
+Before diving into the derivations, there are several facts that we know (p.221 in the paper):
+
+

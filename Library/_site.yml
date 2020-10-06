@@ -1,0 +1,12 @@
+name: "risksharing"
+output_dir: "../docs"
+navbar:
+  title: "Risk Sharing"
+  left:
+  - text: "Home"
+    href: index.html
+  - text: "Ligon et al. (2002)"
+    href: LTW_code.html
+output:
+  html_document:
+    theme: cosmo
