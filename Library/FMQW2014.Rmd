@@ -1,0 +1,954 @@
+---
+pagetitle: 'Fachamps et al. (2014)'
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R replication of tables in Fafchamps et al. (2014), "Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana"
+
+```{r, warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "lfe",
+  "car",
+  "stargazer",
+  "broom",
+  "kableExtra",
+  "labelled",
+  "XML",
+  "magrittr"
+)
+
+pacman::p_load(packages, character.only = TRUE, install = TRUE)
+
+# Load an example dataset ---------------
+data <- read_dta("data/ReplicationDataGhanaJDE.dta")
+```
+
+
+## Table 2
+
+```{r, warning = FALSE}
+
+data <- data %>%
+  mutate(realfinalprofit_wave1 = ifelse(wave == 1, realfinalprofit, NA)) %>%
+  group_by(sheno) %>%
+  mutate(
+    realfinalprofit_wave1 = max(realfinalprofit_wave1, na.rm = TRUE),
+    realfinalprofit_wave1 = ifelse(is.infinite(realfinalprofit_wave1), NA, realfinalprofit_wave1)
+    ) %>%
+  ungroup()
+
+var_list <- c(
+  "realfinalprofit", "fem", "highcapture", "highcapital", 
+  "male_male", "male_mixed", "female_female", "female_mixed", 
+  "realfinalprofit_wave1", "finalsales", "hourslastweek", 
+  "totalK", "inventories", "useasusu", 
+  "businesshome", "firmage", "everloan", "business_taxnumber", 
+  "married", "educ_years", "digitspan", "akanspeaker", 
+  "gaspeaker", "age"
+)
+
+var_label <- c(
+  "Monthly profits in January 2009", "Female", 
+  "High capture", "High baseline capital stock", 
+  "Male in male dominated industry", "Male in mixed industry", 
+  "Female in female dominated industry", "Female in mixed industry",
+  "Monthly profits in October/November 2008", "Monthly sales in January 2009", 
+  "Number of hours worked in last week", "Total capital stock in January 2009", 
+  "Inventories at end of January 2009", "Uses a susu collector",
+  "Business operated out of home", "Age of firm", 
+  "Ever had bank or microfinance loan", "Business has a tax number",
+  "Owner is married", "Owner's years of education", 
+  "Owner's digitspan Recall", "Owner is Akan speaker",
+  "Owner is Ga/Dangme speaker", "Owner's age"
+)
+
+table2_sub <- function(data) {
+  
+  df_model <- map(var_list, function(x) lm(
+    as.formula(
+      paste(x, paste(
+        c("-1", "control", "cashtreat", "equiptreat"), collapse = " + "
+        ), sep = " ~ ")
+      ), data = filter(data, wave == 2))
+    ) %>%
+    enframe("model_no", "model")
+  
+  df_est <- df_model %>%
+    mutate(tidied = map(model, tidy)) %>%
+    select(model_no, tidied) %>%
+    unnest(cols = c(tidied)) %>%
+    mutate_if(is.double, formatC, digits = 2, format = "f") %>%
+    select(model_no, term, estimate) %>%
+    spread(term, estimate) %>%
+    select(-model_no)
+    
+  cbind(
+    map_int(df_model$model, function(x) nrow(x$model)),
+    df_est %>% as.matrix(),
+    map_chr(
+      df_model$model, function(x) formatC(
+        linearHypothesis(
+          x, c("control = cashtreat", "control = equiptreat"), 
+          white.adjust = "hc1"
+          )$`Pr(>F)`[2], 
+        2, format = "f"
+        )
+      )
+  )
+}
+
+cbind(
+  var_label, 
+  table2_sub(data), 
+  table2_sub(filter(data, is.na(trimgroup)))
+  ) %>%
+  set_colnames(NULL) %>%
+  kable(booktabs = TRUE) %>%
+  kable_styling() %>%
+  add_header_above(
+    c(" ", rep(c("N", "Mean", "Mean", "Mean", "p-value"), 2))
+    ) %>%
+  add_header_above(
+    c(" ", rep(c(" ", "Control", "Cash", "In-kind", " "), 2))
+    ) %>%
+  add_header_above(c(" " = 1, "Full sample" = 5, "Trimmed sample" = 5)) %>%
+  pack_rows(index = c(
+    "Variables using to stratify or match" = 8, 
+    "Other variables" = length(var_list) - 8
+    ))
+  
+```
+
+
+## Table 3
+
+```{r, warning = FALSE, results = 'hide', eval = FALSE}
+
+outcome <- "realfinalprofit"
+
+rhs_var_1 <- c("atreatcash", "atreatequip")
+rhs_var_2 <- c("atreatcashfemale", "atreatequipfemale", "atreatcashmale", "atreatequipmale")
+
+control_var_1 <- colnames(data)[grepl("^wave\\d$", colnames(data))]
+control_var_2 <- colnames(data)[grepl("^wave\\d(_female)?$", colnames(data))]
+control_var_3 <- colnames(data)[grepl("^wave6(_female)?$", colnames(data))]
+
+fe_1 <- "groupnum"
+fe_2 <- "sheno"
+iv <- "0"
+cluster <- "sheno"
+
+create_formula <- function(outcome, rhs_var, control_var, fe, iv, cluster) {
+  as.formula(
+    paste(
+      paste(outcome, paste(c(rhs_var, control_var), collapse = " + "), sep = " ~ "),
+      fe, iv, cluster, sep = " | "
+    )
+  )
+}
+
+formulas <- c(
+  replicate(2, create_formula(outcome, rhs_var_1, control_var_1, fe_1, iv, cluster)),
+  replicate(2, create_formula(outcome, rhs_var_1, control_var_1, fe_2, iv, cluster)),
+  replicate(2, create_formula(outcome, rhs_var_2, control_var_2, fe_1, iv, cluster)),
+  replicate(2, create_formula(outcome, rhs_var_2, control_var_2, fe_2, iv, cluster)),
+  replicate(2, create_formula(outcome, rhs_var_2, control_var_3, fe_1, iv, cluster))
+  ) %>%
+  enframe("model_no", "formula")
+
+data_filter_list <- vector(mode = "list", length = 10)
+for (i in seq(10)) {
+  if (i %in% c(1, 3, 5, 7)) {
+    data_filter_list[[i]] <- filter
+  } else if (i %in% c(2, 4, 6, 8)) {
+    data_filter_list[[i]] <- function (x) {filter(x, is.na(trimgroup))}
+  } else if (i == 9) {
+    data_filter_list[[i]] <- function (x) {filter(x, wave >= 5)}
+  } else if (i == 10) {
+    data_filter_list[[i]] <- function (x) {filter(x, is.na(trimgroup), wave >= 5)}
+  }
+}
+
+test_fun_list <- replicate(5, vector(mode = "list", length = 10), FALSE)
+for (i in seq(10)) {
+  if (i <= 4) {
+    test_fun_list[[1]][[i]] <- function(x) {
+      formatC(linearHypothesis(x, "atreatcash = atreatequip")$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+    test_fun_list[[2]][[i]] <- function (x) {return("")}
+    test_fun_list[[3]][[i]] <- function (x) {return("")}
+    test_fun_list[[4]][[i]] <- function (x) {return("")}
+    test_fun_list[[5]][[i]] <- function (x) {return("")}
+  } else if (i >= 5) {
+    test_fun_list[[1]][[i]] <- function (x) {return("")}
+    test_fun_list[[2]][[i]] <- function(x) {
+      formatC(linearHypothesis(x, "atreatcashfemale = atreatequipfemale")$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+    test_fun_list[[3]][[i]] <- function(x) {
+      formatC(linearHypothesis(x, "atreatcashmale = atreatequipmale")$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+    test_fun_list[[4]][[i]] <- function(x) {
+      formatC(linearHypothesis(x, "atreatcashmale = atreatcashfemale")$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+    test_fun_list[[5]][[i]] <- function(x) {
+      formatC(linearHypothesis(x, "atreatequipmale = atreatequipfemale")$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+  }
+}
+
+reg_res <- formulas %>%
+  mutate(
+    model = map2(formula, data_filter_list, function(x, y) felm(x, y(data))),
+    test_1 = map2_chr(model, test_fun_list[[1]], function(x, y) y(x)),
+    test_2 = map2_chr(model, test_fun_list[[2]], function(x, y) y(x)),
+    test_3 = map2_chr(model, test_fun_list[[3]], function(x, y) y(x)),
+    test_4 = map2_chr(model, test_fun_list[[4]], function(x, y) y(x)),
+    test_5 = map2_chr(model, test_fun_list[[5]], function(x, y) y(x)),
+    n_firm = map_int(model, function(x) n_distinct(model.frame(x)$sheno)),
+    mean_outcome = map_chr(model, function(x) formatC(colMeans(model.frame(x)[outcome]), 2, format = "f"))
+    )
+
+reg_res %>%
+  pull(model) %>%
+  stargazer(
+    dep.var.labels.include = FALSE,
+    column.labels = c(rep(c("OLS", "OLS", "FE", "FE"), 2), rep("OLS", 2)),
+    covariate.labels = c(
+      "Cash treatment",
+      "In-kind treatment",
+      "Cash treatment * female",
+      "In-kind treatment * female",
+      "Cash treatment * male",
+      "In-kind treatment * male"
+    ),
+    keep = c(rhs_var_1, rhs_var_2),
+    title = "Replication of Table 3 in Fafchamps et al. (2014)",
+    add.lines = list(
+      c("Number of firms", reg_res$n_firm),
+      c("Waves", rep("All", 8), rep("5 and 6", 2)),
+      c("Baseline trimming", rep(c("No", "Yes"), 5)),
+      c("p-values for testing:", rep("", 10)),
+      c("  Cash = In-kind", reg_res$test_1),
+      c("  Cash = In-kind for females", reg_res$test_2),
+      c("  Cash = In-kind for males", reg_res$test_3),
+      c("  Cash male = cash Female", reg_res$test_4),
+      c("  In-kind male = in-kind female", reg_res$test_5),
+      c("Mean of outcomes", reg_res$mean_outcome)
+    ),
+    type = "html",
+    out = "FMQW2014_table3_replicate.html",
+    omit.stat = c("adj.rsq", "ser"),
+    table.layout = "=#c-t-sa-n",
+    digits = 2
+  )
+
+```
+
+```{r}
+
+htmltools::includeHTML("FMQW2014_table3_replicate.html")
+
+```
+
+## Table 4
+
+```{r, warning = FALSE, results = 'hide'}
+
+create_formula_table4 <- function(outcome, category, fe, iv, cluster) {
+  category <- paste0("(", paste(category, collapse = " + "), ")")
+  as.formula(
+    paste(
+      paste(outcome, paste(
+        c(
+          paste0("(atreatcash + atreatequip):", category), 
+          paste0("factor(wave):", category)
+          ), collapse = " + "
+        ), sep = " ~ "),
+      fe, iv, cluster, sep = " | "
+    )
+  )
+}
+
+felm_category <- function(category, fe, data, outcome, iv, cluster) {
+  df <- data %>%
+    rename(
+      category_A = category[1],
+      category_B = category[2]
+        )
+  felm(
+    create_formula_table4(outcome, c("category_A", "category_B"), fe, iv, cluster),
+    data = df
+    )
+}
+
+create_panel_table4 <- function(gender) {
+  
+  outcome <- "realfinalprofit"
+  fe_1 <- "groupnum"
+  fe_2 <- "sheno"
+  iv <- "0"
+  cluster <- "sheno"
+  
+  if (gender == "female") {
+    data_gender <- filter(data, female == 1)
+    category_1 <- c("female_female", "female_mixed")
+  } else if (gender == "male") {
+    data_gender <- filter(data, male == 1)
+    category_1 <- c("male_male", "male_mixed")
+  }
+  category_2 <- c("lowcapture", "highcapture")
+  category_3 <- c("lowcapital", "highcapital")
+  category_4 <- c("mlowgroup", "highgroup")
+  
+  category_list <- list(
+    category_1, category_1, 
+    category_2, category_2, 
+    category_3, category_3, 
+    category_4, category_4
+  )
+  
+  test_fun_list <- replicate(3, vector(mode = "list", length = length(category_list)), FALSE)
+  for (i in seq_along(category_list)) {
+    test_fun_list[[1]][[i]] <- function(x) {
+      formatC(linearHypothesis(
+        x, paste("atreatcash:category_A = atreatcash:category_B")
+        )$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+    test_fun_list[[2]][[i]] <- function(x) {
+      formatC(linearHypothesis(
+        x, paste("atreatequip:category_A = atreatequip:category_B")
+        )$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+    test_fun_list[[3]][[i]] <- function(x) {
+      formatC(linearHypothesis(
+        x, c(
+          paste("atreatcash:category_A = atreatequip:category_A"),
+          paste("atreatcash:category_B = atreatequip:category_B")
+        )
+        )$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+  }
+  
+  reg_res_table4 <- tibble(
+      category_list = category_list,
+      fe = rep(c(fe_1, fe_2), 4),
+      ) %>%
+    mutate(
+      model = map2(category_list, fe, felm_category, filter(data_gender, is.na(trimgroup)), outcome, iv, cluster),
+      test_1 = map2_chr(model, test_fun_list[[1]], function(x, y) y(x)),
+      test_2 = map2_chr(model, test_fun_list[[2]], function(x, y) y(x)),
+      test_3 = map2_chr(model, test_fun_list[[3]], function(x, y) y(x)),
+      n_firm = map_int(model, function(x) n_distinct(model.frame(x)$sheno)),
+      mean_outcome = map_chr(model, function(x) formatC(colMeans(model.frame(x)[outcome]), 2, format = "f"))
+      )
+  
+  reg_res_table4 %>%
+    pull(model) %>%
+    stargazer(
+      dep.var.labels.include = FALSE,
+      column.labels = rep(c("OLS", "FE"), 4),
+      keep = c("atreat(cash|equip):category_(A|B)"),
+      covariate.labels = c(
+        "Cash treatment * Category A",
+        "In-kind treatment * Category B",
+        "Cash treatment * Category A",
+        "In-kind treatment * Category B"
+      ),
+      title = "Replication of Table 4 in Fafchamps et al. (2014)",
+      add.lines = list(
+        c("Number of firms", reg_res_table4$n_firm),
+        c("p-values for testing:", rep("", 8)),
+        c("Cash treatments equal", reg_res_table4$test_1),
+        c("In-kind treatments equal", reg_res_table4$test_2),
+        c("Cash = In-kind", reg_res_table4$test_3)
+        # c("Mean of outcomes", reg_res_table4$mean_outcome)
+      ),
+      type = "html",
+      out = paste0("FMQW2014_table4_replicate_", gender, ".html"),
+      omit.stat = c("adj.rsq", "ser"),
+      table.layout = "=#c-t-sa-n",
+      digits = 2
+    )
+  
+}
+
+create_panel_table4("female")
+create_panel_table4("male")
+
+
+```
+
+```{r, include = FALSE, eval = FALSE}
+
+htmltools::includeHTML("FMQW2014_table4_replicate_female.html")
+htmltools::includeHTML("FMQW2014_table4_replicate_male.html")
+
+```
+
+# Table output
+
+```{r}
+
+table4_female <- readHTMLTable("FMQW2014_table4_replicate_female.html") %>%
+  .$`Replication of Table 4 in Fafchamps et al. (2014)` %>%
+  drop_na() %>%
+  filter(!apply(., 1, function(x) all(x == ""))) %>%
+  slice(-c(1, 2)) %>%
+  as.matrix() %>%
+  set_colnames(NULL)
+
+table4_male <- readHTMLTable("FMQW2014_table4_replicate_male.html") %>%
+  .$`Replication of Table 4 in Fafchamps et al. (2014)` %>%
+  drop_na() %>%
+  filter(!apply(., 1, function(x) all(x == ""))) %>%
+  slice(-c(1, 2)) %>%
+  as.matrix() %>%
+  set_colnames(NULL)
+
+rbind(table4_female, table4_male) %>%
+  kable(booktabs = TRUE) %>%
+  kable_styling() %>%
+  add_header_above(c("", sapply(seq(8), function(x) paste0("(", x, ")")))) %>%
+  add_header_above(c(" ", rep(c("OLS", "FE"), 4))) %>%
+  add_header_above(c(
+    "Interaction category B" = 1, 
+    "Mixed industry" = 2, 
+    "High capture" = 2, 
+    "High capital" = 2,
+    "High profits" = 2
+    )) %>%
+  add_header_above(c(
+    "Interaction category A" = 1, 
+    "Single-sex industry" = 2, 
+    "Low capture" = 2, 
+    "Low capital" = 2,
+    "Low profits" = 2
+    )) %>%
+  pack_rows(index = c(
+    "Panel A: Females" = nrow(table4_female), "Panel B: Males" = nrow(table4_male)
+    ))
+
+
+```
+
+
+## Table 6
+
+### Data cleaning
+
+```{r, warning = FALSE, results = 'hide', eval = FALSE}
+
+lhs_var_list <- c(
+  "weeklyfood", "clothingshoes", "healthedn", 
+  "expend_ceremonies_3months", "expend_total", "expend_logtotal"
+  )
+
+df_table6 <- data %>%
+  filter(is.na(trimgroup)) %>%
+  group_by(groupnum) %>%
+  mutate(
+    maxgroup = ifelse(wave <= 2, max(totalK, na.rm = TRUE), NA),
+    mgroup = max(maxgroup, na.rm = TRUE),
+    dailysusu = ifelse(sheno %in% c(140700505, 300103404) & wave == 1, NA, dailysusu),
+    haveotherbus = (incomeotherbusiness > 0),
+    amounttransferout = ifelse(is.na(madetransfersout), NA, amounttransferout),
+    expend_education_3months = ifelse(expend_education_3months > 3000, NA, expend_education_3months),
+    expend_total_3months = ifelse(expend_total_3months > 5000, NA, expend_total_3months),
+    expend_total = ifelse(expend_total > 20000, NA, expend_total),
+    expend_logtotal = ifelse(expend_logtotal > 10, NA, expend_logtotal),
+    expend_fooddrink_outside_week = ifelse(
+      is.na(expend_fooddrink_outside_week) & !is.na(expend_fooddrink_home_week), 
+      0, expend_fooddrink_outside_week
+      ),
+    weeklyfood = expend_fooddrink_home_week + expend_fooddrink_outside_week,
+    clothingshoes = expend_clothing_3months + expend_footwear_3months,
+    expend_ceremonies_3months = ifelse(
+      is.na(expend_health_3months) & is.na(expend_education_3months) & is.na(weeklyfood), 
+      NA,
+      ifelse(is.na(expend_ceremonies_3months), 0, expend_ceremonies_3months)
+      ),
+    healthedn = expend_health_3months + expend_education_3months,
+    across(
+      .cols = c("atreatcash", "atreatequip", "wave2", "wave3", "wave4", "wave5", "wave6"),
+      .fns = function(x) x * mlowgroup,
+      .names = "{col}_mlowgroup"
+      ),
+    across(
+      .cols = c("atreatcash", "atreatequip", "wave2", "wave3", "wave4", "wave5", "wave6"),
+      .fns = function(x) x * highgroup,
+      .names = "{col}_highgroup"
+      ),
+    across(
+      .cols = c(all_of(lhs_var_list), "totalK"),
+      .fns = function(x) ifelse(
+        x > quantile(x, .995, na.rm = TRUE, type = 2), 
+        quantile(x, .995, na.rm = TRUE, type = 2), 
+        x
+        ),
+      .names = "{col}_trunc"
+      )
+    ) %>%
+  ungroup() 
+
+```
+
+### Regression
+
+```{r, eval = FALSE, results = "hide"}
+
+lhs_var_list_trunc <- c(
+  "totalK", "totalK_trunc", "madetransfersout", "amounttransferout", 
+  sapply(lhs_var_list, function(x) paste0(x, "_trunc"))
+  ) %>%
+  set_names(NULL)
+
+felm_table6 <- function(outcome, fe, rhs_var, control_var, iv, cluster, data) {
+  as.formula(
+    paste(
+      paste(outcome, paste(c(rhs_var, control_var), collapse = " + "), sep = " ~ "),
+      fe, iv, cluster, sep = " | "
+    )
+  ) %>%
+  felm(
+    data = data
+  )
+}
+
+create_table6_sub <- function(panel) {
+  
+  fe_1 <- "groupnum"
+  fe_2 <- "sheno"
+  fe_list <- c(rep(fe_2, 2), rep(fe_1, 2), rep(fe_2, 6))
+  iv <- "0"
+  cluster <- "sheno"
+
+  if (panel == "A") {
+    rhs_var <- c("atreatcashfemale", "atreatequipfemale", "atreatcashmale", "atreatequipmale")
+    control_var_1 <- colnames(df_table6)[grepl("^wave\\d(_female)?$", colnames(df_table6))]
+    control_var_2 <- colnames(df_table6)[grepl("^wave(5|6)(_female)?$", colnames(df_table6))]
+    control_var_3 <- colnames(df_table6)[grepl("^wave(3|4|5|6)?$", colnames(df_table6))]
+    
+    control_var_list <- vector(mode = "list", length = 10)
+    for (i in seq(10)) {
+      if (i %in% c(1, 2)) {
+        control_var_list[[i]] <- control_var_1
+      } else if (i %in% c(3, 4)) {
+        control_var_list[[i]] <- control_var_2
+      } else {
+        control_var_list[[i]] <- control_var_3
+      }
+    }
+  } else if (panel == "B") {
+    df_table6 <- df_table6 %>% filter(female == 1)
+    rhs_var <- c("atreatcash_mlowgroup", "atreatcash_highgroup", "atreatequip_mlowgroup", "atreatequip_highgroup")
+    control_var_1 <- colnames(df_table6)[grepl("^wave\\d(_mlowgroup)?$", colnames(df_table6))]
+    control_var_2 <- colnames(df_table6)[grepl("^wave(5|6)(_mlowgroup)?$", colnames(df_table6))]
+    
+    control_var_list <- vector(mode = "list", length = 10)
+    for (i in seq(10)) {
+      if (i %in% c(1, 2)) {
+        control_var_list[[i]] <- control_var_1
+      } else if (i %in% c(3, 4)) {
+        control_var_list[[i]] <- control_var_2
+      } else {
+        control_var_list[[i]] <- control_var_1
+      }
+    }
+  }
+  
+  test_fun_list <- replicate(2, vector(mode = "list", length = 10), FALSE)
+  if (panel == "A") {
+    for (i in seq(10)) {
+      test_fun_list[[1]][[i]] <- function(x) {
+        formatC(linearHypothesis(x, "atreatcashfemale = atreatequipfemale")$`Pr(>Chisq)`[2], 3, format = "f")
+        }
+      test_fun_list[[2]][[i]] <- function(x) {
+        formatC(linearHypothesis(x, "atreatcashmale = atreatequipmale")$`Pr(>Chisq)`[2], 3, format = "f")
+        }
+    }
+  } else if (panel == "B") {
+    for (i in seq(10)) {
+      test_fun_list[[1]][[i]] <- function(x) {
+        formatC(linearHypothesis(x, "atreatcash_mlowgroup = atreatcash_highgroup")$`Pr(>Chisq)`[2], 3, format = "f")
+        }
+      test_fun_list[[2]][[i]] <- function(x) {
+        formatC(linearHypothesis(x, "atreatequip_mlowgroup = atreatequip_highgroup")$`Pr(>Chisq)`[2], 3, format = "f")
+        }
+    }
+  }
+  
+  reg_res_table6 <- tibble(
+    model = pmap(
+        list(a = lhs_var_list_trunc, b = fe_list, c = control_var_list), 
+        function(a, b, c) felm_table6(a, b, rhs_var, c, iv, cluster, df_table6)
+        )
+    ) %>%
+    mutate(
+      test_1 = map2_chr(model, test_fun_list[[1]], function(x, y) y(x)),
+      test_2 = map2_chr(model, test_fun_list[[2]], function(x, y) y(x)),
+      n_firm = map_int(model, function(x) n_distinct(model.frame(x)$sheno)),
+      mean_outcome = map2_chr(
+        model, lhs_var_list_trunc, 
+        function(x, y) formatC(colMeans(model.frame(x)[y]), 2, format = "f")
+        )
+      )
+
+  if (panel == "A") {
+    covariate_label <- c(
+      "Cash treatment * female",
+      "In-kind treatment * female",
+      "Cash treatment * male",
+      "In-kind treatment * male"
+    )
+    test_1_label <- "Cash = In-kind females"
+    test_2_label <- "Cash = In-kind males"
+  } else if (panel == "B") {
+    covariate_label <- c(
+      "Cash treatment * low profits",
+      "Cash treatment * high profits",
+      "In-kind treatment * low profits",
+      "In-kind treatment * high profits"
+    )
+    test_1_label <- "Cash treatments equal"
+    test_2_label <- "In-kind treatments equal"
+  }
+  
+  reg_res_table6 %>%
+    pull(model) %>%
+    stargazer(
+      dep.var.labels.include = FALSE,
+      keep = rhs_var,
+      covariate.labels = covariate_label,
+      title = "Replication of Table 6 in Fafchamps et al. (2014)",
+      add.lines = list(
+        c("Number of firms", reg_res_table6$n_firm),
+        c("p-values for testing:", rep("", 10)),
+        c(test_1_label, reg_res_table6$test_1),
+        c(test_2_label, reg_res_table6$test_2),
+        c("Mean of outcomes", reg_res_table6$mean_outcome)
+      ),
+      type = "html",
+      out = paste0("FMQW2014_table6_replicate_", panel, ".html"),
+      omit.stat = c("adj.rsq", "ser"),
+      table.layout = "=#c-t-sa-n",
+      digits = 2
+    )
+  
+}
+
+create_table6_sub("A")
+create_table6_sub("B")
+  
+```
+
+
+```{r, include = FALSE}
+
+htmltools::includeHTML("FMQW2014_table6_replicate_A.html")
+htmltools::includeHTML("FMQW2014_table6_replicate_B.html")
+
+```
+
+
+```{r}
+
+table6_A <- readHTMLTable("FMQW2014_table6_replicate_A.html") %>%
+  .$`Replication of Table 6 in Fafchamps et al. (2014)` %>%
+  drop_na() %>%
+  filter(!apply(., 1, function(x) all(x == ""))) %>%
+  slice(-1) %>%
+  as.matrix() %>%
+  set_colnames(NULL)
+
+table6_B <- readHTMLTable("FMQW2014_table6_replicate_B.html") %>%
+  .$`Replication of Table 6 in Fafchamps et al. (2014)` %>%
+  drop_na() %>%
+  filter(!apply(., 1, function(x) all(x == ""))) %>%
+  slice(-1) %>%
+  as.matrix() %>%
+  set_colnames(NULL)
+
+rbind(table6_A, table6_B) %>%
+  kable(booktabs = TRUE) %>%
+  kable_styling() %>%
+  add_header_above(c("", sapply(seq(10), function(x) paste0("(", x, ")")))) %>%
+  add_header_above(c(" ", rep("FE", 2), rep("OLS", 2), rep("FE", 6))) %>%
+  add_header_above(c(
+    "",
+    "Capital stock",
+    "Truncated capital stock",
+    "Made a transfer out",
+    "Amount transferred out",
+    "Weekly food spending",
+    "Quarterly clothing spending",
+    "Health and education spending",
+    "Quarterly ceremonies spending",
+    "Total annual spending",
+    "Log annual spending"
+    )) %>%
+  pack_rows(index = c(
+    "Panel A: Males and females" = nrow(table6_A), "Panel B: Female sub-sample" = nrow(table6_B)
+    ))
+
+```
+
+
+## Table 8
+
+### Data cleaning
+
+```{r, eval = FALSE, results = 'hide'}
+
+df_table8 <- data %>%
+  mutate(
+    norm7 = (norms_7 %in% c("Agree", "Strongly agree")),
+    norm8 = (norms_8 %in% c("Agree", "Strongly agree")),
+    norm9 = (norms_9 %in% c("Agree", "Strongly agree")),
+    norm12 = (norms_12 %in% c("Agree", "Strongly agree"))
+  ) %>%
+  group_by(sheno) %>%
+  mutate(
+    basesusu = ifelse(wave == 1, useasusu, NA),
+    spcompel = ifelse(is.na(spouse_compell), NA, (spouse_compell == 1)),
+    spendfreely = ifelse(is.na(spend_wo_consult), NA, (spend_wo_consult %in% c(4, 5))),
+    supspouse = ifelse(is.na(spouse_support_bus), NA, (spouse_support_bus %in% c(4, 5))),
+    hhhead = (rel_hhhead == 1),
+    saveregular = ifelse(is.na(save_reg), NA, (save_reg %in% c(4, 5))),
+    spouseknow = ifelse(is.na(knowprof_spouse) | knowprof_spouse == 4, NA, (knowprof_spouse == 1)),
+    othersknow = ifelse(
+      (is.na(knowprof_parents) & is.na(knowprof_children)) | (knowprof_parents == 4 & knowprof_children == 4), 
+      NA, 
+      (knowprof_parents == 1 & knowprof_children == 1)
+      ),
+    pressurehh = ifelse(is.na(pressure_share_otherhh), NA, (pressure_share_otherhh %in% c(1, 2))),
+    spendself = ifelse(is.na(xtraprof_yourself), NA, xtraprof_yourself),
+    spendhh = ifelse(is.na(xtraprof_hhold), NA, xtraprof_hhold),
+    spendbus = ifelse(is.na(xtraprof_busequip), NA, xtraprof_busequip),
+    amount100give = lottery_giveaway - 19.71,
+    shareret = ifelse(is.na(share_return), NA, share_return %in% c(4, 5)),
+    sharecomm = ifelse(is.na(share_stature), NA, share_stature %in% c(4, 5)),
+    shareborrow = ifelse(is.na(share_borrow), NA, share_borrow %in% c(4, 5)),
+    dis1 = Discount_MedianRevised,
+    dis2 = Discount_MedianTrimRevised,
+    hyp1 = Discount_HyperbolicRevised,
+    hyp2 = Discount_HyperbolicTrimRevised,
+    dspan = digitspan - 5.080729,
+    ednyears = educ_years - 8.885161,
+    otherse = ifelse(is.na(Roster_SelfEmp), NA, (Roster_SelfEmp > 0)),
+    otherwage = ifelse(is.na(Roster_Wage), NA, (Roster_Wage > 0)),
+    children = ifelse(is.na(Children_Total), 0, Children_Total) - 2.160992,
+    hhsize = Household_Members + 1 - 3.834879,
+    kids = ifelse(is.na(Children_Age0to6), 0, Children_Age0to6) - 4.846574,
+    hh1 = HouseholdSize - 2.491094,
+    ohb = OtherHouseholdBusiness,
+    sma = SpouseMoreAssets,
+    s50 = Spouse50PercentMoreAssets,
+    agediff = OwnMarriageAge - SpouseMarriageAge,
+    assetshare = OwnAssetsBrought / (OwnAssetsBrought + SpouseAssetsBrought),
+    spousebus = SpouseOperatingBusiness,
+    mr1expend = ifelse(wave == 1, expend_total, NA),
+    mr1profit = ifelse(wave == 1, realfinalprofit, NA),
+    mr2expend = ifelse(wave == 2, expend_total, NA),
+    mr2profit = ifelse(wave == 2, realfinalprofit, NA),
+    mwave2lowK = ifelse(wave == 2, (inventories < 50), NA),
+    lowdigitspan = ifelse(is.na(digitspan), NA, (digitspan <= 5))
+  ) %>%
+  fill(basesusu, matches("^mr(1|2)"), mwave2lowK, .direction = "downup") %>%
+  mutate(
+    profshareofcons = ((mr1profit + mr2profit) * 3) / (mr1expend + mr2expend),
+    lowshareprof = (profshareofcons < 0.25),
+    incshare = ((mr1profit + mr2profit) / 2) / (((mr1profit + mr2profit) / 2) + OtherHouseholdIncome)
+  ) %>%
+  ungroup()
+
+pca_prediction <- function(var_list, data) {
+  predict(
+      prcomp(
+        data %>%
+          filter(wave == 1) %>%
+          select(all_of(var_list)) %>%
+          na.omit(),
+        center = TRUE, scale = TRUE
+        ),
+      data
+      )[,1]
+}
+
+df_table8 <- df_table8 %>%
+  mutate(
+    mpca = - pca_prediction(c("useasusu", "saveregular", "dis1", "hyp1"), df_table8),
+    mpca3 = - pca_prediction(c("dis1", "hyp1"), df_table8),
+    mextp1 =  pca_prediction(
+      c("pressurehh", "HouseholdSize", "norm7", "norm8", "norm9", "sibsAccra", "married"),
+      df_table8
+      ),
+    mextp2 = pca_prediction(c("pressurehh", "norm7", "norm8", "norm9"), df_table8),
+  ) %>%
+  group_by(sheno) %>%
+  mutate(
+    across(
+      .cols = c("mpca", "mpca3", "mextp1", "mextp2"),
+      .fns = function(x) ifelse(is.infinite(max(x, na.rm = TRUE)), NA, max(x, na.rm = TRUE))
+    )
+  ) %>%
+  ungroup()
+
+```
+
+### Regression
+
+```{r, eval = FALSE, results = "hide"}
+rhs_var_list <- vector(mode = "list", length = 9)
+for (i in seq(9)) {
+  if (i == 1) {
+    rhs_var_list[[i]] = c("lowdigitspan")
+  } else if (i %in% c(2, 4, 6, 8)) {
+    rhs_var_list[[i]] = c("mpca", "mextp2")
+  } else if (i %in% c(3, 5, 7, 9)) {
+    rhs_var_list[[i]] = c("mpca", "mextp1")
+  }
+}
+
+data_filter_list <- vector(mode = "list", length = 9)
+for (i in seq(9)) {
+  if (i %in% c(1, 2, 3)) {
+    data_filter_list[[i]] <- function(x) filter(x, is.na(trimgroup))
+  } else if (i %in% c(4, 5)) {
+    data_filter_list[[i]] <- function(x) filter(x, is.na(trimgroup) & female == 1 & highgroup == 1)
+  } else if (i %in% c(6, 7)) {
+    data_filter_list[[i]] <- function(x) filter(x, is.na(trimgroup) & female == 1 & mlowgroup == 1)
+  } else if (i %in% c(8, 9)) {
+    data_filter_list[[i]] <- function(x) filter(x, is.na(trimgroup) & male == 1)
+  }
+}
+
+felm_table8 <- function(rhs_var, data_filter, data) {
+  as.formula(
+    paste(
+      paste(
+        outcome, 
+        paste(
+          "(atreatcash + atreatequip + factor(wave))", 
+          paste0("(atreatcash + atreatequip + factor(wave)):", paste0("(", paste(rhs_var, collapse = " + "), ")")),
+          sep = " + "
+        ), 
+        sep = " ~ "
+      ), fe_2, iv, cluster, sep = " | "
+    )
+    ) %>%
+    felm(
+      data = data_filter(data)
+    )
+}
+
+test_fun_list <- replicate(4, vector(mode = "list", length = 9), FALSE)
+for (i in seq(9)) {
+  if (i == 1) {
+    test_fun_list[[1]][[i]] <- function(x) {
+      formatC(linearHypothesis(x, "atreatcash:lowdigitspanTRUE = atreatequip:lowdigitspanTRUE")$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+    test_fun_list[[2]][[i]] <- function (x) {return("")}
+    test_fun_list[[3]][[i]] <- function (x) {return("")}
+    test_fun_list[[4]][[i]] <- function (x) {return("")}
+  } else if (i %in% c(2, 4, 6, 8)) {
+    test_fun_list[[1]][[i]] <- function (x) {return("")}
+    test_fun_list[[2]][[i]] <- function(x) {
+      formatC(linearHypothesis(x, "atreatcash:mpca = atreatequip:mpca")$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+    test_fun_list[[3]][[i]] <- function(x) {
+      formatC(linearHypothesis(
+        x, 
+        c("atreatcash:mextp2 = 0", "atreatequip:mextp2 = 0")
+        )$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+    test_fun_list[[4]][[i]] <- function(x) {return("")}
+  } else if (i %in% c(3, 5, 7, 9)) {
+    test_fun_list[[1]][[i]] <- function (x) {return("")}
+    test_fun_list[[2]][[i]] <- function(x) {
+      formatC(linearHypothesis(x, "atreatcash:mpca = atreatequip:mpca")$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+    test_fun_list[[3]][[i]] <- function(x) {return("")}
+    test_fun_list[[4]][[i]] <- function(x) {
+      formatC(linearHypothesis(
+        x, 
+        c("atreatcash:mextp1 = 0", "atreatequip:mextp1 = 0")
+        )$`Pr(>Chisq)`[2], 3, format = "f")
+      }
+  }
+}
+
+reg_res_table8 <- map2(rhs_var_list, data_filter_list, function(x, y) felm_table8(x, y, df_table8)) %>%
+  enframe("model_no", "model") %>%
+  mutate(
+    test_1 = map2_chr(model, test_fun_list[[1]], function(x, y) y(x)),
+    test_2 = map2_chr(model, test_fun_list[[2]], function(x, y) y(x)),
+    test_3 = map2_chr(model, test_fun_list[[3]], function(x, y) y(x)),
+    test_4 = map2_chr(model, test_fun_list[[4]], function(x, y) y(x)),
+    n_firm = map_int(model, function(x) n_distinct(model.frame(x)$sheno)),
+    mean_outcome = map_chr(model, function(x) formatC(colMeans(model.frame(x)[outcome]), 2, format = "f"))
+  )
+  
+```
+
+### Table output
+
+```{r, eval = FALSE, results = "hide"}
+
+reg_res_table8 %>%
+  pull(model) %>%
+  stargazer(
+    dep.var.labels.include = FALSE,
+    column.labels = c("Pooled men and women", "High profit women", "Low profit women", "Men"),
+    column.separate = c(3, 2, 2, 2),
+    covariate.labels = c(
+      "Cash treatment",
+      "In-kind treatment",
+      "Cash treatment * low digitspan recall",
+      "In-kind treatment * low digitspan recall",
+      "Cash treatment * lack of self-control",
+      "In-kind treatment * lack of self-control",
+      "Cash treatment * narrow external pressure",
+      "In-kind treatment * narrow external pressure",
+      "Cash treatment * broad external pressure",
+      "In-kind treatment * broad external pressure"
+    ),
+    keep = c("atreat(cash|equip)"),
+    order = c(
+      "^atreat(cash|equip)$",
+      "^atreat(cash|equip):lowdigitspanTRUE$",
+      "^atreat(cash|equip):mpca$",
+      "^atreat(cash|equip):mextp2$",
+      "^atreat(cash|equip):mextp1$"
+    ),
+    title = "Replication of Table 8 in Fafchamps et al. (2014)",
+    add.lines = list(
+      c("Number of firms", reg_res_table8$n_firm),
+      c("p-values for testing cash = in-kind for:", rep("", 10)),
+      c("Low digitspan interaction", reg_res_table8$test_1),
+      c("Self-control interaction", reg_res_table8$test_2),
+      c("Narrow external pressure interaction", reg_res_table8$test_3),
+      c("Broad external pressure interaction", reg_res_table8$test_4),
+      c("Mean of outcomes", reg_res_table8$mean_outcome)
+    ),
+    type = "html",
+    out = "FMQW2014_table8_replicate.html",
+    omit.stat = c("adj.rsq", "ser"),
+    table.layout = "=#c-t-sa-n",
+    digits = 2
+  )
+
+```
+
+```{r}
+
+htmltools::includeHTML("FMQW2014_table8_replicate.html")
+
+```

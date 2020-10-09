@@ -1,12 +1,12 @@
-name: "risksharing"
+name: "Stata to R"
 output_dir: "../docs"
 navbar:
-  title: "Risk Sharing"
+  title: "Stata to R"
   left:
   - text: "Home"
     href: index.html
-  - text: "Ligon et al. (2002)"
-    href: LTW_code.html
+  - text: "Fafchamps et al. (2014)"
+    href: FMQW2014.html
 output:
   html_document:
     theme: cosmo
