@@ -22,7 +22,9 @@ packages <- c(
   "kableExtra",
   "labelled",
   "XML",
-  "magrittr"
+  "magrittr",
+  "magick",
+  "pdftools"
 )
 
 pacman::p_load(packages, character.only = TRUE, install = TRUE)
@@ -111,8 +113,8 @@ cbind(
   table2_sub(filter(data, is.na(trimgroup)))
   ) %>%
   set_colnames(NULL) %>%
-  kable(booktabs = TRUE) %>%
-  kable_styling() %>%
+  kable("latex", booktabs = TRUE) %>%
+  kable_styling(latex_options = "scale_down") %>%
   add_header_above(
     c(" ", rep(c("N", "Mean", "Mean", "Mean", "p-value"), 2))
     ) %>%
@@ -121,11 +123,84 @@ cbind(
     ) %>%
   add_header_above(c(" " = 1, "Full sample" = 5, "Trimmed sample" = 5)) %>%
   pack_rows(index = c(
-    "Variables using to stratify or match" = 8, 
+    "Variables using to stratify or match" = 8,
     "Other variables" = length(var_list) - 8
-    ))
-  
+    )) %>%
+  save_kable("tex/FMQW2014_table2_replicate.tex")
+
 ```
+
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+
+# cbind(
+#   var_label, 
+#   table2_sub(data), 
+#   table2_sub(filter(data, is.na(trimgroup)))
+#   ) %>%
+#   set_colnames(NULL) %>%
+#   kable("latex", booktabs = TRUE) %>%
+#   kable_styling(latex_options = "scale_down") %>%
+#   add_header_above(
+#     c(" ", rep(c("N", "Mean", "Mean", "Mean", "p-value"), 2))
+#     ) %>%
+#   add_header_above(
+#     c(" ", rep(c(" ", "Control", "Cash", "In-kind", " "), 2))
+#     ) %>%
+#   add_header_above(c(" " = 1, "Full sample" = 5, "Trimmed sample" = 5)) %>%
+#   pack_rows(index = c(
+#     "Variables using to stratify or match" = 8,
+#     "Other variables" = length(var_list) - 8
+#     )) %>%
+#   save_kable("table_figures/FMQW2014_table2_replicate.pdf")
+# pdf_convert(
+#   "table_figures/FMQW2014_table2_replicate.pdf", 
+#   filenames = "table_figures/FMQW2014_table2_replicate.png",
+#   dpi = 216,
+#   verbose = FALSE
+#   )
+```
+
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, results = "hide"}
+
+file.copy(
+  "tex/FMQW2014_table2_replicate.tex",
+  "tex/FMQW2014_table2_replicate_doc.tex",
+  overwrite = TRUE
+  )
+
+fConn <- file("tex/FMQW2014_table2_replicate_doc.tex", "r+")
+Lines <- readLines(fConn)
+writeLines(
+  c(
+    "\\documentclass{report}", 
+    "\\usepackage[paperwidth=5.5in,paperheight=7in,noheadfoot,margin=0in]{geometry}",
+    "\\usepackage{float}",
+    "\\usepackage{pdflscape}",
+    "\\usepackage{booktabs}",
+    "\\usepackage{multicol}",
+    "\\begin{document}\\pagestyle{empty}",
+    Lines,
+    "\\end{document}"
+    ), 
+  con = fConn
+  )
+close(fConn)
+
+tools::texi2dvi(file = "tex/FMQW2014_table2_replicate_doc.tex")
+cmd <- paste(
+  "dvipng -T tight", 
+  shQuote("FMQW2014_table2_replicate_doc.dvi"),
+  "-o", shQuote("table_figures/FMQW2014_table2_replicate.png")
+  )
+invisible(system(cmd))
+cleaner <- c(".aux", ".log", ".dvi")
+invisible(file.remove(paste0("FMQW2014_table2_replicate_doc", cleaner)))
+
+```
+
+![](table_figures/FMQW2014_table2_replicate.png){width=100%}
 
 
 ## Table 3
@@ -230,21 +305,21 @@ reg_res %>%
       "In-kind treatment * male"
     ),
     keep = c(rhs_var_1, rhs_var_2),
-    title = "Replication of Table 3 in Fafchamps et al. (2014)",
+    title = "",
     add.lines = list(
       c("Number of firms", reg_res$n_firm),
       c("Waves", rep("All", 8), rep("5 and 6", 2)),
       c("Baseline trimming", rep(c("No", "Yes"), 5)),
       c("p-values for testing:", rep("", 10)),
-      c("  Cash = In-kind", reg_res$test_1),
-      c("  Cash = In-kind for females", reg_res$test_2),
-      c("  Cash = In-kind for males", reg_res$test_3),
-      c("  Cash male = cash Female", reg_res$test_4),
-      c("  In-kind male = in-kind female", reg_res$test_5),
+      c("\\  Cash = In-kind", reg_res$test_1),
+      c("\\  Cash = In-kind for females", reg_res$test_2),
+      c("\\  Cash = In-kind for males", reg_res$test_3),
+      c("\\  Cash male = cash Female", reg_res$test_4),
+      c("\\  In-kind male = in-kind female", reg_res$test_5),
       c("Mean of outcomes", reg_res$mean_outcome)
     ),
-    type = "html",
-    out = "FMQW2014_table3_replicate.html",
+    type = "latex",
+    out = "tex/FMQW2014_table3_replicate.tex",
     omit.stat = c("adj.rsq", "ser"),
     table.layout = "=#c-t-sa-n",
     digits = 2
@@ -252,9 +327,52 @@ reg_res %>%
 
 ```
 
-```{r}
 
-htmltools::includeHTML("FMQW2014_table3_replicate.html")
+```{r, echo = FALSE, warning = FALSE, message = FALSE, results = "hide"}
+
+file.copy(
+  "tex/FMQW2014_table3_replicate.tex",
+  "tex/FMQW2014_table3_replicate_doc.tex",
+  overwrite = TRUE
+  )
+
+fConn <- file("tex/FMQW2014_table3_replicate_doc.tex", "r+")
+Lines <- readLines(fConn)
+writeLines(
+  c(
+    "\\documentclass{report}", 
+    "\\usepackage[paperwidth=5.5in,paperheight=7in,noheadfoot,margin=0in]{geometry}",
+    "\\usepackage{caption}",
+    "\\captionsetup{labelformat=empty}",
+    "\\usepackage{float}",
+    "\\usepackage{pdflscape}",
+    "\\usepackage{booktabs}",
+    "\\usepackage{multicol}",
+    "\\begin{document}\\pagestyle{empty}",
+    Lines,
+    "\\end{document}"
+    ), 
+  con = fConn
+  )
+close(fConn)
+
+tools::texi2dvi(file = "tex/FMQW2014_table3_replicate_doc.tex")
+cmd <- paste(
+  "dvipng -T tight", 
+  shQuote("FMQW2014_table3_replicate_doc.dvi"),
+  "-o", shQuote("table_figures/FMQW2014_table3_replicate.png")
+  )
+invisible(system(cmd))
+cleaner <- c(".aux", ".log", ".dvi")
+invisible(file.remove(paste0("FMQW2014_table3_replicate_doc", cleaner)))
+
+```
+
+![](table_figures/FMQW2014_table3_replicate.png){width=100%}
+
+```{r, include = FALSE}
+
+# htmltools::includeHTML("FMQW2014_table3_replicate.html")
 
 ```
 
@@ -366,9 +484,9 @@ create_panel_table4 <- function(gender) {
       add.lines = list(
         c("Number of firms", reg_res_table4$n_firm),
         c("p-values for testing:", rep("", 8)),
-        c("Cash treatments equal", reg_res_table4$test_1),
-        c("In-kind treatments equal", reg_res_table4$test_2),
-        c("Cash = In-kind", reg_res_table4$test_3)
+        c("\\ Cash treatments equal", reg_res_table4$test_1),
+        c("\\ In-kind treatments equal", reg_res_table4$test_2),
+        c("\\ Cash = In-kind", reg_res_table4$test_3)
         # c("Mean of outcomes", reg_res_table4$mean_outcome)
       ),
       type = "html",
@@ -404,6 +522,10 @@ table4_female <- readHTMLTable("FMQW2014_table4_replicate_female.html") %>%
   slice(-c(1, 2)) %>%
   as.matrix() %>%
   set_colnames(NULL)
+table4_female[(nrow(table4_female) - 2):nrow(table4_female),1] <- paste0(
+  "\\hspace{1em} ", 
+  table4_female[(nrow(table4_female) - 2):nrow(table4_female),1]
+  )
 
 table4_male <- readHTMLTable("FMQW2014_table4_replicate_male.html") %>%
   .$`Replication of Table 4 in Fafchamps et al. (2014)` %>%
@@ -412,10 +534,14 @@ table4_male <- readHTMLTable("FMQW2014_table4_replicate_male.html") %>%
   slice(-c(1, 2)) %>%
   as.matrix() %>%
   set_colnames(NULL)
+table4_male[(nrow(table4_male) - 2):nrow(table4_male),1] <- paste0(
+  "\\hspace{1em} ", 
+  table4_male[(nrow(table4_male) - 2):nrow(table4_male),1]
+  )
 
 rbind(table4_female, table4_male) %>%
-  kable(booktabs = TRUE) %>%
-  kable_styling() %>%
+  kable("latex", booktabs = TRUE, escape = FALSE) %>%
+  kable_styling(latex_options = "scale_down") %>%
   add_header_above(c("", sapply(seq(8), function(x) paste0("(", x, ")")))) %>%
   add_header_above(c(" ", rep(c("OLS", "FE"), 4))) %>%
   add_header_above(c(
@@ -434,10 +560,50 @@ rbind(table4_female, table4_male) %>%
     )) %>%
   pack_rows(index = c(
     "Panel A: Females" = nrow(table4_female), "Panel B: Males" = nrow(table4_male)
-    ))
-
+    )) %>%
+  save_kable("tex/FMQW2014_table4_replicate.tex")
 
 ```
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, results = "hide"}
+
+file.copy(
+  "tex/FMQW2014_table4_replicate.tex",
+  "tex/FMQW2014_table4_replicate_doc.tex",
+  overwrite = TRUE
+  )
+
+fConn <- file("tex/FMQW2014_table4_replicate_doc.tex", "r+")
+Lines <- readLines(fConn)
+writeLines(
+  c(
+    "\\documentclass{report}", 
+    "\\usepackage[paperwidth=5.5in,paperheight=7in,noheadfoot,margin=0in]{geometry}",
+    "\\usepackage{float}",
+    "\\usepackage{pdflscape}",
+    "\\usepackage{booktabs}",
+    "\\usepackage{multicol}",
+    "\\begin{document}\\pagestyle{empty}",
+    Lines,
+    "\\end{document}"
+    ), 
+  con = fConn
+  )
+close(fConn)
+
+tools::texi2dvi(file = "tex/FMQW2014_table4_replicate_doc.tex")
+cmd <- paste(
+  "dvipng -T tight", 
+  shQuote("FMQW2014_table4_replicate_doc.dvi"),
+  "-o", shQuote("table_figures/FMQW2014_table4_replicate.png")
+  )
+invisible(system(cmd))
+cleaner <- c(".aux", ".log", ".dvi")
+invisible(file.remove(paste0("FMQW2014_table4_replicate_doc", cleaner)))
+
+```
+
+![](table_figures/FMQW2014_table4_replicate.png){width=100%}
 
 
 ## Table 6
@@ -608,8 +774,8 @@ create_table6_sub <- function(panel) {
       "Cash treatment * male",
       "In-kind treatment * male"
     )
-    test_1_label <- "Cash = In-kind females"
-    test_2_label <- "Cash = In-kind males"
+    test_1_label <- "\\ Cash = In-kind females"
+    test_2_label <- "\\ Cash = In-kind males"
   } else if (panel == "B") {
     covariate_label <- c(
       "Cash treatment * low profits",
@@ -617,8 +783,8 @@ create_table6_sub <- function(panel) {
       "In-kind treatment * low profits",
       "In-kind treatment * high profits"
     )
-    test_1_label <- "Cash treatments equal"
-    test_2_label <- "In-kind treatments equal"
+    test_1_label <- "\\ Cash treatments equal"
+    test_2_label <- "\\ In-kind treatments equal"
   }
   
   reg_res_table6 %>%
@@ -667,6 +833,10 @@ table6_A <- readHTMLTable("FMQW2014_table6_replicate_A.html") %>%
   slice(-1) %>%
   as.matrix() %>%
   set_colnames(NULL)
+table6_A[(nrow(table6_A) - 2):(nrow(table6_A) - 1),1] <- paste0(
+  "\\hspace{1em} ", 
+  table6_A[(nrow(table6_A) - 2):(nrow(table6_A) - 1),1]
+  )
 
 table6_B <- readHTMLTable("FMQW2014_table6_replicate_B.html") %>%
   .$`Replication of Table 6 in Fafchamps et al. (2014)` %>%
@@ -675,30 +845,77 @@ table6_B <- readHTMLTable("FMQW2014_table6_replicate_B.html") %>%
   slice(-1) %>%
   as.matrix() %>%
   set_colnames(NULL)
+table6_B[(nrow(table6_B) - 2):(nrow(table6_B) - 1),1] <- paste0(
+  "\\hspace{1em} ", 
+  table6_B[(nrow(table6_B) - 2):(nrow(table6_B) - 1),1]
+  )
 
 rbind(table6_A, table6_B) %>%
-  kable(booktabs = TRUE) %>%
-  kable_styling() %>%
+  kable("latex", booktabs = TRUE, escape = FALSE) %>%
+  kable_styling(latex_options = "scale_down") %>%
   add_header_above(c("", sapply(seq(10), function(x) paste0("(", x, ")")))) %>%
   add_header_above(c(" ", rep("FE", 2), rep("OLS", 2), rep("FE", 6))) %>%
   add_header_above(c(
     "",
-    "Capital stock",
-    "Truncated capital stock",
-    "Made a transfer out",
-    "Amount transferred out",
-    "Weekly food spending",
-    "Quarterly clothing spending",
-    "Health and education spending",
-    "Quarterly ceremonies spending",
-    "Total annual spending",
-    "Log annual spending"
+    "Capital\nstock",
+    "Truncated\ncapital\nstock",
+    "Made a\ntransfer\nout",
+    "Amount\ntransferred\nout",
+    "Weekly\nfood\nspending",
+    "Quarterly\nclothing\nspending",
+    "Health and\neducation\nspending",
+    "Quarterly\nceremonies\nspending",
+    "Total\nannual\nspending",
+    "Log\nannual\nspending"
     )) %>%
   pack_rows(index = c(
     "Panel A: Males and females" = nrow(table6_A), "Panel B: Female sub-sample" = nrow(table6_B)
-    ))
+    )) %>%
+  save_kable("tex/FMQW2014_table6_replicate.tex")
 
 ```
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, results = "hide"}
+
+file.copy(
+  "tex/FMQW2014_table6_replicate.tex",
+  "tex/FMQW2014_table6_replicate_doc.tex",
+  overwrite = TRUE
+  )
+
+fConn <- file("tex/FMQW2014_table6_replicate_doc.tex", "r+")
+Lines <- readLines(fConn)
+writeLines(
+  c(
+    "\\documentclass{report}", 
+    "\\usepackage[paperwidth=5.5in,paperheight=7in,noheadfoot,margin=0in]{geometry}",
+    "\\usepackage{float}",
+    "\\usepackage{pdflscape}",
+    "\\usepackage{makecell}",
+    "\\usepackage{booktabs}",
+    "\\usepackage{multicol}",
+    "\\begin{document}\\pagestyle{empty}",
+    Lines,
+    "\\end{document}"
+    ), 
+  con = fConn
+  )
+close(fConn)
+
+tools::texi2dvi(file = "tex/FMQW2014_table6_replicate_doc.tex")
+cmd <- paste(
+  "dvipng -T tight", 
+  shQuote("FMQW2014_table6_replicate_doc.dvi"),
+  "-o", shQuote("table_figures/FMQW2014_table6_replicate.png")
+  )
+invisible(system(cmd))
+cleaner <- c(".aux", ".log", ".dvi")
+invisible(file.remove(paste0("FMQW2014_table6_replicate_doc", cleaner)))
+
+```
+
+![](table_figures/FMQW2014_table6_replicate.png){width=100%}
+
 
 
 ## Table 8
@@ -928,18 +1145,18 @@ reg_res_table8 %>%
       "^atreat(cash|equip):mextp2$",
       "^atreat(cash|equip):mextp1$"
     ),
-    title = "Replication of Table 8 in Fafchamps et al. (2014)",
+    title = "",
     add.lines = list(
       c("Number of firms", reg_res_table8$n_firm),
       c("p-values for testing cash = in-kind for:", rep("", 10)),
-      c("Low digitspan interaction", reg_res_table8$test_1),
-      c("Self-control interaction", reg_res_table8$test_2),
-      c("Narrow external pressure interaction", reg_res_table8$test_3),
-      c("Broad external pressure interaction", reg_res_table8$test_4),
+      c("\\ Low digitspan interaction", reg_res_table8$test_1),
+      c("\\ Self-control interaction", reg_res_table8$test_2),
+      c("\\ Narrow external pressure interaction", reg_res_table8$test_3),
+      c("\\ Broad external pressure interaction", reg_res_table8$test_4),
       c("Mean of outcomes", reg_res_table8$mean_outcome)
     ),
-    type = "html",
-    out = "FMQW2014_table8_replicate.html",
+    type = "latex",
+    out = "tex/FMQW2014_table8_replicate.tex",
     omit.stat = c("adj.rsq", "ser"),
     table.layout = "=#c-t-sa-n",
     digits = 2
@@ -947,8 +1164,53 @@ reg_res_table8 %>%
 
 ```
 
-```{r}
+```{r, include = FALSE}
 
-htmltools::includeHTML("FMQW2014_table8_replicate.html")
+# htmltools::includeHTML("FMQW2014_table8_replicate.html")
 
 ```
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, results = "hide"}
+
+file.copy(
+  "tex/FMQW2014_table8_replicate.tex",
+  "tex/FMQW2014_table8_replicate_doc.tex",
+  overwrite = TRUE
+  )
+
+fConn <- file("tex/FMQW2014_table8_replicate_doc.tex", "r+")
+Lines <- readLines(fConn)
+writeLines(
+  c(
+    "\\documentclass{report}", 
+    "\\usepackage[paperwidth=5.5in,paperheight=7in,noheadfoot,margin=0in]{geometry}",
+    "\\usepackage{caption}",
+    "\\captionsetup{labelformat=empty}",
+    "\\usepackage{float}",
+    "\\usepackage{pdflscape}",
+    "\\usepackage{booktabs}",
+    "\\usepackage{multicol}",
+    "\\begin{document}\\pagestyle{empty}",
+    Lines,
+    "\\end{document}"
+    ), 
+  con = fConn
+  )
+close(fConn)
+
+tools::texi2dvi(file = "tex/FMQW2014_table8_replicate_doc.tex")
+cmd <- paste(
+  "dvipng -T tight", 
+  shQuote("FMQW2014_table8_replicate_doc.dvi"),
+  "-o", shQuote("table_figures/FMQW2014_table8_replicate.png")
+  )
+invisible(system(cmd))
+cleaner <- c(".aux", ".log", ".dvi")
+invisible(file.remove(paste0("FMQW2014_table8_replicate_doc", cleaner)))
+
+```
+
+![](table_figures/FMQW2014_table8_replicate.png){width=100%}
+
+
+

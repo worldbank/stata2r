@@ -1,0 +1,57 @@
+\documentclass{report}
+\usepackage[paperwidth=5.5in,paperheight=7in,noheadfoot,margin=0in]{geometry}
+\usepackage{caption}
+\captionsetup{labelformat=empty}
+\usepackage{float}
+\usepackage{pdflscape}
+\usepackage{booktabs}
+\usepackage{multicol}
+\begin{document}\pagestyle{empty}
+
+% Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
+% Date and time: Thu, Nov 26, 2020 - 01:51:58
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lcccccccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\\[-1.8ex] & (1) & (2) & (3) & (4) & (5) & (6) & (7) & (8) & (9) & (10)\\ 
+ & OLS & OLS & FE & FE & OLS & OLS & FE & FE & OLS & OLS \\ 
+\hline \\[-1.8ex] 
+ Cash treatment & 14.50$^{*}$ & 9.59 & 3.96 & 0.48 &  &  &  &  &  &  \\ 
+  & (8.68) & (7.32) & (13.89) & (8.23) &  &  &  &  &  &  \\ 
+  & & & & & & & & & & \\ 
+ In-kind treatment & 38.60$^{***}$ & 36.75$^{***}$ & 43.23$^{***}$ & 30.87$^{***}$ &  &  &  &  &  &  \\ 
+  & (11.21) & (10.67) & (12.31) & (10.73) &  &  &  &  &  &  \\ 
+  & & & & & & & & & & \\ 
+ Cash treatment * female &  &  &  &  & 5.21 & 5.17 & 1.22 & $-$2.30 & 5.74 & 5.59 \\ 
+  &  &  &  &  & (8.47) & (8.54) & (9.35) & (8.77) & (11.57) & (11.62) \\ 
+  & & & & & & & & & & \\ 
+ In-kind treatment * female &  &  &  &  & 35.75$^{**}$ & 37.65$^{**}$ & 35.61$^{***}$ & 32.87$^{**}$ & 47.35$^{**}$ & 49.92$^{**}$ \\ 
+  &  &  &  &  & (14.94) & (14.94) & (13.56) & (13.21) & (21.35) & (21.44) \\ 
+  & & & & & & & & & & \\ 
+ Cash treatment * male &  &  &  &  & 28.99 & 16.81 & 8.74 & 5.13 & 44.79$^{**}$ & 34.17$^{**}$ \\ 
+  &  &  &  &  & (17.68) & (13.25) & (31.58) & (16.10) & (19.42) & (15.51) \\ 
+  & & & & & & & & & & \\ 
+ In-kind treatment * male &  &  &  &  & 43.38$^{***}$ & 35.45$^{**}$ & 55.15$^{**}$ & 27.83 & 60.33$^{***}$ & 50.61$^{***}$ \\ 
+  &  &  &  &  & (16.80) & (14.04) & (23.06) & (18.15) & (19.76) & (17.66) \\ 
+  & & & & & & & & & & \\ 
+\hline \\[-1.8ex] 
+Observations & 4,354 & 4,203 & 4,354 & 4,203 & 4,354 & 4,203 & 4,354 & 4,203 & 1,392 & 1,344 \\ 
+R$^{2}$ & 0.28 & 0.33 & 0.52 & 0.62 & 0.28 & 0.33 & 0.52 & 0.62 & 0.38 & 0.36 \\ 
+Number of firms & 792 & 764 & 792 & 764 & 792 & 764 & 792 & 764 & 736 & 710 \\ 
+Waves & All & All & All & All & All & All & All & All & 5 and 6 & 5 and 6 \\ 
+Baseline trimming & No & Yes & No & Yes & No & Yes & No & Yes & No & Yes \\ 
+p-values for testing: &  &  &  &  &  &  &  &  &  &  \\ 
+$\quad$  Cash = In-kind & 0.066 & 0.030 & 0.013 & 0.015 &  &  &  &  &  &  \\ 
+$\quad$  Cash = In-kind for females &  &  &  &  & 0.072 & 0.056 & 0.020 & 0.018 & 0.073 & 0.058 \\ 
+$\quad$  Cash = In-kind for males &  &  &  &  & 0.487 & 0.300 & 0.148 & 0.305 & 0.516 & 0.420 \\ 
+$\quad$  Cash male = cash Female &  &  &  &  & 0.225 & 0.460 & 0.820 & 0.685 & 0.084 & 0.140 \\ 
+$\quad$  In-kind male = in-kind female &  &  &  &  & 0.735 & 0.915 & 0.465 & 0.822 & 0.655 & 0.980 \\ 
+Mean of outcomes & 121.15 & 108.29 & 121.15 & 108.29 & 121.15 & 108.29 & 121.15 & 108.29 & 121.48 & 114.15 \\ 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{10}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table} 
+\end{document}
