@@ -114,4 +114,6 @@ passwords/
 /Library/Kaboski2012_replication/**/*
 /docs/Kaboski2012_replication/**/*
 
+!/docs/table_figures/*.png
+
 .Rproj.user
