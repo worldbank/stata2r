@@ -7,6 +7,10 @@ navbar:
     href: index.html
   - text: "Fafchamps et al. (2014)"
     href: FMQW2014.html
+  - text: "Banerjee et al. (2015)"
+    href: Banerjee2015.html
+  - text: "Kaboski & townsend (2012)"
+    href: Kaboski2012.html
 output:
   html_document:
     theme: cosmo

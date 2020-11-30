@@ -1,0 +1,11 @@
+---
+title: "R Table Replication"
+output: 
+  html_document:
+    toc_collapsed: true
+    toc_depth: 2
+---
+
++ [Fafchamps et al. (2014)](./FMQW2014.html)
++ [Banerjee et al. (2015)](./Banerjee2015.html)
++ [Kaboski and Townsend (2012)](./Kaboski2012.html)

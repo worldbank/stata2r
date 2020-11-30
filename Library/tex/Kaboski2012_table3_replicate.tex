@@ -1,0 +1,20 @@
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lcccc}
+\toprule
+\multicolumn{1}{c}{Response variable} & \multicolumn{1}{c}{\makecell[c]{Net short-term\\creidt level}} & \multicolumn{1}{c}{\makecell[c]{Consumption\\level}} & \multicolumn{1}{c}{\makecell[c]{Asset\\growth rate}} & \multicolumn{1}{c}{\makecell[c]{Net income\\growth rate}} \\
+\cmidrule(l{3pt}r{3pt}){1-1} \cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3} \cmidrule(l{3pt}r{3pt}){4-4} \cmidrule(l{3pt}r{3pt}){5-5}
+\addlinespace[0.3em]
+\multicolumn{5}{l}{\textbf{Technique}}\\
+\hspace{1em}OLS regression & 12,800*** & 2,200 & -0.011 & 0.116***\\
+\hspace{1em} & (1,300) & (2,000) & (0.028) & (0.038)\\
+\hspace{1em}Baseline IV regression: only villages & 19,200*** & 17,100* & -0.073 & 0.737**\\
+\hspace{1em}\hspace{1em}with 50-200 households & (6,800) & (8,900) & (0.164) & (0.334)\\
+\hspace{1em}IV regression using all villages & 13,800*** & 24,000*** & -0.209** & 0.211\\
+\hspace{1em} & (3,700) & (6,300) & (0.100) & (0.134)\\
+\hspace{1em}IV regression without 1\% outliers & 13,900*** & 14,700** & -0.131 & 0.699**\\
+\hspace{1em} & (4,600) & (5,800) & (0.141) & (0.307)\\
+\bottomrule
+\end{tabular}}
+\end{table}

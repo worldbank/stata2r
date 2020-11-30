@@ -287,6 +287,12 @@ $(document).ready(function () {
 <li>
   <a href="FMQW2014.html">Fafchamps et al. (2014)</a>
 </li>
+<li>
+  <a href="Banerjee2015.html">Banerjee et al. (2015)</a>
+</li>
+<li>
+  <a href="Kaboski2012.html">Kaboski &amp; townsend (2012)</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -756,7 +762,10 @@ df_table6 &lt;- data %&gt;%
       .cols = c(&quot;atreatcash&quot;, &quot;atreatequip&quot;, &quot;wave2&quot;, &quot;wave3&quot;, &quot;wave4&quot;, &quot;wave5&quot;, &quot;wave6&quot;),
       .fns = function(x) x * highgroup,
       .names = &quot;{col}_highgroup&quot;
-      ),
+      )
+    ) %&gt;%
+  ungroup() %&gt;% 
+  mutate(
     across(
       .cols = c(all_of(lhs_var_list), &quot;totalK&quot;),
       .fns = function(x) ifelse(
@@ -766,8 +775,7 @@ df_table6 &lt;- data %&gt;%
         ),
       .names = &quot;{col}_trunc&quot;
       )
-    ) %&gt;%
-  ungroup() </code></pre>
+  )</code></pre>
 </div>
 <div id="regression" class="section level3">
 <h3>Regression</h3>
@@ -875,8 +883,8 @@ create_table6_sub &lt;- function(panel) {
       &quot;Cash treatment * male&quot;,
       &quot;In-kind treatment * male&quot;
     )
-    test_1_label &lt;- &quot;\\ Cash = In-kind females&quot;
-    test_2_label &lt;- &quot;\\ Cash = In-kind males&quot;
+    test_1_label &lt;- &quot;Cash = In-kind females&quot;
+    test_2_label &lt;- &quot;Cash = In-kind males&quot;
   } else if (panel == &quot;B&quot;) {
     covariate_label &lt;- c(
       &quot;Cash treatment * low profits&quot;,
@@ -884,8 +892,8 @@ create_table6_sub &lt;- function(panel) {
       &quot;In-kind treatment * low profits&quot;,
       &quot;In-kind treatment * high profits&quot;
     )
-    test_1_label &lt;- &quot;\\ Cash treatments equal&quot;
-    test_2_label &lt;- &quot;\\ In-kind treatments equal&quot;
+    test_1_label &lt;- &quot;Cash treatments equal&quot;
+    test_2_label &lt;- &quot;In-kind treatments equal&quot;
   }
   
   reg_res_table6 %&gt;%

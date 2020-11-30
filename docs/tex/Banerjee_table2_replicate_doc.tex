@@ -1,0 +1,51 @@
+\documentclass{report}
+\usepackage[paperwidth=5.5in,paperheight=7in,noheadfoot,margin=0in]{geometry}
+\usepackage{float}
+\usepackage{pdflscape}
+\usepackage{makecell}
+\usepackage{booktabs}
+\usepackage{multicol}
+\begin{document}\pagestyle{empty}
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{llllllllll}
+\toprule
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{Spandana} & \multicolumn{1}{c}{\makecell[c]{Other\\MFI}} & \multicolumn{1}{c}{\makecell[c]{Any\\MFI}} & \multicolumn{1}{c}{\makecell[c]{Other\\bank}} & \multicolumn{1}{c}{Informal} & \multicolumn{1}{c}{Total} & \multicolumn{1}{c}{\makecell[c]{Ever\\late on\\payment?}} & \multicolumn{1}{c}{\makecell[c]{Number of\\cycles\\borrowed\\from an\\MFI}} & \multicolumn{1}{c}{\makecell[c]{Index of\\dependent\\variables}} \\
+\cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3} \cmidrule(l{3pt}r{3pt}){4-4} \cmidrule(l{3pt}r{3pt}){5-5} \cmidrule(l{3pt}r{3pt}){6-6} \cmidrule(l{3pt}r{3pt}){7-7} \cmidrule(l{3pt}r{3pt}){8-8} \cmidrule(l{3pt}r{3pt}){9-9} \cmidrule(l{3pt}r{3pt}){10-10}
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)} & \multicolumn{1}{c}{(6)} & \multicolumn{1}{c}{(7)} & \multicolumn{1}{c}{(8)} & \multicolumn{1}{c}{(9)} \\
+\cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3} \cmidrule(l{3pt}r{3pt}){4-4} \cmidrule(l{3pt}r{3pt}){5-5} \cmidrule(l{3pt}r{3pt}){6-6} \cmidrule(l{3pt}r{3pt}){7-7} \cmidrule(l{3pt}r{3pt}){8-8} \cmidrule(l{3pt}r{3pt}){9-9} \cmidrule(l{3pt}r{3pt}){10-10}
+\addlinespace[0.3em]
+\multicolumn{10}{l}{\textbf{Panel A: Endline 1}}\\
+\addlinespace[0.3em]
+\multicolumn{10}{l}{\textbf{Credit access}}\\
+Treated area & 0.127*** & -0.012 & 0.083*** & 0.003 & -0.052** & -0.022 & -0.060** & 0.084** & 0.106***\\
+ & (0.020) & (0.024) & (0.027) & (0.012) & (0.021) & (0.014) & (0.026) & (0.041) & (0.029)\\
+Observations & 6,811 & 6,657 & 6,811 & 6,811 & 6,811 & 6,862 & 6,475 & 6,816 & 6,862\\
+Control mean & 0.051 & 0.149 & 0.183 & 0.079 & 0.761 & 0.867 & 0.616 & 0.330 & 0.000\\
+\makecell[l]{Hochberg-corrected\\p-value} &  &  &  &  &  &  &  &  & 0.000\\
+\addlinespace[0.3em]
+\multicolumn{10}{l}{\textbf{Loan amounts (in Rupees)}}\\
+Treated area & 1,334*** & -94 & 1,286*** & 75 & -1,069 & 2,856 &  &  & \\
+ & (230) & (336) & (439) & (2,163) & (2,520) & (4,548) &  &  & \\
+Observations & 6,811 & 6,708 & 6,811 & 6,811 & 6,811 & 6,862 &  &  & \\
+Control mean & 597 & 1,806 & 2,374 & 8,422 & 41,045 & 59,836 &  &  & \\
+\addlinespace[0.3em]
+\multicolumn{10}{l}{\textbf{Panel B: Endline 2}}\\
+\addlinespace[0.3em]
+\multicolumn{10}{l}{\textbf{Credit access}}\\
+Treated area & 0.063*** & -0.039 & 0.002 & 0.001 & 0.002 & 0.0002 & 0.007 & 0.085 & 0.029\\
+ & (0.018) & (0.026) & (0.029) & (0.009) & (0.018) & (0.010) & (0.021) & (0.067) & (0.025)\\
+Observations & 6,142 & 6,142 & 6,142 & 6,142 & 6,142 & 6,142 & 6,142 & 5,926 & 6,142\\
+Control mean & 0.111 & 0.268 & 0.331 & 0.073 & 0.603 & 0.904 & 0.598 & 0.724 & -0.000\\
+\makecell[l]{Hochberg-corrected\\$p$-value} &  &  &  &  &  &  &  &  & 0.254\\
+\addlinespace[0.3em]
+\multicolumn{10}{l}{\textbf{Loan amounts (in Rupees)}}\\
+Treated area & 979*** & -217 & 799 & -1,181 & 158 & 2,554 &  &  & \\
+ & (287) & (628) & (669) & (1,086) & (2,940) & (6,156) &  &  & \\
+Observations & 6,142 & 6,142 & 6,142 & 6,142 & 6,142 & 6,142 &  &  & \\
+Control mean & 1,567 & 4,775 & 5,544 & 6,127 & 32,356 & 88,631 &  &  & \\
+\bottomrule
+\end{tabular}}
+\end{table}
+\end{document}

@@ -102,5 +102,16 @@ passwords/
 !/docs/figure/**/*
 !/docs/site_libs/**/*
 
+/Library/Cai2020_project/**/*
+/docs/Cai2020_project/**/*
+
+/Library/Data/**/*
+/docs/Data/**/*
+
+/Library/Banerjee2015_replication/**/*
+/docs/Banerjee2015_replication/**/*
+
+/Library/Kaboski2012_replication/**/*
+/docs/Kaboski2012_replication/**/*
 
 .Rproj.user

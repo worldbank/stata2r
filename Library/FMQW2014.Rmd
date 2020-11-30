@@ -651,7 +651,10 @@ df_table6 <- data %>%
       .cols = c("atreatcash", "atreatequip", "wave2", "wave3", "wave4", "wave5", "wave6"),
       .fns = function(x) x * highgroup,
       .names = "{col}_highgroup"
-      ),
+      )
+    ) %>%
+  ungroup() %>% 
+  mutate(
     across(
       .cols = c(all_of(lhs_var_list), "totalK"),
       .fns = function(x) ifelse(
@@ -661,8 +664,8 @@ df_table6 <- data %>%
         ),
       .names = "{col}_trunc"
       )
-    ) %>%
-  ungroup() 
+  )
+
 
 ```
 
@@ -774,8 +777,8 @@ create_table6_sub <- function(panel) {
       "Cash treatment * male",
       "In-kind treatment * male"
     )
-    test_1_label <- "\\ Cash = In-kind females"
-    test_2_label <- "\\ Cash = In-kind males"
+    test_1_label <- "Cash = In-kind females"
+    test_2_label <- "Cash = In-kind males"
   } else if (panel == "B") {
     covariate_label <- c(
       "Cash treatment * low profits",
@@ -783,8 +786,8 @@ create_table6_sub <- function(panel) {
       "In-kind treatment * low profits",
       "In-kind treatment * high profits"
     )
-    test_1_label <- "\\ Cash treatments equal"
-    test_2_label <- "\\ In-kind treatments equal"
+    test_1_label <- "Cash treatments equal"
+    test_2_label <- "In-kind treatments equal"
   }
   
   reg_res_table6 %>%
