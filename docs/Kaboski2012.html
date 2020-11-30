@@ -437,9 +437,9 @@ cross_sectional_sd &lt;- data_table1 %&gt;%
     )
     ) %&gt;% 
   tibble() %&gt;% 
-  unnest(&quot;.&quot;)</code></pre>
-<pre><code>## Adding missing grouping variables: `case_id`</code></pre>
-<pre class="r"><code>cbind(var_label_list, base_sumstat, cross_sectional_sd) %&gt;% 
+  unnest(&quot;.&quot;)
+  
+cbind(var_label_list, base_sumstat, cross_sectional_sd) %&gt;% 
   mutate_if(is.double, ~ ifelse(
     .x &gt;= 100,
     comma_format(accuracy = 1e+2)(.x),
@@ -747,19 +747,9 @@ table3_baseline_iv_output &lt;- reg_func(
   &quot;(vfst ~ invHHtvf1 + invHHtvf2)&quot;,
   data_table3
   ) %&gt;% 
-  table_arrange()</code></pre>
-<pre><code>## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
+  table_arrange()
 
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite</code></pre>
-<pre class="r"><code>table3_all_iv_output &lt;- reg_func(
+table3_all_iv_output &lt;- reg_func(
   table3_outcome_list, 
   replicate(
     length(table3_outcome_list), 
@@ -768,37 +758,17 @@ table3_baseline_iv_output &lt;- reg_func(
   &quot;(vfst ~ invHHtvf1 + invHHtvf2)&quot;,
   data_table3
   ) %&gt;% 
-  table_arrange()</code></pre>
-<pre><code>## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
+  table_arrange()
 
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite</code></pre>
-<pre class="r"><code>table3_no_outlier_iv_output &lt;- reg_func(
+table3_no_outlier_iv_output &lt;- reg_func(
   table3_outcome_list, 
   table3_filter_list,
   &quot;(vfst ~ invHHtvf1 + invHHtvf2)&quot;,
   data_table3
   ) %&gt;% 
-  table_arrange()</code></pre>
-<pre><code>## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
+  table_arrange()
 
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite
-
-## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either rank-deficient or indefinite</code></pre>
-<pre class="r"><code>c(
+c(
   &quot;OLS regression&quot;, &quot;&quot;,
   &quot;Baseline IV regression: only villages&quot;, &quot;\\hspace{1em}with 50-200 households&quot;,
   &quot;IV regression using all villages&quot;, &quot;&quot;,

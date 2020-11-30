@@ -35,7 +35,7 @@ data_short <- read_dta("Kaboski2012_replication/AEJApp2009-0115_data/documentati
 
 ## Table 1
 
-```{r}
+```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
 data_table1 <- data_short %>% 
   mutate(
@@ -62,7 +62,7 @@ data_table1 <- data_short %>%
 
 ```
 
-```{r}
+```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
 credit_varlist <- c(
   "newst", "vfstn", "vfstpn", "baacst", "cbst", "infst", 
@@ -219,7 +219,7 @@ invisible(file.remove(paste0("Kaboski2012_table1_replicate_doc", cleaner)))
 
 ## Table 2
 
-```{r}
+```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
 data_table2 <- data_short %>% 
   group_by(case_id) %>% 
@@ -403,7 +403,7 @@ invisible(file.remove(paste0("Kaboski2012_table2_replicate_doc", cleaner)))
 
 ## Functions for Tables 3-8
 
-```{r}
+```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
 reg_func <- function(varlist, filterlist, iv, data) {
   varlist %>% 
@@ -479,7 +479,7 @@ table_arrange <- function(reg_output) {
 ## Table 3
 
 
-```{r}
+```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
 table3_outcome_list <- c(
   "newst", "tc", "dlgassd", "dnetinc"
@@ -652,7 +652,7 @@ invisible(file.remove(paste0("Kaboski2012_table3_replicate_doc", cleaner)))
 
 ## Table 4
 
-```{r}
+```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
 table4_outcome_list <- c(
   "newst", "baacst", "cbst", "agst",
