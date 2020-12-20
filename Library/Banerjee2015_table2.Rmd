@@ -16,17 +16,11 @@ packages <- c(
   "tidyverse",
   "haven",
   "lfe",
-  "car",
-  "broom",
   "stargazer",
   "broom",
   "kableExtra",
-  "labelled",
   "XML",
-  "magrittr",
-  "magick",
-  "pdftools",
-  "estimatr"
+  "magrittr"
 )
 
 pacman::p_load(packages, character.only = TRUE, install = TRUE)

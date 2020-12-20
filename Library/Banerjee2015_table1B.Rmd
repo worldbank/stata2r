@@ -16,17 +16,10 @@ packages <- c(
   "tidyverse",
   "haven",
   "lfe",
-  "car",
-  "broom",
   "stargazer",
   "broom",
   "kableExtra",
-  "labelled",
-  "XML",
-  "magrittr",
-  "magick",
-  "pdftools",
-  "estimatr"
+  "magrittr"
 )
 
 pacman::p_load(packages, character.only = TRUE, install = TRUE)
@@ -84,7 +77,6 @@ for (i in seq(2)) {
     )
 }
 
-# var_label(data_table1A)[businesses_allHH] <- var_label(data_table1A)[businesses] 
 for (i in seq(2)) {
   var_label(data_table1B)[paste0(all_varlist, "_", as.character(i))] <- c(
     "Number members", "Number adults \n \\hspace{1em}($>=$ 16 years old)",

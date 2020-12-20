@@ -19,11 +19,8 @@ packages <- c(
   "stargazer",
   "broom",
   "kableExtra",
-  "labelled",
   "XML",
-  "magrittr",
-  "magick",
-  "pdftools"
+  "magrittr"
 )
 
 pacman::p_load(packages, character.only = TRUE, install = TRUE)
@@ -118,7 +115,11 @@ create_panel_table4 <- function(gender) {
       fe = rep(c(fe_1, fe_2), 4),
       ) %>%
     mutate(
-      model = map2(category_list, fe, felm_category, filter(data_gender, is.na(trimgroup)), outcome, iv, cluster),
+      model = map2(
+        category_list, fe, 
+        felm_category, 
+        filter(data_gender, is.na(trimgroup)), outcome, iv, cluster
+        ),
       test_1 = map2_chr(model, test_fun_list[[1]], function(x, y) y(x)),
       test_2 = map2_chr(model, test_fun_list[[2]], function(x, y) y(x)),
       test_3 = map2_chr(model, test_fun_list[[3]], function(x, y) y(x)),

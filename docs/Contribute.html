@@ -9,20 +9,29 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Mizuhiro Suzuki" />
+<meta name="author" content="" />
 
 
-<title>Replication of Figure 1 in Ligon, Thomas &amp; Worrall (2002)</title>
+<title>Contribute.utf8</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      </style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -268,7 +277,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Risk Sharing</a>
+      <a class="navbar-brand" href="index.html">R Table Replication</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -276,11 +285,25 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="LTW_code.html">Ligon et al. (2002)</a>
+  <a href="Descriptive.html">Descriptive</a>
+</li>
+<li>
+  <a href="Regression.html">Regression</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="Links.html">Useful links</a>
+</li>
+<li>
+  <a href="Contribute.html">Contribute</a>
+</li>
+<li>
+  <a href="https://github.com/worldbank/r-econ-visual-library/blob/master/LICENSE">License</a>
+</li>
+<li>
+  <a href="https://github.com/worldbank/r-econ-visual-library">GitHub</a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -290,17 +313,59 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Replication of Figure 1 in Ligon, Thomas &amp; Worrall (2002)</h1>
-<h4 class="author">Mizuhiro Suzuki</h4>
-<h4 class="date">5/9/2018</h4>
+<h1 class="title toc-ignore"><div style="line-height:20%;">
+<br>
+</div></h1>
 
 </div>
 
 
-<div id="replicate-figure-1-of-ligon-thomas-worrall-2002" class="section level2">
-<h2>Replicate Figure 1 of Ligon, Thomas &amp; Worrall (2002)</h2>
-<p>In this document, my goal is to replicate Figure 1 of Ligon, Thomas &amp; Worrall (2002). For this, I need to derive upper and lower bounds of intervals of the ratio of marginal utilities. I derive them by considering 4 cases separately; autarky case, non-overlapping case, overlapping case, and first best case.</p>
-<p>Before diving into the derivations, there are several facts that we know (p.221 in the paper):</p>
+<div id="how-to-contribute" class="section level1">
+<h1>How to contribute</h1>
+<div id="bug-reports-and-feature-requests" class="section level2">
+<h2>Bug reports and feature requests</h2>
+<p>If you have suggestions of tables you would like to see in this library and are not currently here, you can open an <a href="https://github.com/worldbank/r-econ-visual-library/issues">issue</a> describing your suggestion. No previous knowledge of GitHub is needed to do this. Please read already existing issues to check whether someone else has made the same suggestion or reported the same error before creating a new issue.</p>
+</div>
+<div id="contributing-through-github" class="section level2">
+<h2>Contributing through GitHub</h2>
+<p>If you have tables you would like to add to this library and are comfortable using GitHub, fork the repository and submit a pull request to the develop branch with any additions you want to make. Please read the guidelines below about on code, branching and folder structure conventions before opening a pull request.</p>
+</div>
+<div id="contributing-via-e-mail" class="section level2">
+<h2>Contributing via e-mail</h2>
+<p>If you have tables you would like to add to this library but you are not comfortable using GitHub, you can send an e-mail to <a href="mailto:dimeanalytics@worldbank.org" class="email">dimeanalytics@worldbank.org</a>. Use the subject “Contribution to R Table Replication” and attach a zipped folder containing (1) the de-identified data used to create the table, and (2) the code that creates the tables from such data.</p>
+<p>Please read the guidelines below on code conventions before sending your contribution. We also recommend that you create a GitHub account and include your GitHub handle in the e-mail so you can receive credit for your contribution.</p>
+</div>
+</div>
+<div id="contribution-guidelines" class="section level1">
+<h1>Contribution guidelines</h1>
+<div id="code-conventions" class="section level2">
+<h2>Code conventions</h2>
+<ul>
+<li>We recommend following the <a href="https://style.tidyverse.org/index.html">tidyverse style guide</a> for all styling relevant to the code submitted.</li>
+<li><a href="https://rmarkdown.rstudio.com/">R Markdown</a> files are the preferred format for code contributions. You can use <a href="https://github.com/worldbank/r-econ-visual-library/blob/master/contribution-template.Rmd">out template Markdown file</a> for guidelines on how to organize your script.</li>
+<li>If you have an R code and are not comfortable using R Markdown or the template file, you can share a common .R script for the table.</li>
+</ul>
+</div>
+<div id="github-conventions" class="section level2">
+<h2>GitHub conventions</h2>
+<div id="branches" class="section level3">
+<h3>Branches</h3>
+<ul>
+<li>Make pull requests to the master branch only if you wish to contribute to README, LICENSE or similar meta data files.</li>
+<li>To contribute with R code files, create a fork from the <a href="https://github.com/worldbank/r-econ-visual-library/tree/develop">develop branch</a> and point your pull request back to the same branch.</li>
+<li>If your pull request is related to an <a href="https://github.com/worldbank/r-econ-visual-library/issues">open issue</a>, reference the issue in your PR message. If the contribution solves the issue, add the message “Solves issue #X”.</li>
+</ul>
+</div>
+<div id="folder-structure" class="section level3">
+<h3>Folder structure</h3>
+<ul>
+<li>R Markdown files should be saved in the Library folder</li>
+<li>Data files should be saved in Library/Data</li>
+<li>Output tables and a screenshot of the table should be saved in docs/table_figures</li>
+<li>Rendered HTML files should be saved in docs.</li>
+</ul>
+</div>
+</div>
 </div>
 
 

@@ -16,7 +16,7 @@
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -277,7 +277,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Stata to R</a>
+      <a class="navbar-brand" href="index.html">R Table Replication</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -292,7 +292,18 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="Links.html">Useful links</a>
+</li>
+<li>
+  <a href="Contribute.html">Contribute</a>
+</li>
+<li>
+  <a href="https://github.com/worldbank/r-econ-visual-library/blob/master/LICENSE">License</a>
+</li>
+<li>
+  <a href="https://github.com/worldbank/r-econ-visual-library">GitHub</a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -316,11 +327,7 @@ packages &lt;- c(
   &quot;stargazer&quot;,
   &quot;broom&quot;,
   &quot;kableExtra&quot;,
-  &quot;labelled&quot;,
-  &quot;XML&quot;,
-  &quot;magrittr&quot;,
-  &quot;magick&quot;,
-  &quot;pdftools&quot;
+  &quot;magrittr&quot;
 )
 
 pacman::p_load(packages, character.only = TRUE, install = TRUE)

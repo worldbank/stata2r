@@ -19,10 +19,8 @@ packages <- c(
   "stargazer",
   "broom",
   "kableExtra",
-  "labelled",
   "XML",
   "magrittr",
-  "magick",
   "pdftools"
 )
 

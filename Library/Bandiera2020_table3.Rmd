@@ -18,13 +18,8 @@ packages <- c(
   "lfe",
   "broom",
   "stargazer",
-  "broom",
   "kableExtra",
-  "labelled",
-  "XML",
   "magrittr",
-  "magick",
-  "pdftools",
   "scales"
 )
 

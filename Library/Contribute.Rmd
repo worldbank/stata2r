@@ -1,0 +1,52 @@
+---
+title: '<div style="line-height:20%;"> <br> </div>'
+author: ""
+date: ""
+---
+
+# How to contribute
+
+## Bug reports and feature requests
+
+If you have suggestions of tables you would like to see in this library and are not currently here, you can open an [issue](https://github.com/worldbank/r-econ-visual-library/issues) describing your suggestion.
+No previous knowledge of GitHub is needed to do this.
+Please read already existing issues to check whether someone else has made the same suggestion or reported the same error before creating a new issue.
+  
+## Contributing through GitHub
+
+If you have tables you would like to add to this library and are comfortable using GitHub, fork the repository and submit a pull request to the develop branch with any additions you want to make.
+Please read the guidelines below about on code, branching and folder structure conventions before opening a pull request.
+
+## Contributing via e-mail
+
+If you have tables you would like to add to this library but you are not comfortable using GitHub, you can send an e-mail to dimeanalytics@worldbank.org.
+Use the subject "Contribution to R Table Replication" and attach a zipped folder containing (1) the de-identified data used to create the table, and (2) the code that creates the tables from such data.
+
+Please read the guidelines below on code conventions before sending your contribution.
+We also recommend that you create a GitHub account and include your GitHub handle in the e-mail so you can receive credit for your contribution.
+
+# Contribution guidelines
+
+## Code conventions
+
++ We recommend following the [tidyverse style guide](https://style.tidyverse.org/index.html) for all styling relevant to the code submitted.
++ [R Markdown](https://rmarkdown.rstudio.com/) files are the preferred format for code contributions. You can use [out template Markdown file](https://github.com/worldbank/r-econ-visual-library/blob/master/contribution-template.Rmd) for guidelines on how to organize your script.
++ If you have an R code and are not comfortable using R Markdown or the template file, you can share a common .R script for the table.
+
+## GitHub conventions
+
+### Branches
+
++ Make pull requests to the master branch only if you wish to contribute to README, LICENSE or similar meta data files.
++ To contribute with R code files, create a fork from the [develop branch](https://github.com/worldbank/r-econ-visual-library/tree/develop) and point your pull request back to the same branch.
++ If your pull request is related to an [open issue](https://github.com/worldbank/r-econ-visual-library/issues), reference the issue in your PR message. If the contribution solves the issue, add the message "Solves issue #X".
+
+### Folder structure
+
++ R Markdown files should be saved in the Library folder
++ Data files should be saved in Library/Data
++ Output tables and a screenshot of the table should be saved in docs/table\_figures
++ Rendered HTML files should be saved in docs.
+
+
+

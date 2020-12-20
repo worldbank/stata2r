@@ -1,14 +1,23 @@
-name: "Stata to R"
+name: "R Table Replication"
 output_dir: "../docs"
 navbar:
-  title: "Stata to R"
+  title: "R Table Replication"
   left:
-  - text: "Home"
-    href: index.html
-  - text: "Descriptive"
-    href: Descriptive.html
-  - text: "Regression"
-    href: Regression.html
+    - text: "Home"
+      href: index.html
+    - text: "Descriptive"
+      href: Descriptive.html
+    - text: "Regression"
+      href: Regression.html
+  right:
+    - text: "Useful links"
+      href: Links.html
+    - text: "Contribute"
+      href: Contribute.html
+    - text: "License"
+      href: https://github.com/worldbank/r-econ-visual-library/blob/master/LICENSE
+    - text: "GitHub"
+      href: https://github.com/worldbank/r-econ-visual-library
 output:
   html_document:
-    theme: cosmo
+    theme: cerulean

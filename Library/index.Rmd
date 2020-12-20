@@ -4,9 +4,11 @@ output:
   html_document:
     toc_collapsed: true
     toc_depth: 2
+    includes:
+      after_body: footer.html
 ---
 
-+ Descriptive Statistics / Balance Tables
+# Descriptive Statistics / Balance Tables
   - Fafchamps et al. (2014)
     - [Table 2](./FMQW2014_table2.html)
   - Banerjee et al. (2015)
@@ -18,7 +20,7 @@ output:
     - [Table 1](./Bandiera2020_table1.html)
     - [Table 3](./Bandiera2020_table3.html)
 
-+ Regression Tables
+# Regression Tables
   - Fafchamps et al. (2014)
     - [Table 4](./FMQW2014_table4.html)
     - [Table 6](./FMQW2014_table6.html)
@@ -33,6 +35,3 @@ output:
     - [Table 2](./Bandiera2020_table2.html)
     - [Table 4](./Bandiera2020_table4.html)
 
-<!-- + [Fafchamps et al. (2014)](./FMQW2014.html) -->
-<!-- + [Banerjee et al. (2015)](./Banerjee2015.html) -->
-<!-- + [Kaboski and Townsend (2012)](./Kaboski2012.html) -->
