@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="" />
+
+
+<title>Bandiera et al. (2020)</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Stata to R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Descriptive.html">Descriptive</a>
+</li>
+<li>
+  <a href="Regression.html">Regression</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="table-4-in-bandiera-et-al.-2020-womens-empowerment-in-action-evidence-from-a-randomized-control-trial-in-africa" class="section level1">
+<h1>Table 4 in Bandiera et al. (2020), “Women’s Empowerment in Action: Evidence from a Randomized Control Trial in Africa”</h1>
+<pre class="r"><code># Install and load packages ---------------
+packages &lt;- c(
+  &quot;tidyverse&quot;,
+  &quot;haven&quot;,
+  &quot;lfe&quot;,
+  &quot;stargazer&quot;,
+  &quot;broom&quot;,
+  &quot;kableExtra&quot;,
+  &quot;labelled&quot;,
+  &quot;XML&quot;,
+  &quot;magrittr&quot;,
+  &quot;magick&quot;,
+  &quot;scales&quot;,
+  &quot;pdftools&quot;,
+  &quot;RStata&quot;
+)
+
+pacman::p_load(packages, character.only = TRUE, install = TRUE)
+options(&quot;RStata.StataVersion&quot; = 16)
+options(&quot;RStata.StataPath&quot; = &quot;/Applications/Stata/StataSE.app/Contents/MacOS/stata-se&quot;)
+
+# Load an example dataset ---------------
+data &lt;- read_dta(&quot;Bandiera2020_replication/ELA.dta&quot;)</code></pre>
+<pre class="r"><code>outcome_list &lt;- c(
+  &quot;Entrep_total&quot;, &quot;any_iga&quot;, &quot;selfempl&quot;, 
+  &quot;empl&quot;, &quot;Expenditure_totDF&quot;, &quot;iga&quot;
+)
+
+outcome_label &lt;- c(
+  &quot;1. Entrepreneurial\n\\hspace{1em}ability index\n\\hspace{1em}{[0-100 score]}&quot;,
+  &quot;2. Any income-\n\\hspace{1em}generating\n\\hspace{1em}activity&quot;,
+  &quot;3. Self-employed&quot;,
+  &quot;4. Wage employed&quot;,
+  &quot;5. Expenditure on\n\\hspace{1em}goods in the last\n\\hspace{1em}month (UGX)&quot;,
+  &quot;Economic empowerment-\n\\hspace{1em}ment index&quot;
+)
+
+sum_mat &lt;- data %&gt;% 
+  filter(treatment == 0, panel == 1, !is.na(age)) %&gt;% 
+  mutate(
+    across(
+      .cols = outcome_list,
+      ~ ifelse(
+        is.na(eval(parse(text = paste0(&quot;Q&quot;, cur_column())))), 
+        NaN, .
+        )
+    )
+  ) %&gt;% 
+  summarise_at(
+    outcome_list,
+    list(mean = mean, sd = sd),
+    na.rm = TRUE
+  )
+
+mean_mat &lt;- sum_mat %&gt;% 
+  mutate(
+    across(
+      .fns = ~ ifelse(
+        abs(.) &gt; 100,
+        formatC(., digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;),
+        formatC(., digits = 3, format = &quot;f&quot;, big.mark = &quot;,&quot;)
+      )
+    )
+  ) %&gt;% 
+  select(ends_with(&quot;_mean&quot;)) %&gt;% 
+  t()
+sd_mat &lt;- sum_mat %&gt;% 
+  mutate(
+    across(
+      .fns = ~ ifelse(
+        abs(.) &gt; 100,
+        formatC(., digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;),
+        formatC(., digits = 3, format = &quot;f&quot;, big.mark = &quot;,&quot;)
+      )
+    )
+  ) %&gt;% 
+  select(ends_with(&quot;_sd&quot;)) %&gt;% 
+  t()
+
+cont_col &lt;- paste0(
+  mean_mat, &quot;\n&quot;,
+  &quot;{[&quot;, sd_mat, &quot;]}&quot;
+)
+
+N_ml &lt;- map_int(
+  paste0(&quot;R&quot;, outcome_list),
+  function(x) data %&gt;% 
+    filter(panel == 1, !is.na(age)) %&gt;% 
+    .[x] %&gt;% 
+    drop_na() %&gt;% 
+    nrow()
+  ) %&gt;% 
+  formatC(digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;)
+
+N_el &lt;- map_int(
+  paste0(&quot;Q&quot;, outcome_list),
+  function(x) data %&gt;% 
+    filter(panel == 1, !is.na(age)) %&gt;% 
+    .[x] %&gt;% 
+    drop_na() %&gt;% 
+    nrow()
+  ) %&gt;% 
+  formatC(digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;)
+
+N_col &lt;- paste0(
+  N_ml, &quot;/&quot;, N_el
+  )</code></pre>
+<pre class="r"><code>make_table &lt;- function(outcome_list, type, cont) {
+
+  var_prefix &lt;- ifelse(type == &quot;midline&quot;, &quot;R&quot;, &quot;Q&quot;)
+  
+  felm_func &lt;- function(x) {
+    
+    if (cont == TRUE) {
+     felm_formula  &lt;- as.formula(
+        paste0(
+          var_prefix, x, &quot; ~ &quot;, x, &quot; + treatment + age | branch_name | 0 | villid&quot;
+        )
+      ) 
+    } else {
+      felm_formula &lt;- as.formula(
+        paste0(
+          var_prefix, x, &quot; ~ &quot;, &quot; treatment | 0 | 0 | villid&quot;
+        )
+      )
+    }
+    
+    return(
+      felm(
+        felm_formula,
+        data = data %&gt;% filter(panel == 1, !is.na(age))
+        )
+    )
+  }
+  
+  map_df(
+    outcome_list,
+    ~ felm_func(.x) %&gt;% 
+      summary() %&gt;% 
+      .$coefficients %&gt;% 
+      .[&quot;treatment&quot;, c(&quot;Estimate&quot;, &quot;Cluster s.e.&quot;)]
+    ) %&gt;% 
+    mutate(
+      Estimate = ifelse(
+        abs(Estimate) &gt; 100,
+        formatC(Estimate, digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;),
+        formatC(Estimate, digits = 3, format = &quot;f&quot;, big.mark = &quot;,&quot;)
+      ),
+      se = ifelse(
+        abs(`Cluster s.e.`) &gt; 100,
+        formatC(`Cluster s.e.`, digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;),
+        formatC(`Cluster s.e.`, digits = 3, format = &quot;f&quot;, big.mark = &quot;,&quot;)
+      ),
+      coef_se = paste0(
+        Estimate, &quot;\n&quot;,
+        &quot;{[&quot;, se, &quot;]}&quot;
+        ),
+      coef_se = linebreak(coef_se, align = &quot;c&quot;)
+      ) %&gt;% 
+    select(coef_se) %&gt;% 
+    as.matrix()
+}
+  
+midline_cont &lt;- make_table(outcome_list, type = &quot;midline&quot;, cont = TRUE)
+endline_cont &lt;- make_table(outcome_list, type = &quot;endline&quot;, cont = TRUE)
+midline_nocont &lt;- make_table(outcome_list, type = &quot;midline&quot;, cont = FALSE)
+endline_nocont &lt;- make_table(outcome_list, type = &quot;endline&quot;, cont = FALSE)</code></pre>
+<pre class="r"><code>leebounds_stata_func &lt;- function(outcome, type) {
+  
+  if (type == &quot;midline&quot;) {
+    var_prefix &lt;- &quot;R&quot;
+    select &lt;- &quot;follow_up&quot;
+  } else {
+    var_prefix &lt;- &quot;Q&quot;
+    select &lt;- &quot;endline&quot;
+  }
+  
+  stata_cmd &lt;- str_interp(&quot;
+    replace Q${outcome} =. if panel == 0
+    leebounds ${var_prefix}${outcome} treatment if age!=., selec(${select})
+    matrix coef = e(b)
+    matrix varcov = e(V)
+    matrix output = [coef\\varcov]
+    svmat output
+    keep output*
+    save leebounds.dta, replace
+  &quot;)
+  
+  stata(stata_cmd, data.in = data)
+  leebounds &lt;- read_dta(&quot;leebounds.dta&quot;) %&gt;% 
+    slice(1:3)
+  leebounds_bounds &lt;- leebounds[1, ] %&gt;% 
+    mutate(
+      across(
+        .fns = ~ ifelse(
+          abs(.x) &gt; 100,
+          formatC(.x, digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;),
+          formatC(.x, digits = 3, format = &quot;f&quot;, big.mark = &quot;,&quot;)
+        )
+      )
+    ) %&gt;% 
+    as.matrix()
+  leebounds_se &lt;- leebounds[2:3,] %&gt;% 
+    mutate(
+      across(
+        .fns = ~ ifelse(
+          abs(sqrt(.x)) &gt; 100,
+          formatC(sqrt(.x), digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;),
+          formatC(sqrt(.x), digits = 3, format = &quot;f&quot;, big.mark = &quot;,&quot;)
+        )
+      )
+    ) %&gt;% 
+    as.matrix() %&gt;% 
+    diag()
+  leebounds_output &lt;- paste0(
+    &quot;$\\begin{array}{cc} &quot;, paste(leebounds_bounds, collapse = &quot; &amp; &quot;), &quot;\\\\&quot;,
+    paste(&quot;{[&quot;, leebounds_se, &quot;]}&quot;, collapse = &quot; &amp; &quot;), &quot;\\end{array}$&quot;
+    )
+  
+  file.remove(&quot;leebounds.dta&quot;)
+  
+  return(leebounds_output)
+}
+
+leebounds_midline &lt;- map_chr(
+  outcome_list,
+  function(x) leebounds_stata_func(x, &quot;midline&quot;)
+)
+  
+leebounds_endline &lt;- map_chr(
+  outcome_list,
+  function(x) leebounds_stata_func(x, &quot;endline&quot;)
+)
+
+output_table &lt;- c()
+for (i in seq(nrow(midline_cont))) {
+  output_table &lt;- rbind(
+    output_table,
+    c(
+      outcome_label[i],
+      cont_col[i], N_col[i],
+      midline_cont[i, ], endline_cont[i, ],
+      midline_nocont[i, ], endline_nocont[i, ]
+      ),
+    c(
+      &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+     leebounds_midline[i], leebounds_endline[i]
+    )
+  )
+}
+output_table &lt;- rbind(
+  output_table,
+  c(
+    &quot;Adolescent girl\ncontrols and\nbranch dummies&quot;,
+    &quot;&quot;, &quot;&quot;, &quot;Yes&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;No&quot;
+  )
+)</code></pre>
+<pre class="r"><code>output_table %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(
+    V1 = linebreak(V1, align = &quot;l&quot;),
+    across(
+      .cols = - V1,
+      .fns = ~ linebreak(.x, align = &quot;c&quot;)
+    )
+  ) %&gt;%
+  set_colnames(NULL) %&gt;% 
+  kable(&quot;latex&quot;, booktabs = TRUE, escape = FALSE, align = c(&quot;l&quot;, rep(&quot;c&quot;, 6))) %&gt;%
+  kable_styling(latex_options = &quot;scale_down&quot;) %&gt;%
+  add_header_above(c(&quot; &quot;, paste0(&quot;(&quot;, seq(6), &quot;)&quot;))) %&gt;% 
+  add_header_above(
+    c(
+      &quot; &quot;, &quot;Baseline,\ncontrol&quot;, &quot;Sample size,\nmidline/\nendline&quot;, 
+      &quot;Midline&quot;, &quot;Endline&quot;, &quot;Midline&quot;, &quot;Endline&quot;
+      ),
+    line = FALSE
+    ) %&gt;%
+  save_kable(&quot;tex/Bandiera2020_table4_replicate.tex&quot;)</code></pre>
+<p><img src="table_figures/Bandiera2020_table4_replicate.png" style="width:100.0%" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+---
+pagetitle: 'Fachamps et al. (2014)'
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Table 2 in Fafchamps et al. (2014), "Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana"
+
+```{r, warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "lfe",
+  "stargazer",
+  "broom",
+  "kableExtra",
+  "labelled",
+  "XML",
+  "magrittr",
+  "magick",
+  "pdftools"
+)
+
+pacman::p_load(packages, character.only = TRUE, install = TRUE)
+
+# Load an example dataset ---------------
+data <- read_dta("data/ReplicationDataGhanaJDE.dta")
+```
+
+```{r, warning = FALSE}
+
+data <- data %>%
+  mutate(realfinalprofit_wave1 = ifelse(wave == 1, realfinalprofit, NA)) %>%
+  group_by(sheno) %>%
+  mutate(
+    realfinalprofit_wave1 = max(realfinalprofit_wave1, na.rm = TRUE),
+    realfinalprofit_wave1 = ifelse(is.infinite(realfinalprofit_wave1), NA, realfinalprofit_wave1)
+    ) %>%
+  ungroup()
+
+var_list <- c(
+  "realfinalprofit", "fem", "highcapture", "highcapital", 
+  "male_male", "male_mixed", "female_female", "female_mixed", 
+  "realfinalprofit_wave1", "finalsales", "hourslastweek", 
+  "totalK", "inventories", "useasusu", 
+  "businesshome", "firmage", "everloan", "business_taxnumber", 
+  "married", "educ_years", "digitspan", "akanspeaker", 
+  "gaspeaker", "age"
+)
+
+var_label <- c(
+  "Monthly profits in January 2009", "Female", 
+  "High capture", "High baseline capital stock", 
+  "Male in male dominated industry", "Male in mixed industry", 
+  "Female in female dominated industry", "Female in mixed industry",
+  "Monthly profits in October/November 2008", "Monthly sales in January 2009", 
+  "Number of hours worked in last week", "Total capital stock in January 2009", 
+  "Inventories at end of January 2009", "Uses a susu collector",
+  "Business operated out of home", "Age of firm", 
+  "Ever had bank or microfinance loan", "Business has a tax number",
+  "Owner is married", "Owner's years of education", 
+  "Owner's digitspan Recall", "Owner is Akan speaker",
+  "Owner is Ga/Dangme speaker", "Owner's age"
+)
+
+table2_sub <- function(data) {
+  
+  df_model <- map(var_list, function(x) lm(
+    as.formula(
+      paste(x, paste(
+        c("-1", "control", "cashtreat", "equiptreat"), collapse = " + "
+        ), sep = " ~ ")
+      ), data = filter(data, wave == 2))
+    ) %>%
+    enframe("model_no", "model")
+  
+  df_est <- df_model %>%
+    mutate(tidied = map(model, tidy)) %>%
+    select(model_no, tidied) %>%
+    unnest(cols = c(tidied)) %>%
+    mutate_if(is.double, formatC, digits = 2, format = "f") %>%
+    select(model_no, term, estimate) %>%
+    spread(term, estimate) %>%
+    select(-model_no)
+    
+  cbind(
+    map_int(df_model$model, function(x) nrow(x$model)),
+    df_est %>% as.matrix(),
+    map_chr(
+      df_model$model, function(x) formatC(
+        waldtest(x, ~ control - cashtreat | control - equiptreat)["p.F"],
+        digits = 3, format = "f"
+        )
+      )
+  )
+}
+
+cbind(
+  var_label, 
+  table2_sub(data), 
+  table2_sub(filter(data, is.na(trimgroup)))
+  ) %>%
+  set_colnames(NULL) %>%
+  kable("latex", booktabs = TRUE) %>%
+  kable_styling(latex_options = "scale_down") %>%
+  add_header_above(
+    c(" ", rep(c("N", "Mean", "Mean", "Mean", "$p$-value"), 2)),
+    escape = FALSE
+    ) %>%
+  add_header_above(
+    c(" ", rep(c(" ", "Control", "Cash", "In-kind", " "), 2))
+    ) %>%
+  add_header_above(c(" " = 1, "Full sample" = 5, "Trimmed sample" = 5)) %>%
+  pack_rows(index = c(
+    "Variables using to stratify or match" = 8,
+    "Other variables" = length(var_list) - 8
+    )) %>%
+  save_kable("tex/FMQW2014_table2_replicate.tex")
+
+```
+
+
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, results = "hide"}
+
+file.copy(
+  "tex/FMQW2014_table2_replicate.tex",
+  "tex/FMQW2014_table2_replicate_doc.tex",
+  overwrite = TRUE
+  )
+
+fConn <- file("tex/FMQW2014_table2_replicate_doc.tex", "r+")
+Lines <- readLines(fConn)
+writeLines(
+  c(
+    "\\documentclass{report}", 
+    "\\usepackage[paperwidth=5.5in,paperheight=7in,noheadfoot,margin=0in]{geometry}",
+    "\\usepackage{float}",
+    "\\usepackage{pdflscape}",
+    "\\usepackage{booktabs}",
+    "\\usepackage{multicol}",
+    "\\begin{document}\\pagestyle{empty}",
+    Lines,
+    "\\end{document}"
+    ), 
+  con = fConn
+  )
+close(fConn)
+
+tools::texi2dvi(file = "tex/FMQW2014_table2_replicate_doc.tex")
+cmd <- paste(
+  "dvipng -T tight", 
+  shQuote("FMQW2014_table2_replicate_doc.dvi"),
+  "-o", shQuote("table_figures/FMQW2014_table2_replicate.png")
+  )
+invisible(system(cmd))
+cleaner <- c(".aux", ".log", ".dvi")
+invisible(file.remove(paste0("FMQW2014_table2_replicate_doc", cleaner)))
+
+```
+
+![](table_figures/FMQW2014_table2_replicate.png){width=100%}
+
+
+

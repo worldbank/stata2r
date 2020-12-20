@@ -1,0 +1,47 @@
+\documentclass{report}
+\usepackage[paperwidth=5.5in,paperheight=7in,noheadfoot,margin=0in]{geometry}
+\usepackage{float}
+\usepackage{pdflscape}
+\usepackage{makecell}
+\usepackage{booktabs}
+\usepackage{multicol}
+\begin{document}\pagestyle{empty}
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lcccc}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{1}{c}{Treatment.} & \multicolumn{1}{c}{Control} & \multicolumn{1}{c}{Difference} & \multicolumn{1}{c}{Normalized difference.} \\
+\cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3} \cmidrule(l{3pt}r{3pt}){4-4} \cmidrule(l{3pt}r{3pt}){5-5}
+\multicolumn{1}{c}{ } & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} \\
+\cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3} \cmidrule(l{3pt}r{3pt}){4-4} \cmidrule(l{3pt}r{3pt}){5-5}
+\addlinespace[0.3em]
+\multicolumn{5}{l}{\textbf{Panel A. Characteristics}}\\
+\hspace{1em}Age & 16.349 & 16.412 & -0.063 [0.150] & -0.015\\
+\hspace{1em} & [2.802] & [2.956] &  & \\
+\hspace{1em}Currently enrolled in school & 0.710 & 0.720 & -0.010 [0.027] & -0.016\\
+\hspace{1em}Has child(ren) & 0.105 & 0.101 & 0.003 [0.017] & 0.008\\
+\hspace{1em}Married or cohabiting & 0.094 & 0.113 & -0.020 [0.014] & -0.046\\
+\addlinespace[0.3em]
+\multicolumn{5}{l}{\textbf{Panel B. Economic empowerment}}\\
+\hspace{1em}Entrepreneurial ability index [0-100 score] & 69.455 & 71.934 & -2.479 [1.641] & -0.071\\
+\hspace{1em} & [24.718] & [24.904] &  & \\
+\hspace{1em}Self-employed & 0.072 & 0.061 & 0.011 [0.010] & 0.032\\
+\hspace{1em}Wage employed & 0.055 & 0.035 & 0.020 [0.009] & 0.067\\
+\hspace{1em}Never worry to get a good job in adulthood & 0.425 & 0.401 & 0.024 [0.026] & 0.035\\
+\addlinespace[0.3em]
+\multicolumn{5}{l}{\textbf{Panel C. Control over the body}}\\
+\hspace{1em}Had sex unwillingly in the past year & 0.198 & 0.144 & 0.054 [0.022] & 0.102\\
+\hspace{1em}Pregnancy knowledge index [0-1 score] & 0.738 & 0.742 & -0.004 [0.025] & -0.006\\
+\hspace{1em}HIV knowledge index [0-6 score] & 3.817 & 3.762 & 0.055 [0.076] & 0.032\\
+\hspace{1em} & [1.238] & [1.247] &  & \\
+\hspace{1em}If sexually active, always uses condom & 0.511 & 0.517 & -0.006 [0.039] & -0.009\\
+\hspace{1em}If sexually active, uses other contraceptives & 0.153 & 0.169 & -0.016 [0.026] & -0.032\\
+\addlinespace[0.3em]
+\multicolumn{5}{l}{\textbf{Panel D. Beliefs and aspirations}}\\
+\hspace{1em}Gender empowerment index [0-100 score] & 28.453 & 31.262 & -2.809 [2.018] & -0.081\\
+\hspace{1em}Suitable age at marriage for a woman & 24.036 & 23.920 & 0.115 [0.201] & 0.026\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\end{document}

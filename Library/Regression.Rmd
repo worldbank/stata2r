@@ -1,0 +1,61 @@
+---
+title: "Regression Tables"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+# Fafchamps et al. (2014)
+
+## Table 3
+
+[<img src="./table_figures/FMQW2014_table3_replicate.png" width="800"/>](./FMQW2014_table3.html)
+
+## Table 4
+
+[<img src="./table_figures/FMQW2014_table4_replicate.png" width="800"/>](./FMQW2014_table4.html)
+
+## Table 6
+
+[<img src="./table_figures/FMQW2014_table6_replicate.png" width="800"/>](./FMQW2014_table6.html)
+
+## Table 8
+
+[<img src="./table_figures/FMQW2014_table8_replicate.png" width="800"/>](./FMQW2014_table8.html)
+
+# Banerjee et al. (2015)
+
+## Table 2
+
+[<img src="./table_figures/Banerjee_table2_replicate.png" width="800"/>](./Banerjee2015_table2.html)
+
+# Kaboski and Townsend (2012)
+
+## Table 2
+
+[<img src="./table_figures/Kaboski2012_table2_replicate.png" width="800"/>](./Kaboski2012_table2.html)
+
+## Table 3
+
+[<img src="./table_figures/Kaboski2012_table3_replicate.png" width="800"/>](./Kaboski2012_table3.html)
+
+## Table 4
+
+[<img src="./table_figures/Kaboski2012_table4_replicate.png" width="800"/>](./Kaboski2012_table4.html)
+
+# Bandiera et al. (2020)
+
+## Table 2
+
+[<img src="./table_figures/Bandiera2020_table2_replicate.png" width="800"/>](./Bandiera2020_table2.html)
+
+## Table 4
+
+[<img src="./table_figures/Bandiera2020_table4_replicate.png" width="800"/>](./Bandiera2020_table4.html)
+
+
+

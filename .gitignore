@@ -114,6 +114,9 @@ passwords/
 /Library/Kaboski2012_replication/**/*
 /docs/Kaboski2012_replication/**/*
 
+/Library/Bandiera2020_replication/**/*
+/docs/Bandiera2020_replication/**/*
+
 !/docs/table_figures/*.png
 
 .Rproj.user

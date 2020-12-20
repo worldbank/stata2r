@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="" />
+
+
+<title>Kaboski and Townsend (2012)</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Stata to R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Descriptive.html">Descriptive</a>
+</li>
+<li>
+  <a href="Regression.html">Regression</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="table-3-in-kaboski-and-townsend-2012-the-impact-of-credit-on-village-economies" class="section level1">
+<h1>Table 3 in Kaboski and Townsend (2012), “The Impact of Credit on Village Economies”</h1>
+<pre class="r"><code># Install and load packages ---------------
+packages &lt;- c(
+  &quot;tidyverse&quot;,
+  &quot;haven&quot;,
+  &quot;lfe&quot;,
+  &quot;broom&quot;,
+  &quot;stargazer&quot;,
+  &quot;broom&quot;,
+  &quot;kableExtra&quot;,
+  &quot;labelled&quot;,
+  &quot;XML&quot;,
+  &quot;scales&quot;,
+  &quot;magrittr&quot;
+)
+
+pacman::p_load(packages, character.only = TRUE, install = TRUE)
+
+# Load an example dataset ---------------
+data_short &lt;- read_dta(&quot;Kaboski2012_replication/AEJApp2009-0115_data/documentation/AnnualData_ShortSample.dta&quot;)</code></pre>
+<pre class="r"><code>table3_outcome_list &lt;- c(
+  &quot;newst&quot;, &quot;tc&quot;, &quot;dlgassd&quot;, &quot;dnetinc&quot;
+)
+
+data_table3 &lt;- data_short %&gt;% 
+  group_by(case_id) %&gt;% 
+  mutate(
+    farm = ifelse(
+      !is.na(och),
+      ifelse((och &gt; -5) &amp; (och &lt;= 15), 1, 0),
+      0
+    ),
+    age2h = ageh^2,
+    vfst = vfst / 10000,
+    villageyear = floor(case_id / 1000),
+    invHH = ifelse(year == 1, lead(1 / vHH), 1 / vHH),
+    invHHim = ifelse(year == 6, invHH, NA),
+    invHHi = mean(invHHim, na.rm = TRUE),
+    vHHi = 1 / invHHi,
+    invHHpvf = invHHi * (year &gt; 5),
+    invHHtvf1 = invHHi * (year == 6),
+    invHHtvf2 = invHHi * (year == 7),
+    dlgassd = log(lead(gassd) / gassd),
+    dnetinc = ifelse(
+      is.infinite(log(lead(netinc) / netinc)),
+      NA,
+      log(lead(netinc) / netinc)
+    )
+  ) %&gt;% 
+  ungroup() %&gt;% 
+  filter(year &lt; 8)
+  
+table3_filter_list &lt;- list(
+  function (x) {filter(
+    x, newst &lt;= 315000,
+    vHHi &lt; 250, vHHi &gt;= 50, year &lt; 8
+    )},
+  function (x) {filter(
+    x, tc &gt;= 4430, tc &lt;= 433000,
+    vHHi &lt; 250, vHHi &gt;= 50, year &lt; 8
+    )},
+  function (x) {filter(
+    x, dlgassd &gt;= -2.565758, dlgassd &lt;= 2.494314,
+    vHHi &lt; 250, vHHi &gt;= 50, year &lt; 8
+    )},
+  function (x) {filter(
+    x, dnetinc &gt;= -2.605709, dnetinc &lt;= 2.848096,
+    vHHi &lt; 250, vHHi &gt;= 50, year &lt; 8
+    )}
+)
+
+reg_func &lt;- function(varlist, filterlist, iv, data) {
+  varlist %&gt;% 
+    enframe(&quot;model_no&quot;, &quot;outcome&quot;) %&gt;% 
+    mutate(filter = filterlist) %&gt;% 
+    mutate(
+      model = map2(outcome, filter, function(x, y) felm(
+        formula(
+          paste0(
+            x, 
+            &quot;~ as.factor(year) + madult + fadult + kids + maleh + farm + ageh + age2h + educh | &quot;,
+            &quot;case_id | &quot;, iv, &quot; | villageyear&quot;
+          )
+        ),
+        data = y(data)
+      ))
+    )
+}
+
+table_arrange &lt;- function(reg_output) {
+  
+  main_rhs = &quot;`vfst(fit)`&quot;
+  
+  reg_output %&gt;% 
+    mutate(
+      coef = map_chr(model, function(x) ifelse(
+        abs(x$coefficients[main_rhs, 1]) &gt; 50,
+        comma_format(accuracy = 1e+2)(x$coefficients[main_rhs, 1]),
+        ifelse(
+          abs(x$coefficients[main_rhs, 1]) &gt; 5,
+          comma_format(accuracy = 1e+1)(x$coefficients[main_rhs, 1]),
+          comma_format(accuracy = 1e-3)(x$coefficients[main_rhs, 1])
+        )
+      )),
+      pval = map_dbl(model, ~ .x$cpval[main_rhs]),
+      coef = ifelse(
+        pval &lt; 0.01,
+        paste0(coef, &quot;***&quot;),
+        ifelse(
+          pval &lt; 0.05,
+          paste0(coef, &quot;**&quot;),
+          ifelse(
+            pval &lt; 0.10,
+            paste0(coef, &quot;*&quot;),
+            coef
+          )
+        )
+      ),
+      se = paste0(
+        &quot;(&quot;, 
+        map_chr(model, function(x) ifelse(
+          abs(x$cse[main_rhs]) &gt; 50,
+          comma_format(accuracy = 1e+2)(x$cse[main_rhs]),
+          ifelse(
+            abs(x$cse[main_rhs]) &gt; 5,
+            comma_format(accuracy = 1e+1)(x$cse[main_rhs]),
+            comma_format(accuracy = 1e-3)(x$cse[main_rhs])
+          )
+        )),
+        &quot;)&quot;
+      )
+    ) %&gt;% 
+    select(coef, se) %&gt;% 
+    as.matrix() %&gt;% 
+    t()
+}
+table3_ols_output &lt;- reg_func(
+  table3_outcome_list, 
+  replicate(
+    length(table3_outcome_list), 
+    function(x) {filter(x, vHHi &lt; 250, vHHi &gt;= 50, year &lt; 8)}
+    ),
+  &quot;(vfst ~ vfst)&quot;,
+  data_table3
+  ) %&gt;% 
+  table_arrange()
+
+table3_baseline_iv_output &lt;- reg_func(
+  table3_outcome_list, 
+  replicate(
+    length(table3_outcome_list), 
+    function(x) {filter(x, vHHi &lt; 250, vHHi &gt;= 50, year &lt; 8)}
+    ),
+  &quot;(vfst ~ invHHtvf1 + invHHtvf2)&quot;,
+  data_table3
+  ) %&gt;% 
+  table_arrange()
+
+table3_all_iv_output &lt;- reg_func(
+  table3_outcome_list, 
+  replicate(
+    length(table3_outcome_list), 
+    function(x) {filter(x, year &lt; 8)}
+    ),
+  &quot;(vfst ~ invHHtvf1 + invHHtvf2)&quot;,
+  data_table3
+  ) %&gt;% 
+  table_arrange()
+
+table3_no_outlier_iv_output &lt;- reg_func(
+  table3_outcome_list, 
+  table3_filter_list,
+  &quot;(vfst ~ invHHtvf1 + invHHtvf2)&quot;,
+  data_table3
+  ) %&gt;% 
+  table_arrange()
+
+c(
+  &quot;OLS regression&quot;, &quot;&quot;,
+  &quot;Baseline IV regression: only villages&quot;, &quot;\\hspace{1em}with 50-200 households&quot;,
+  &quot;IV regression using all villages&quot;, &quot;&quot;,
+  &quot;IV regression without 1\\% outliers&quot;, &quot;&quot;
+  ) %&gt;% 
+  cbind(
+    rbind(
+      table3_ols_output,
+      table3_baseline_iv_output,
+      table3_all_iv_output,
+      table3_no_outlier_iv_output
+    )
+  ) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate_all(linebreak, align = &quot;l&quot;) %&gt;% 
+  set_names(NULL) %&gt;% 
+  kable(
+    &quot;latex&quot;, booktabs = TRUE, escape = FALSE, 
+    align = c(&quot;l&quot;, rep(&quot;c&quot;, length(table3_outcome_list)))
+    ) %&gt;%
+  kable_styling(latex_options = &quot;scale_down&quot;) %&gt;%
+  add_header_above(
+    c(
+      &quot;Response variable&quot;, &quot;Net short-term\ncreidt level&quot;, 
+      &quot;Consumption\nlevel&quot;, &quot;Asset\ngrowth rate&quot;, 
+      &quot;Net income\ngrowth rate&quot;
+      )
+    ) %&gt;%
+  pack_rows(index = c(
+    &quot;Technique&quot; = 8
+    )) %&gt;%
+  save_kable(&quot;tex/Kaboski2012_table3_replicate.tex&quot;)</code></pre>
+<p><img src="table_figures/Kaboski2012_table3_replicate.png" style="width:100.0%" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

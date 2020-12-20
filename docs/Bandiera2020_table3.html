@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="" />
+
+
+<title>Bandiera et al. (2020)</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Stata to R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Descriptive.html">Descriptive</a>
+</li>
+<li>
+  <a href="Regression.html">Regression</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="table-3-in-bandiera-et-al.-2020-womens-empowerment-in-action-evidence-from-a-randomized-control-trial-in-africa" class="section level1">
+<h1>Table 3 in Bandiera et al. (2020), “Women’s Empowerment in Action: Evidence from a Randomized Control Trial in Africa”</h1>
+<pre class="r"><code># Install and load packages ---------------
+packages &lt;- c(
+  &quot;tidyverse&quot;,
+  &quot;haven&quot;,
+  &quot;lfe&quot;,
+  &quot;broom&quot;,
+  &quot;stargazer&quot;,
+  &quot;broom&quot;,
+  &quot;kableExtra&quot;,
+  &quot;labelled&quot;,
+  &quot;XML&quot;,
+  &quot;magrittr&quot;,
+  &quot;magick&quot;,
+  &quot;pdftools&quot;,
+  &quot;scales&quot;
+)
+
+pacman::p_load(packages, character.only = TRUE, install = TRUE)
+
+# Load an example dataset ---------------
+data &lt;- read_dta(&quot;Bandiera2020_replication/ELA.dta&quot;)
+data &lt;- data %&gt;% 
+  mutate(
+    both_training = case_when(
+      is.na(livelihoodMOREfew) &amp; is.na(lifeskillMOREfew) ~ NaN,
+      livelihoodMOREfew == 1 &amp; lifeskillMOREfew == 1 ~ 1,
+      TRUE ~ 0
+    ),
+    Qboth_training = case_when(
+      is.na(QlivelihoodMOREfew) &amp; is.na(QlifeskillMOREfew) ~ NaN,
+      QlivelihoodMOREfew == 1 &amp; QlifeskillMOREfew == 1 ~ 1,
+      TRUE ~ 0
+    ),
+    Roften3WEEK = often3WEEK,
+    Roften1WEEK = often1WEEK,
+    RlifeskillMOREfew = lifeskillMOREfew,
+    RlivelihoodMOREfew = livelihoodMOREfew,
+    Rboth_training = both_training
+  )</code></pre>
+<pre class="r"><code>var_list_1 &lt;- c(
+    &quot;C_clubheard&quot;, &quot;C_clubparticipateIMP&quot;
+    )
+
+var_list_2 &lt;- c(
+    &quot;C_stillgoing&quot;, &quot;often3WEEK&quot;, &quot;often1WEEK&quot;, 
+    &quot;lifeskillMOREfew&quot;, &quot;livelihoodMOREfew&quot;, &quot;both_training&quot;
+    )
+
+var_list &lt;- c(var_list_1, var_list_2)
+
+var_label &lt;- c(
+  &quot;Have heard about club?&quot;,
+  &quot;Have ever participated in
+  \\hspace{1em}club activities,
+  \\hspace{1em}conditional on having
+  \\hspace{1em}heard about club?&quot;,
+  &quot;Continued participation&quot;,
+  &quot;Attended club meetings at\n\\hspace{1em}least three times a week&quot;,
+  &quot;Attended club meetings one\n\\hspace{1em}or two times a week&quot;,
+  &quot;Received life skills training&quot;,
+  &quot;Received vocational\n\\hspace{1em}skills training&quot;,
+  &quot;Received life and vocational\n\\hspace{1em}skills training&quot;
+)
+
+make_table &lt;- function(data, var_list, panel) {
+  
+  if (panel == &quot;follow_up&quot;) {
+    data_sub &lt;- data %&gt;% 
+      filter(follow_up == 1, !is.na(age))
+    var_list_panel &lt;- paste0(&quot;R&quot;, var_list)
+  } else if (panel == &quot;endline&quot;) {
+    data_sub &lt;- data %&gt;% 
+      filter(endline == 1, !is.na(age), panel == 1)
+    var_list_panel &lt;- paste0(&quot;Q&quot;, var_list)
+  }
+  
+  diff_vec &lt;- map_df(
+    var_list_panel,
+    ~ felm(
+      as.formula(
+        paste0(
+          .x, &quot;~ treatment | 0 | 0 | villid&quot;
+        )
+      ),
+      data_sub
+    ) %&gt;% 
+      summary() %&gt;% 
+      coefficients %&gt;% 
+      .[&quot;treatment&quot;, c(&quot;Estimate&quot;, &quot;Cluster s.e.&quot;)]
+    ) %&gt;% 
+    mutate(
+      diff = paste0(
+        formatC(Estimate, digits = 3, format = &quot;f&quot;), &quot;\n&quot;,
+        &quot;{[&quot;, formatC(`Cluster s.e.`, digits = 3, format = &quot;f&quot;), &quot;]}&quot;
+        ) %&gt;% 
+        linebreak(align= &quot;c&quot;)
+    ) %&gt;% 
+    .$diff
+  
+  sum_mat &lt;- data_sub %&gt;% 
+    filter(follow_up == 1, !is.na(age)) %&gt;% 
+    group_by(treatment) %&gt;% 
+    summarise_at(
+      var_list_panel,
+      list(mean = mean, sd = sd),
+      na.rm = TRUE
+    ) %&gt;% 
+    arrange(desc(treatment))
+  
+  mean_mat &lt;- sum_mat %&gt;% 
+    select(ends_with(&quot;_mean&quot;)) %&gt;% 
+    t()
+  sd_mat &lt;- sum_mat %&gt;% 
+    select(ends_with(&quot;_sd&quot;)) %&gt;% 
+    t()
+  norm_diff &lt;- ((mean_mat[,1] - mean_mat[,2]) / sqrt(sd_mat[,1]^2 + sd_mat[,2]^2)) %&gt;% 
+    formatC(digits = 3, format = &quot;f&quot;)
+  
+  out_mat &lt;- cbind(
+    mean_mat %&gt;% 
+      formatC(digits = 3, format = &quot;f&quot;),
+    diff_vec,
+    norm_diff
+    ) %&gt;% 
+    set_rownames(NULL) %&gt;% 
+    set_colnames(NULL)
+  out_mat[3:nrow(out_mat), 2:ncol(out_mat)] &lt;- &quot;&quot;
+  
+  return(list(out_mat, format(nrow(data_sub), digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;)))
+}
+
+table_follow_up &lt;- make_table(data, var_list, panel = &quot;follow_up&quot;)
+table_endline &lt;- make_table(data, var_list, panel = &quot;endline&quot;)
+
+cbind(
+  var_label,
+  table_follow_up[[1]],
+  table_endline[[1]]
+  ) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(var_label = linebreak(var_label, align = &quot;l&quot;)) %&gt;% 
+  set_colnames(NULL) %&gt;% 
+  kable(&quot;latex&quot;, booktabs = TRUE, escape = FALSE, align = c(&quot;l&quot;, rep(&quot;c&quot;, 8))) %&gt;%
+  kable_styling(latex_options = &quot;scale_down&quot;) %&gt;%
+  add_header_above(c(&quot; &quot;, paste0(&quot;(&quot;, seq(8), &quot;)&quot;))) %&gt;% 
+  add_header_above(
+    c(&quot; &quot;, rep(c(&quot;Treatment.&quot;, &quot;Control&quot;, &quot;Difference&quot;, &quot;Normalized\ndifference.&quot;), 2)),
+    line = FALSE
+    ) %&gt;%
+  add_header_above(c(
+    &quot; &quot; = 1, 
+    setNames(4, str_interp(&quot;Girls tracked to midline [$N$ = ${table_follow_up[[2]]}]&quot;)), 
+    setNames(4, str_interp(&quot;Girls tracked to endline [$N$ = ${table_endline[[2]]}]&quot;))
+    ),
+    escape = FALSE
+    ) %&gt;%
+  pack_rows(index = c(
+    &quot; &quot; = length(var_list_1),
+    &quot;Conditional on ever having participated in an ELA club:&quot; = length(var_list_2)
+    )) %&gt;%
+  save_kable(&quot;tex/Bandiera2020_table3_replicate.tex&quot;)</code></pre>
+<p><img src="table_figures/Bandiera2020_table3_replicate.png" style="width:100.0%" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

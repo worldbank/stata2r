@@ -1,0 +1,20 @@
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lccccccc}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Fuel} & \multicolumn{1}{c}{Tobacco} & \multicolumn{1}{c}{\makecell[c]{Cere-\\mony}} & \multicolumn{1}{c}{\makecell[c]{House\\repair}} & \multicolumn{1}{c}{\makecell[c]{Vehicle\\repair}} & \multicolumn{1}{c}{Clothes} & \multicolumn{1}{c}{\makecell[c]{Eating\\out}} \\
+\cmidrule(l{3pt}r{3pt}){3-3} \cmidrule(l{3pt}r{3pt}){4-4} \cmidrule(l{3pt}r{3pt}){5-5} \cmidrule(l{3pt}r{3pt}){6-6} \cmidrule(l{3pt}r{3pt}){7-7} \cmidrule(l{3pt}r{3pt}){8-8} \cmidrule(l{3pt}r{3pt}){9-9}
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Technique}}\\
+\hspace{1em}OLS regression & 2,200 & -40 & -100 & -200 & 300 & 40 & -100\\
+\hspace{1em} & (2,000) & (100) & (200) & (1,300) & (300) & (40) & (100)\\
+\hspace{1em}Baseline IV regression: & 17,100* & 300* & -200 & 13,300** & 1,800** & -50 & 500\\
+\hspace{1em}\makecell[l]{\hspace{1em}only villages\\\hspace{1em}with 50-200 households} & (8,900) & (200) & (1,200) & (6,300) & (700) & (200) & (300)\\
+\hspace{1em}IV regression using & 24,000*** & 300 & -400 & 7,000* & 1,400** & 200 & -10\\
+\hspace{1em}\hspace{1em}all villages & (6,300) & (200) & (700) & (3,700) & (700) & (100) & (300)\\
+\hspace{1em}IV regression without & 14,700** & 200 & -400 & 5,600** & 600*** & 100 & 500**\\
+\hspace{1em}\hspace{1em} 1\% outliers & (5,800) & (200) & (400) & (2,700) & (200) & (100) & (200)\\
+\bottomrule
+\end{tabular}}
+\end{table}

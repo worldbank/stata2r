@@ -6,6 +6,33 @@ output:
     toc_depth: 2
 ---
 
-+ [Fafchamps et al. (2014)](./FMQW2014.html)
-+ [Banerjee et al. (2015)](./Banerjee2015.html)
-+ [Kaboski and Townsend (2012)](./Kaboski2012.html)
++ Descriptive Statistics / Balance Tables
+  - Fafchamps et al. (2014)
+    - [Table 2](./FMQW2014_table2.html)
+  - Banerjee et al. (2015)
+    - [Table 1A](./Banerjee2015_table1A.html)
+    - [Table 1B](./Banerjee2015_table1B.html)
+  - Kaboski and Townsend (2012)
+    - [Table 1](./Kaboski2012_table1.html)
+  - Bandiera et al. (2020)
+    - [Table 1](./Bandiera2020_table1.html)
+    - [Table 3](./Bandiera2020_table3.html)
+
++ Regression Tables
+  - Fafchamps et al. (2014)
+    - [Table 4](./FMQW2014_table4.html)
+    - [Table 6](./FMQW2014_table6.html)
+    - [Table 8](./FMQW2014_table8.html)
+  - Banerjee et al. (2015)
+    - [Table 2](./Banerjee2015_table2.html)
+  - Kaboski and Townsend (2012)
+    - [Table 2](./Kaboski2012_table2.html)
+    - [Table 3](./Kaboski2012_table3.html)
+    - [Table 4](./Kaboski2012_table4.html)
+  - Bandiera et al. (2020)
+    - [Table 2](./Bandiera2020_table2.html)
+    - [Table 4](./Bandiera2020_table4.html)
+
+<!-- + [Fafchamps et al. (2014)](./FMQW2014.html) -->
+<!-- + [Banerjee et al. (2015)](./Banerjee2015.html) -->
+<!-- + [Kaboski and Townsend (2012)](./Kaboski2012.html) -->

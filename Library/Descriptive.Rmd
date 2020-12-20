@@ -1,0 +1,45 @@
+---
+title: "Descriptive Statistics / Balance Tables"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+# Fafchamps et al. (2014)
+
+## Table 2
+
+[<img src="./table_figures/FMQW2014_table2_replicate.png" width="800"/>](./FMQW2014_table2.html)
+
+# Banerjee et al. (2015)
+
+## Table 1A
+
+[<img src="./table_figures/Banerjee_table1A_replicate.png" width="800"/>](./Banerjee2015_table1A.html)
+
+## Table 1B
+
+[<img src="./table_figures/Banerjee_table1B_replicate.png" width="800"/>](./Banerjee2015_table1B.html)
+
+# Kaboski and Townsend (2012)
+
+## Table 1
+
+[<img src="./table_figures/Kaboski2012_table1_replicate.png" width="800"/>](./Kaboski2012_table1.html)
+
+# Bandiera et al. (2020)
+
+## Table 1
+
+[<img src="./table_figures/Bandiera2020_table1_replicate.png" width="800"/>](./Bandiera2020_table1.html)
+
+## Table 3
+
+[<img src="./table_figures/Bandiera2020_table3_replicate.png" width="800"/>](./Bandiera2020_table3.html)
+
+
+

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="" />
+
+
+<title>Fachamps et al. (2014)</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Stata to R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Descriptive.html">Descriptive</a>
+</li>
+<li>
+  <a href="Regression.html">Regression</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="table-8-in-fafchamps-et-al.-2014-microenterprise-growth-and-the-flypaper-effect-evidence-from-a-randomized-experiment-in-ghana" class="section level1">
+<h1>Table 8 in Fafchamps et al. (2014), “Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana”</h1>
+<pre class="r"><code># Install and load packages ---------------
+packages &lt;- c(
+  &quot;tidyverse&quot;,
+  &quot;haven&quot;,
+  &quot;lfe&quot;,
+  &quot;stargazer&quot;,
+  &quot;broom&quot;,
+  &quot;kableExtra&quot;,
+  &quot;labelled&quot;,
+  &quot;XML&quot;,
+  &quot;magrittr&quot;,
+  &quot;magick&quot;,
+  &quot;pdftools&quot;
+)
+
+pacman::p_load(packages, character.only = TRUE, install = TRUE)
+
+# Load an example dataset ---------------
+data &lt;- read_dta(&quot;data/ReplicationDataGhanaJDE.dta&quot;)</code></pre>
+<div id="data-cleaning" class="section level2">
+<h2>Data cleaning</h2>
+<pre class="r"><code>df_table8 &lt;- data %&gt;%
+  mutate(
+    norm7 = (norms_7 %in% c(&quot;Agree&quot;, &quot;Strongly agree&quot;)),
+    norm8 = (norms_8 %in% c(&quot;Agree&quot;, &quot;Strongly agree&quot;)),
+    norm9 = (norms_9 %in% c(&quot;Agree&quot;, &quot;Strongly agree&quot;)),
+    norm12 = (norms_12 %in% c(&quot;Agree&quot;, &quot;Strongly agree&quot;))
+  ) %&gt;%
+  group_by(sheno) %&gt;%
+  mutate(
+    basesusu = ifelse(wave == 1, useasusu, NA),
+    saveregular = ifelse(is.na(save_reg), NA, (save_reg %in% c(4, 5))),
+    pressurehh = ifelse(is.na(pressure_share_otherhh), NA, (pressure_share_otherhh %in% c(1, 2))),
+    dis1 = Discount_MedianRevised,
+    hyp1 = Discount_HyperbolicRevised,
+    mwave2lowK = ifelse(wave == 2, (inventories &lt; 50), NA),
+    lowdigitspan = ifelse(is.na(digitspan), NA, (digitspan &lt;= 5))
+  ) %&gt;%
+  fill(basesusu, matches(&quot;^mr(1|2)&quot;), mwave2lowK, .direction = &quot;downup&quot;) %&gt;%
+  ungroup()
+
+pca_prediction &lt;- function(var_list, data) {
+  predict(
+      prcomp(
+        data %&gt;%
+          filter(wave == 1) %&gt;%
+          select(all_of(var_list)) %&gt;%
+          na.omit(),
+        center = TRUE, scale = TRUE
+        ),
+      data
+      )[,1]
+}
+
+df_table8 &lt;- df_table8 %&gt;%
+  mutate(
+    mpca = - pca_prediction(c(&quot;useasusu&quot;, &quot;saveregular&quot;, &quot;dis1&quot;, &quot;hyp1&quot;), df_table8),
+    mpca3 = - pca_prediction(c(&quot;dis1&quot;, &quot;hyp1&quot;), df_table8),
+    mextp1 =  pca_prediction(
+      c(&quot;pressurehh&quot;, &quot;HouseholdSize&quot;, &quot;norm7&quot;, &quot;norm8&quot;, &quot;norm9&quot;, &quot;sibsAccra&quot;, &quot;married&quot;),
+      df_table8
+      ),
+    mextp2 = pca_prediction(c(&quot;pressurehh&quot;, &quot;norm7&quot;, &quot;norm8&quot;, &quot;norm9&quot;), df_table8),
+  ) %&gt;%
+  group_by(sheno) %&gt;%
+  mutate(
+    across(
+      .cols = c(&quot;mpca&quot;, &quot;mpca3&quot;, &quot;mextp1&quot;, &quot;mextp2&quot;),
+      .fns = function(x) ifelse(is.infinite(max(x, na.rm = TRUE)), NA, max(x, na.rm = TRUE))
+    )
+  ) %&gt;%
+  ungroup()</code></pre>
+</div>
+<div id="regression" class="section level2">
+<h2>Regression</h2>
+<pre class="r"><code>outcome &lt;- &quot;realfinalprofit&quot;
+fe_1 &lt;- &quot;groupnum&quot;
+fe_2 &lt;- &quot;sheno&quot;
+iv &lt;- &quot;0&quot;
+cluster &lt;- &quot;sheno&quot;
+
+rhs_var_list &lt;- vector(mode = &quot;list&quot;, length = 9)
+for (i in seq(9)) {
+  if (i == 1) {
+    rhs_var_list[[i]] = c(&quot;lowdigitspan&quot;)
+  } else if (i %in% c(2, 4, 6, 8)) {
+    rhs_var_list[[i]] = c(&quot;mpca&quot;, &quot;mextp2&quot;)
+  } else if (i %in% c(3, 5, 7, 9)) {
+    rhs_var_list[[i]] = c(&quot;mpca&quot;, &quot;mextp1&quot;)
+  }
+}
+
+data_filter_list &lt;- vector(mode = &quot;list&quot;, length = 9)
+for (i in seq(9)) {
+  if (i %in% c(1, 2, 3)) {
+    data_filter_list[[i]] &lt;- function(x) filter(x, is.na(trimgroup))
+  } else if (i %in% c(4, 5)) {
+    data_filter_list[[i]] &lt;- function(x) filter(x, is.na(trimgroup) &amp; female == 1 &amp; highgroup == 1)
+  } else if (i %in% c(6, 7)) {
+    data_filter_list[[i]] &lt;- function(x) filter(x, is.na(trimgroup) &amp; female == 1 &amp; mlowgroup == 1)
+  } else if (i %in% c(8, 9)) {
+    data_filter_list[[i]] &lt;- function(x) filter(x, is.na(trimgroup) &amp; male == 1)
+  }
+}
+
+felm_table8 &lt;- function(rhs_var, data_filter, data) {
+  as.formula(
+    paste(
+      paste(
+        outcome, 
+        paste(
+          &quot;(atreatcash + atreatequip + factor(wave))&quot;, 
+          paste0(
+            &quot;(atreatcash + atreatequip + factor(wave)):&quot;, 
+            paste0(&quot;(&quot;, paste(rhs_var, collapse = &quot; + &quot;), &quot;)&quot;)
+            ),
+          sep = &quot; + &quot;
+        ), 
+        sep = &quot; ~ &quot;
+      ), fe_2, iv, cluster, sep = &quot; | &quot;
+    )
+    ) %&gt;%
+    felm(
+      data = data_filter(data)
+    )
+}
+
+test_fun_list &lt;- replicate(4, vector(mode = &quot;list&quot;, length = 9), FALSE)
+for (i in seq(9)) {
+  test_fun_list[[1]][[i]] &lt;- ifelse(
+    i %in% c(1),
+    function(x) {
+      formatC(
+        waldtest(x, ~ `atreatcash:lowdigitspanTRUE` - `atreatequip:lowdigitspanTRUE`)[&quot;p.F&quot;],
+        3, format = &quot;f&quot;
+        )
+      },
+      function(x) {return(&quot;&quot;)}
+    )
+  
+  test_fun_list[[2]][[i]] &lt;- ifelse(
+    i %in% seq(2, 9),
+    function(x) {
+      formatC(
+        waldtest(x, ~ `atreatcash:mpca` - `atreatequip:mpca`)[&quot;p.F&quot;],
+        3, format = &quot;f&quot;
+        )
+      },
+      function(x) {return(&quot;&quot;)}
+    )
+  
+  test_fun_list[[3]][[i]] &lt;- ifelse(
+    i %in% c(2, 4, 6, 8),
+    function(x) {
+      formatC(
+        waldtest(x, ~ `atreatcash:mextp2` | `atreatequip:mextp2`)[&quot;p.F&quot;],
+        3, format = &quot;f&quot;
+        )
+    },
+    function(x) {return(&quot;&quot;)}
+  )
+  
+  test_fun_list[[4]][[i]] &lt;- ifelse(
+    i %in% c(3, 5, 7, 9),
+    function(x) {
+      formatC(
+        waldtest(x, ~ `atreatcash:mextp1` | `atreatequip:mextp1`)[&quot;p.F&quot;],
+        3, format = &quot;f&quot;
+        )
+    },
+    function(x) {return(&quot;&quot;)}
+  )
+}
+
+reg_res_table8 &lt;- map2(
+  rhs_var_list, 
+  data_filter_list, 
+  function(x, y) felm_table8(x, y, df_table8)
+  ) %&gt;%
+  enframe(&quot;model_no&quot;, &quot;model&quot;) %&gt;%
+  mutate(
+    test_1 = map2_chr(model, test_fun_list[[1]], function(x, y) y(x)),
+    test_2 = map2_chr(model, test_fun_list[[2]], function(x, y) y(x)),
+    test_3 = map2_chr(model, test_fun_list[[3]], function(x, y) y(x)),
+    test_4 = map2_chr(model, test_fun_list[[4]], function(x, y) y(x)),
+    n_firm = map_int(model, function(x) n_distinct(model.frame(x)$sheno)),
+    mean_outcome = map_chr(
+      model, 
+      function(x) formatC(colMeans(model.frame(x)[outcome]), 2, format = &quot;f&quot;)
+      )
+  )</code></pre>
+</div>
+<div id="table-output" class="section level2">
+<h2>Table output</h2>
+<pre class="r"><code>reg_res_table8 %&gt;%
+  pull(model) %&gt;%
+  stargazer(
+    dep.var.labels.include = FALSE,
+    column.labels = c(&quot;Pooled men and women&quot;, &quot;High profit women&quot;, &quot;Low profit women&quot;, &quot;Men&quot;),
+    column.separate = c(3, 2, 2, 2),
+    covariate.labels = c(
+      &quot;Cash treatment&quot;,
+      &quot;In-kind treatment&quot;,
+      &quot;Cash treatment * low digitspan recall&quot;,
+      &quot;In-kind treatment * low digitspan recall&quot;,
+      &quot;Cash treatment * lack of self-control&quot;,
+      &quot;In-kind treatment * lack of self-control&quot;,
+      &quot;Cash treatment * narrow external pressure&quot;,
+      &quot;In-kind treatment * narrow external pressure&quot;,
+      &quot;Cash treatment * broad external pressure&quot;,
+      &quot;In-kind treatment * broad external pressure&quot;
+    ),
+    keep = c(&quot;atreat(cash|equip)&quot;),
+    order = c(
+      &quot;^atreat(cash|equip)$&quot;,
+      &quot;^atreat(cash|equip):lowdigitspanTRUE$&quot;,
+      &quot;^atreat(cash|equip):mpca$&quot;,
+      &quot;^atreat(cash|equip):mextp2$&quot;,
+      &quot;^atreat(cash|equip):mextp1$&quot;
+    ),
+    title = &quot;&quot;,
+    add.lines = list(
+      c(&quot;Number of firms&quot;, reg_res_table8$n_firm),
+      c(&quot;$p$-values for testing cash = in-kind for:&quot;, rep(&quot;&quot;, 10)),
+      c(&quot;\\ Low digitspan interaction&quot;, reg_res_table8$test_1),
+      c(&quot;\\ Self-control interaction&quot;, reg_res_table8$test_2),
+      c(&quot;\\ Narrow external pressure interaction&quot;, reg_res_table8$test_3),
+      c(&quot;\\ Broad external pressure interaction&quot;, reg_res_table8$test_4),
+      c(&quot;Mean of outcomes&quot;, reg_res_table8$mean_outcome)
+    ),
+    type = &quot;latex&quot;,
+    out = &quot;tex/FMQW2014_table8_replicate.tex&quot;,
+    omit.stat = c(&quot;rsq&quot;, &quot;adj.rsq&quot;, &quot;ser&quot;),
+    table.layout = &quot;=#c-t-sa-n&quot;,
+    digits = 2
+  )</code></pre>
+<p><img src="table_figures/FMQW2014_table8_replicate.png" style="width:100.0%" /></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

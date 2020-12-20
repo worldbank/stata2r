@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="" />
+
+
+<title>Kaboski and Townsend (2012)</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Stata to R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Descriptive.html">Descriptive</a>
+</li>
+<li>
+  <a href="Regression.html">Regression</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="table-1-in-kaboski-and-townsend-2012-the-impact-of-credit-on-village-economies" class="section level1">
+<h1>Table 1 in Kaboski and Townsend (2012), “The Impact of Credit on Village Economies”</h1>
+<pre class="r"><code># Install and load packages ---------------
+packages &lt;- c(
+  &quot;tidyverse&quot;,
+  &quot;haven&quot;,
+  &quot;lfe&quot;,
+  &quot;stargazer&quot;,
+  &quot;broom&quot;,
+  &quot;kableExtra&quot;,
+  &quot;labelled&quot;,
+  &quot;XML&quot;,
+  &quot;scales&quot;,
+  &quot;magrittr&quot;
+)
+
+pacman::p_load(packages, character.only = TRUE, install = TRUE)
+
+# Load an example dataset ---------------
+data_short &lt;- read_dta(&quot;Kaboski2012_replication/AEJApp2009-0115_data/documentation/AnnualData_ShortSample.dta&quot;)</code></pre>
+<pre class="r"><code>data_table1 &lt;- data_short %&gt;% 
+  mutate(
+    vfstn = ifelse(year %in% c(6, 7), vfst, NA),
+    vfstp = (vfst &gt; 0),
+    vfstpn = ifelse(year %in% c(6, 7), vfstp, NA),
+    defcrp = (defcr &gt; 0),
+    bsnew = bnew + snew,
+    tbinv = pinv + binv + bafdn + sinv + safdn,
+    twage = frmwage + shrwage + buswage,
+    farm = ifelse(
+      !is.na(och),
+      ifelse((och &gt; -5) &amp; (och &lt;= 15), 1, 0),
+      0
+    ),
+    age2h = ageh^2
+  ) %&gt;% 
+  group_by(case_id) %&gt;% 
+  mutate(
+    invHHi = mean(ifelse(year == 6, lead(1 / vHH), NA), na.rm = TRUE)
+  ) %&gt;% 
+  ungroup()</code></pre>
+<pre class="r"><code>credit_varlist &lt;- c(
+  &quot;newst&quot;, &quot;vfstn&quot;, &quot;vfstpn&quot;, &quot;baacst&quot;, &quot;cbst&quot;, &quot;infst&quot;, 
+  &quot;agst&quot;, &quot;busst&quot;, &quot;frtst&quot;, &quot;const&quot;
+)
+
+credit_market_varlist &lt;- c(
+  &quot;rst&quot;, &quot;defcrp&quot;
+)
+
+cons_varlist &lt;- c(
+  &quot;tc&quot;, &quot;educ&quot;, &quot;grain&quot;, &quot;milk&quot;, &quot;meat&quot;, &quot;alch1&quot;, 
+  &quot;alch2&quot;, &quot;fuel&quot;, &quot;tobac&quot;, &quot;cerem&quot;, &quot;houserep&quot;, &quot;vehicrep&quot;, 
+  &quot;clothes&quot;, &quot;mealaway&quot;
+)
+
+inc_varlist &lt;- c(
+  &quot;netinc&quot;, &quot;buspro&quot;, &quot;wageinc&quot;, 
+  &quot;riceinc&quot;, &quot;cropinc&quot;, &quot;liveinc&quot;, &quot;gassd&quot;
+)
+
+invest_varlist &lt;- c(
+ &quot;bsnew&quot;, &quot;tbinv&quot;, &quot;finv&quot;,
+ &quot;frtexp&quot;, &quot;twage&quot;
+)
+
+other_varlist &lt;- c(
+  &quot;maleh&quot;, &quot;ageh&quot;, &quot;educh&quot;,
+  &quot;madult&quot;, &quot;fadult&quot;, &quot;kids&quot;, &quot;farm&quot;
+)
+
+iv_varlist &lt;- c(
+  &quot;invHHi&quot;
+  )
+
+all_varlist &lt;- c(
+  credit_varlist, credit_market_varlist, cons_varlist, inc_varlist,
+  invest_varlist, other_varlist, iv_varlist
+)
+
+var_label_list &lt;- c(
+  &quot;New short-term credit (total)&quot;, &quot;Village fund credit, post-program&quot;,
+  &quot;Village fund loan received dummy, post-program&quot;,
+  &quot;BAAC/ag coop credit&quot;, &quot;Commercial bank credit&quot;,
+  &quot;Informal credit&quot;, &quot;Credit for agricultural investment&quot;,
+  &quot;Credit for business investment&quot;, &quot;Credit for fertilizer, pesticides, etc.&quot;,
+  &quot;Credit for consumption&quot;, &quot;Average short-term credit interest rate&quot;,
+  &quot;Dummy for credit in default&quot;, &quot;Total consumption&quot;,
+  &quot;Education&quot;, &quot;Grain&quot;, &quot;Dairy&quot;, &quot;Meat&quot;, &quot;Alcohol at home&quot;,
+  &quot;Alcohol out of home&quot;, &quot;Fuel&quot;, &quot;Tobacco&quot;, &quot;Ceremony&quot;, &quot;House repair&quot;, 
+  &quot;Vehicle repair&quot;, &quot;Clothes&quot;, &quot;Eating out&quot;, &quot;(Total) net income&quot;, &quot;Business income&quot;,
+  &quot;Wage and salary income&quot;, &quot;Gross income from rice farming&quot;, 
+  &quot;Gross income from other crops&quot;, &quot;Gross income from livestock&quot;, 
+  &quot;Gross assets (incl. savings)&quot;, &quot;Number of new businesses&quot;, &quot;Business investment&quot;,
+  &quot;Agricultural investment&quot;, &quot;Expenditure on fertilizer, pesticides, etc.&quot;,
+  &quot;Total wages paid&quot;, &quot;Male head of household dummy&quot;, &quot;Age of head&quot;,
+  &quot;Years of education of head&quot;, &quot;Male adults in household&quot;,
+  &quot;Female adults in household&quot;, &quot;Kids in household&quot;,
+  &quot;Farming dummy for household head&#39;s\n\\hspace{1em}primary occupation&quot;,
+  &quot;Inverse village size&quot;
+)
+
+base_sumstat &lt;- data_table1 %&gt;% 
+  select(all_of(all_varlist)) %&gt;% 
+  map( ~ tibble(
+    obs = format(sum(!is.na(.x)), digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;),
+    mean_var = mean(.x, na.rm = TRUE), 
+    sd_var = sd(.x, na.rm = TRUE)
+    )
+    ) %&gt;% 
+  tibble() %&gt;% 
+  unnest(&quot;.&quot;)
+
+cross_sectional_sd &lt;- data_table1 %&gt;% 
+  group_by(case_id) %&gt;% 
+  select(all_of(all_varlist)) %&gt;% 
+  summarise_all(mean, na.rm = TRUE) %&gt;% 
+  ungroup() %&gt;% 
+  select(-case_id) %&gt;% 
+  map( ~ tibble(
+    cross_section_sd_var = sd(.x, na.rm = TRUE)
+    )
+    ) %&gt;% 
+  tibble() %&gt;% 
+  unnest(&quot;.&quot;)
+  
+cbind(var_label_list, base_sumstat, cross_sectional_sd) %&gt;% 
+  mutate_if(is.double, ~ ifelse(
+    .x &gt;= 100,
+    comma_format(accuracy = 1e+2)(.x),
+    comma_format(accuracy = 1e-2)(.x)
+    )
+    ) %&gt;% 
+  mutate(var_label_list = linebreak(var_label_list, align = &quot;l&quot;)) %&gt;% 
+  set_colnames(NULL) %&gt;%
+  kable(&quot;latex&quot;, booktabs = TRUE, escape = FALSE, align = c(&quot;l&quot;, rep(&quot;r&quot;, 4))) %&gt;%
+  kable_styling(latex_options = &quot;scale_down&quot;) %&gt;%
+  add_header_above(
+    c(&quot; &quot;, &quot;Observations&quot;, &quot;Mean&quot;, &quot;SD&quot;, &quot;Cross-sectional\nSD&quot;)
+    ) %&gt;%
+  pack_rows(index = c(
+    &quot;Short-term credit variables&quot; = length(credit_varlist),
+    &quot;Credit market indicators&quot; = length(credit_market_varlist),
+    &quot;Consumption variables&quot; = length(cons_varlist),
+    &quot;Income and asset variables&quot; = length(inc_varlist),
+    &quot;Investment and input uses variables&quot; = length(invest_varlist),
+    &quot;Other control variables&quot; = length(other_varlist),
+    &quot;Instrument&quot; = length(iv_varlist)
+    )) %&gt;%
+  save_kable(&quot;tex/Kaboski2012_table1_replicate.tex&quot;)</code></pre>
+<p><img src="table_figures/Kaboski2012_table1_replicate.png" style="width:100.0%" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

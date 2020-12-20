@@ -1,0 +1,22 @@
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lccccccc}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Other formal credit} & \multicolumn{4}{c}{Stated reasons for borrowing} \\
+\cmidrule(l{3pt}r{3pt}){3-4} \cmidrule(l{3pt}r{3pt}){5-8}
+\multicolumn{1}{c}{Response variable} & \multicolumn{1}{c}{Total} & \multicolumn{1}{c}{Grain} & \multicolumn{1}{c}{Dairy} & \multicolumn{1}{c}{Meat} & \multicolumn{1}{c}{\makecell[c]{Alcohol\\home}} & \multicolumn{1}{c}{\makecell[c]{Alcohol\\out}} \\
+\cmidrule(l{3pt}r{3pt}){1-1} \cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3} \cmidrule(l{3pt}r{3pt}){4-4} \cmidrule(l{3pt}r{3pt}){5-5} \cmidrule(l{3pt}r{3pt}){6-6} \cmidrule(l{3pt}r{3pt}){7-7}
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Technique}}\\
+\hspace{1em}OLS regression & 2,200 & 200 & -200 & 100 & 100 & 100 & 20\\
+\hspace{1em} & (2,000) & (200) & (200) & (100) & (100) & (100) & (100)\\
+\hspace{1em}Baseline IV regression: & 17,100* & 1,100 & 400 & 500 & 600* & 800** & 200\\
+\hspace{1em}\makecell[l]{\hspace{1em}only villages\\\hspace{1em}with 50-200 households} & (8,900) & (900) & (900) & (400) & (400) & (400) & (400)\\
+\hspace{1em}IV regression using & 24,000*** & 700 & 500 & 600* & 400 & 300 & 300\\
+\hspace{1em}\hspace{1em}all villages & (6,300) & (600) & (500) & (300) & (300) & (400) & (300)\\
+\hspace{1em}IV regression without & 14,700** & 400 & -300 & 300 & 300 & 600** & 300\\
+\hspace{1em}\hspace{1em} 1\% outliers & (5,800) & (700) & (500) & (400) & (300) & (300) & (300)\\
+\bottomrule
+\end{tabular}}
+\end{table}
