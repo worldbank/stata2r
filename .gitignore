@@ -99,7 +99,7 @@ passwords/
 !/Library/HISP/*.dta
 /Library/Data/ReplicationDataGhanaJDE.dta
 !/docs/*.html
-!/docs/figure/**/*
+!/docs/figures/**/*
 !/docs/site_libs/**/*
 
 /Library/Cai2020_project/**/*
