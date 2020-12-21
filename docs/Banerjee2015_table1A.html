@@ -319,6 +319,13 @@ $(document).ready(function () {
 
 <div id="table-1a-in-banerjee-et-al.-2015-the-mircle-of-microfinance-evidence-from-a-randomized-evaluation" class="section level1">
 <h1>Table 1A in Banerjee et al. (2015), “The Mircle of Microfinance? Evidence from a Randomized Evaluation”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+</ul>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -332,10 +339,10 @@ packages &lt;- c(
 
 pacman::p_load(packages, character.only = TRUE, install = TRUE)
 
-# Load an example dataset ---------------
-data_baseline &lt;- read_dta(&quot;Banerjee2015_replication/2013-0533_data_baseline.dta&quot;)
-data_endline &lt;- read_dta(&quot;Banerjee2015_replication/2013-0533_data_endlines1and2.dta&quot;)</code></pre>
-<pre class="r"><code>hh_composition &lt;- c(
+# Load an example dataset---------------
+data_baseline &lt;- read_dta(&quot;Banerjee2015_replication/2013-0533_data_baseline.dta&quot;)</code></pre>
+<pre class="r"><code># outcome variables
+hh_composition &lt;- c(
   &quot;hh_size&quot;, &quot;adults&quot;, &quot;children&quot;, &quot;male_head&quot;, &quot;head_age&quot;, &quot;head_noeduc&quot;
   )
 credit_access &lt;- c(
@@ -358,12 +365,12 @@ businesses_allHH &lt;- c(
 consumption &lt;- c(
   &quot;total_exp_mo&quot;, &quot;nondurable_exp_mo&quot;, &quot;durables_exp_mo&quot;, &quot;home_durable_index&quot;
   )
-
 all_varlist &lt;- c(
   hh_composition, credit_access, loan_amt, self_emp_activ,
   businesses, businesses_allHH, consumption
-)
+  )
 
+# data_cleaning
 data_table1A &lt;- data_baseline %&gt;% 
   mutate(
     across(
@@ -372,7 +379,10 @@ data_table1A &lt;- data_baseline %&gt;%
       .names = &quot;{col}_allHH&quot;
     )
   )
-var_label(data_table1A)[all_varlist] &lt;- c(
+
+# variable list
+# var_label(data_table1A)[all_varlist] &lt;- c(
+var_labels &lt;- c(
   &quot;Number members&quot;, &quot;Number adults ($&gt;=$ 16 years old)&quot;,
   &quot;Number children ($&lt;$ 16 years old)&quot;,
   &quot;Male head&quot;, &quot;Head&#39;s age&quot;, &quot;Head with no education&quot;,
@@ -393,7 +403,8 @@ var_label(data_table1A)[all_varlist] &lt;- c(
   &quot;Durables consumption (Rs)&quot;, &quot;Asset index&quot;
 )
 
-control_group_sumstat &lt;- function(varlist, data) {
+# function to create a panel for control group
+control_group_sumstat &lt;- function(varlist, var_labels, data) {
   
   output &lt;- data %&gt;% 
     select(all_of(varlist)) %&gt;% 
@@ -406,7 +417,7 @@ control_group_sumstat &lt;- function(varlist, data) {
     tibble() %&gt;% 
     unnest(&quot;.&quot;) %&gt;% 
     mutate(
-      col_names = unlist(var_label(data)[varlist]),
+      col_names = var_labels,
       mean_var = ifelse(
         mean_var &gt;= 100, 
         formatC(mean_var, digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;), 
@@ -427,6 +438,7 @@ control_group_sumstat &lt;- function(varlist, data) {
   return(output)
 }
 
+# function to create a paneld for differeces between treatment and control
 treat_control_sumstat &lt;- function(varlist, data) {
   
   output &lt;- map(varlist, function(x) felm(
@@ -437,16 +449,16 @@ treat_control_sumstat &lt;- function(varlist, data) {
     ) %&gt;%
     enframe(&quot;model_no&quot;, &quot;model&quot;) %&gt;% 
     mutate(
-      estimate = map(model, function(x) summary(x)$coefficients[&quot;treatment&quot;, c(&quot;Estimate&quot;, &quot;Pr(&gt;|t|)&quot;)])
+      estimate = map_dbl(
+        model, 
+        function(x) summary(x)$coefficients[&quot;treatment&quot;, &quot;Estimate&quot;]
+        ),
+      p_value = map_dbl(
+        model, 
+        function(x) waldtest(x, &quot;treatment&quot;)[&quot;p.F&quot;]
+        )
     ) %&gt;% 
-    unnest(estimate) %&gt;% 
-    group_by(model_no) %&gt;% 
-    mutate(
-      term = ifelse(row_number() == 1, &quot;estimate&quot;, &quot;p_value&quot;)
-      ) %&gt;% 
-    pivot_wider(names_from = term, values_from = estimate) %&gt;% 
-    ungroup() %&gt;% 
-    select(- c(model_no, model)) %&gt;% 
+    select(estimate, p_value) %&gt;% 
     mutate(
       across(
         .cols = c(estimate, p_value),
@@ -462,9 +474,9 @@ treat_control_sumstat &lt;- function(varlist, data) {
 }
 
 cbind(
-  control_group_sumstat(all_varlist, data_table1A %&gt;% filter(treatment == 0)),
+  control_group_sumstat(all_varlist, var_labels, data_table1A %&gt;% filter(treatment == 0)),
   treat_control_sumstat(all_varlist, data_table1A)
-) %&gt;% 
+  ) %&gt;% 
   set_colnames(NULL) %&gt;%
   kable(&quot;latex&quot;, booktabs = TRUE, escape = FALSE, align = c(&quot;l&quot;, rep(&quot;r&quot;, 5))) %&gt;%
   kable_styling(latex_options = &quot;scale_down&quot;) %&gt;%

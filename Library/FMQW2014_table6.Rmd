@@ -10,6 +10,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Table 6 in Fafchamps et al. (2014), "Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana"
 
+To read the created `.tex` file, the following $\LaTeX$ packages are required:
+
+- float
+- pdflscape
+- booktabs
+- multicol
+- makecell
+
+The means of outcome variables are added to the table, which do not appear in the original table in the paper.
+
 ```{r, warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -33,11 +43,13 @@ data <- read_dta("data/ReplicationDataGhanaJDE.dta")
 
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
+# variable labels
 lhs_var_list <- c(
   "weeklyfood", "clothingshoes", "healthedn", 
   "expend_ceremonies_3months", "expend_total", "expend_logtotal"
   )
 
+# data cleaning
 df_table6 <- data %>%
   filter(is.na(trimgroup)) %>%
   group_by(groupnum) %>%
@@ -89,12 +101,14 @@ df_table6 <- data %>%
 
 ```{r, eval = FALSE, results = "hide"}
 
+# list of names of truncated variables
 lhs_var_list_trunc <- c(
   "totalK", "totalK_trunc", "madetransfersout", "amounttransferout", 
   sapply(lhs_var_list, function(x) paste0(x, "_trunc"))
   ) %>%
   set_names(NULL)
 
+# function to run regressions with fixed effects 
 felm_table6 <- function(outcome, fe, rhs_var, control_var, iv, cluster, data) {
   as.formula(
     paste(
@@ -107,6 +121,7 @@ felm_table6 <- function(outcome, fe, rhs_var, control_var, iv, cluster, data) {
   )
 }
 
+# function to create a panel of regression results
 create_table6_sub <- function(panel) {
   
   fe_1 <- "groupnum"
@@ -152,6 +167,7 @@ create_table6_sub <- function(panel) {
     }
   }
   
+  # list of functions to conduct F-test in each regression
   test_fun_list <- replicate(2, vector(mode = "list", length = 10), FALSE)
   if (panel == "A") {
     for (i in seq(10)) {
@@ -185,6 +201,7 @@ create_table6_sub <- function(panel) {
     }
   }
   
+  # run regressions
   reg_res_table6 <- tibble(
     model = pmap(
         list(a = lhs_var_list_trunc, b = fe_list, c = control_var_list), 
@@ -221,6 +238,8 @@ create_table6_sub <- function(panel) {
     test_2_label <- "In-kind treatments equal"
   }
   
+  # create a panel of regression results
+  # and save as .html file
   reg_res_table6 %>%
     pull(model) %>%
     stargazer(
@@ -250,16 +269,9 @@ create_table6_sub("B")
 ```
 
 
-```{r, include = FALSE}
-
-htmltools::includeHTML("html/FMQW2014_table6_replicate_A.html")
-htmltools::includeHTML("html/FMQW2014_table6_replicate_B.html")
-
-```
-
-
 ```{r}
 
+# read .html file as a table and remove irrelevant rows
 table6_A <- readHTMLTable("html/FMQW2014_table6_replicate_A.html") %>%
   .$Table %>%
   drop_na() %>%
@@ -267,12 +279,14 @@ table6_A <- readHTMLTable("html/FMQW2014_table6_replicate_A.html") %>%
   slice(-1) %>%
   as.matrix() %>%
   set_colnames(NULL)
+# add indentations
 table6_A[(nrow(table6_A) - 2):(nrow(table6_A) - 1), 1] <- paste0(
   "\\hspace{1em} ", 
   table6_A[(nrow(table6_A) - 2):(nrow(table6_A) - 1), 1]
   )
 table6_A[,1] <- str_replace(table6_A[,1], "p-values", "$p$-values")
 
+# read .html file as a table and remove irrelevant rows
 table6_B <- readHTMLTable("html/FMQW2014_table6_replicate_B.html") %>%
   .$Table %>%
   drop_na() %>%
@@ -280,12 +294,14 @@ table6_B <- readHTMLTable("html/FMQW2014_table6_replicate_B.html") %>%
   slice(-1) %>%
   as.matrix() %>%
   set_colnames(NULL)
+# add indentations
 table6_B[(nrow(table6_B) - 2):(nrow(table6_B) - 1), 1] <- paste0(
   "\\hspace{1em} ", 
   table6_B[(nrow(table6_B) - 2):(nrow(table6_B) - 1), 1]
   )
 table6_B[,1] <- str_replace(table6_B[,1], "p-values", "$p$-values")
 
+# combine two panels and make .tex file
 rbind(table6_A, table6_B) %>%
   kable("latex", booktabs = TRUE, escape = FALSE) %>%
   kable_styling(latex_options = "scale_down") %>%
@@ -305,7 +321,8 @@ rbind(table6_A, table6_B) %>%
     "Log\nannual\nspending"
     )) %>%
   pack_rows(index = c(
-    "Panel A: Males and females" = nrow(table6_A), "Panel B: Female sub-sample" = nrow(table6_B)
+    "Panel A: Males and females" = nrow(table6_A), 
+    "Panel B: Female sub-sample" = nrow(table6_B)
     )) %>%
   save_kable("tex/FMQW2014_table6_replicate.tex")
 

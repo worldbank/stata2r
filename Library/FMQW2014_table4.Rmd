@@ -10,6 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Table 4 in Fafchamps et al. (2014), "Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana"
 
+To read the created `.tex` file, the following $\LaTeX$ packages are required:
+
+- float
+- pdflscape
+- booktabs
+- multicol
+
+
 ```{r, warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -31,21 +39,21 @@ data <- read_dta("data/ReplicationDataGhanaJDE.dta")
 
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
+# function to create formula, which will be passed to lfe::felm
 create_formula_table4 <- function(outcome, category, fe, iv, cluster) {
   category <- paste0("(", paste(category, collapse = " + "), ")")
   as.formula(
     paste(
-      paste(outcome, paste(
-        c(
-          paste0("(atreatcash + atreatequip):", category), 
-          paste0("factor(wave):", category)
-          ), collapse = " + "
-        ), sep = " ~ "),
+      paste(outcome,
+        paste0("(atreatcash + atreatequip + factor(wave)):", category), 
+        sep = " ~ "
+        ),
       fe, iv, cluster, sep = " | "
     )
   )
 }
 
+# function to run FE regressions with different category variables
 felm_category <- function(category, fe, data, outcome, iv, cluster) {
   df <- data %>%
     rename(
@@ -58,6 +66,7 @@ felm_category <- function(category, fe, data, outcome, iv, cluster) {
     )
 }
 
+# function to create a panel of regression results
 create_panel_table4 <- function(gender) {
   
   outcome <- "realfinalprofit"
@@ -84,6 +93,7 @@ create_panel_table4 <- function(gender) {
     category_4, category_4
   )
   
+  # list of cuntions to conduct F-tests in each regression
   test_fun_list <- replicate(3, vector(mode = "list", length = length(category_list)), FALSE)
   for (i in seq_along(category_list)) {
     test_fun_list[[1]][[i]] <- function(x) {
@@ -110,6 +120,7 @@ create_panel_table4 <- function(gender) {
       }
   }
   
+  # run regressions and get associated statistics
   reg_res_table4 <- tibble(
       category_list = category_list,
       fe = rep(c(fe_1, fe_2), 4),
@@ -126,6 +137,8 @@ create_panel_table4 <- function(gender) {
       n_firm = map_int(model, function(x) n_distinct(model.frame(x)$sheno))
       )
   
+  # create a panel of regression results
+  # and save as .html file
   reg_res_table4 %>%
     pull(model) %>%
     stargazer(
@@ -165,6 +178,7 @@ create_panel_table4("male")
 
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
+# read .html file as a table and remove irrelevant rows
 table4_female <- readHTMLTable("html/FMQW2014_table4_replicate_female.html") %>%
   .$Table %>%
   drop_na() %>%
@@ -172,12 +186,14 @@ table4_female <- readHTMLTable("html/FMQW2014_table4_replicate_female.html") %>%
   slice(-c(1, 2)) %>%
   as.matrix() %>%
   set_colnames(NULL)
+# add indentations
 table4_female[(nrow(table4_female) - 2):nrow(table4_female),1] <- paste0(
   "\\hspace{1em} ", 
   table4_female[(nrow(table4_female) - 2):nrow(table4_female),1]
   )
 table4_female[,1] <- str_replace(table4_female[,1], "p-values", "$p$-values")
 
+# read .html file as a table and remove irrelevant rows
 table4_male <- readHTMLTable("html/FMQW2014_table4_replicate_male.html") %>%
   .$Table %>%
   drop_na() %>%
@@ -185,17 +201,17 @@ table4_male <- readHTMLTable("html/FMQW2014_table4_replicate_male.html") %>%
   slice(-c(1, 2)) %>%
   as.matrix() %>%
   set_colnames(NULL)
+# add indentations
 table4_male[(nrow(table4_male) - 2):nrow(table4_male),1] <- paste0(
   "\\hspace{1em} ", 
   table4_male[(nrow(table4_male) - 2):nrow(table4_male),1]
   )
 table4_male[,1] <- str_replace(table4_male[,1], "p-values", "$p$-values")
 
+# combine two panels and make .tex file
 rbind(table4_female, table4_male) %>%
   kable("latex", booktabs = TRUE, escape = FALSE) %>%
   kable_styling(latex_options = "scale_down") %>%
-  add_header_above(c("", sapply(seq(8), function(x) paste0("(", x, ")")))) %>%
-  add_header_above(c(" ", rep(c("OLS", "FE"), 4))) %>%
   add_header_above(c(
     "Interaction category B" = 1, 
     "Mixed industry" = 2, 
@@ -210,6 +226,8 @@ rbind(table4_female, table4_male) %>%
     "Low capital" = 2,
     "Low profits" = 2
     )) %>%
+  add_header_above(c(" ", rep(c("OLS", "FE"), 4))) %>%
+  add_header_above(c("", sapply(seq(8), function(x) paste0("(", x, ")")))) %>%
   pack_rows(index = c(
     "Panel A: Females" = nrow(table4_female), "Panel B: Males" = nrow(table4_male)
     )) %>%

@@ -10,6 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Table 1 in Kaboski and Townsend (2012), "The Impact of Credit on Village Economies"
 
+To read the created `.tex` file, the following $\LaTeX$ packages are required:
+
+- float
+- pdflscape
+- booktabs
+- multicol
+- makecell
+
 ```{r, warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -19,7 +27,6 @@ packages <- c(
   "stargazer",
   "broom",
   "kableExtra",
-  "labelled",
   "XML",
   "scales",
   "magrittr"
@@ -30,6 +37,8 @@ pacman::p_load(packages, character.only = TRUE, install = TRUE)
 # Load an example dataset ---------------
 data_short <- read_dta("Kaboski2012_replication/AEJApp2009-0115_data/documentation/AnnualData_ShortSample.dta")
 ```
+
+## Data cleaning
 
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
@@ -46,8 +55,7 @@ data_table1 <- data_short %>%
       !is.na(och),
       ifelse((och > -5) & (och <= 15), 1, 0),
       0
-    ),
-    age2h = ageh^2
+    )
   ) %>% 
   group_by(case_id) %>% 
   mutate(
@@ -55,50 +63,46 @@ data_table1 <- data_short %>%
   ) %>% 
   ungroup()
 
-
 ```
+
+## Create table
 
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
+# outcome variables
 credit_varlist <- c(
   "newst", "vfstn", "vfstpn", "baacst", "cbst", "infst", 
   "agst", "busst", "frtst", "const"
-)
-
+  )
 credit_market_varlist <- c(
   "rst", "defcrp"
-)
-
+  )
 cons_varlist <- c(
   "tc", "educ", "grain", "milk", "meat", "alch1", 
   "alch2", "fuel", "tobac", "cerem", "houserep", "vehicrep", 
   "clothes", "mealaway"
-)
-
+  )
 inc_varlist <- c(
   "netinc", "buspro", "wageinc", 
   "riceinc", "cropinc", "liveinc", "gassd"
-)
-
+  )
 invest_varlist <- c(
  "bsnew", "tbinv", "finv",
  "frtexp", "twage"
-)
-
+  )
 other_varlist <- c(
   "maleh", "ageh", "educh",
   "madult", "fadult", "kids", "farm"
-)
-
+  )
 iv_varlist <- c(
   "invHHi"
   )
-
 all_varlist <- c(
   credit_varlist, credit_market_varlist, cons_varlist, inc_varlist,
   invest_varlist, other_varlist, iv_varlist
-)
+  )
 
+# variable labels
 var_label_list <- c(
   "New short-term credit (total)", "Village fund credit, post-program",
   "Village fund loan received dummy, post-program",
@@ -119,18 +123,16 @@ var_label_list <- c(
   "Female adults in household", "Kids in household",
   "Farming dummy for household head's\n\\hspace{1em}primary occupation",
   "Inverse village size"
-)
+  )
 
+# get N, mean, and SD
 base_sumstat <- data_table1 %>% 
   select(all_of(all_varlist)) %>% 
-  map( ~ tibble(
+  map_df( ~ tibble(
     obs = format(sum(!is.na(.x)), digits = 0, format = "f", big.mark = ","),
     mean_var = mean(.x, na.rm = TRUE), 
     sd_var = sd(.x, na.rm = TRUE)
-    )
-    ) %>% 
-  tibble() %>% 
-  unnest(".")
+    )) 
 
 cross_sectional_sd <- data_table1 %>% 
   group_by(case_id) %>% 
@@ -138,21 +140,26 @@ cross_sectional_sd <- data_table1 %>%
   summarise_all(mean, na.rm = TRUE) %>% 
   ungroup() %>% 
   select(-case_id) %>% 
-  map( ~ tibble(
+  map_df( ~ tibble(
     cross_section_sd_var = sd(.x, na.rm = TRUE)
-    )
-    ) %>% 
-  tibble() %>% 
-  unnest(".")
+    ))
   
 cbind(var_label_list, base_sumstat, cross_sectional_sd) %>% 
   mutate_if(is.double, ~ ifelse(
     .x >= 100,
     comma_format(accuracy = 1e+2)(.x),
     comma_format(accuracy = 1e-2)(.x)
-    )
+    )) %>% 
+  mutate(
+    var_label_list = linebreak(var_label_list, align = "l"),
+    across(
+      .fns = ~ ifelse(
+        row_number() %in% c(2, 3), 
+        paste0("\\textit{", .x, "}"),
+        .x
+        )
+      )
     ) %>% 
-  mutate(var_label_list = linebreak(var_label_list, align = "l")) %>% 
   set_colnames(NULL) %>%
   kable("latex", booktabs = TRUE, escape = FALSE, align = c("l", rep("r", 4))) %>%
   kable_styling(latex_options = "scale_down") %>%

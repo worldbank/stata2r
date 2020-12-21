@@ -10,6 +10,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Table 2 in Fafchamps et al. (2014), "Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana"
 
+To read the created `.tex` file, the following $\LaTeX$ packages are required:
+
+- float
+- pdflscape
+- booktabs
+- multicol
+
 ```{r, warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -29,7 +36,7 @@ data <- read_dta("data/ReplicationDataGhanaJDE.dta")
 ```
 
 ```{r, warning = FALSE}
-
+# Add variables
 data <- data %>%
   mutate(realfinalprofit_wave1 = ifelse(wave == 1, realfinalprofit, NA)) %>%
   group_by(sheno) %>%
@@ -39,6 +46,7 @@ data <- data %>%
     ) %>%
   ungroup()
 
+# variable list
 var_list <- c(
   "realfinalprofit", "fem", "highcapture", "highcapital", 
   "male_male", "male_mixed", "female_female", "female_mixed", 
@@ -49,6 +57,7 @@ var_list <- c(
   "gaspeaker", "age"
 )
 
+# variable labels
 var_label <- c(
   "Monthly profits in January 2009", "Female", 
   "High capture", "High baseline capital stock", 
@@ -64,8 +73,11 @@ var_label <- c(
   "Owner is Ga/Dangme speaker", "Owner's age"
 )
 
+# function to create a table for subsample
 table2_sub <- function(data) {
   
+  # regress outcome on control, cash treatment, and in-kind treatment
+  # to get their means
   df_model <- map(var_list, function(x) lm(
     as.formula(
       paste(x, paste(
@@ -75,6 +87,8 @@ table2_sub <- function(data) {
     ) %>%
     enframe("model_no", "model")
   
+  # extract coefficients from the regression results
+  # and keep as matrix form
   df_est <- df_model %>%
     mutate(tidied = map(model, tidy)) %>%
     select(model_no, tidied) %>%
@@ -82,11 +96,13 @@ table2_sub <- function(data) {
     mutate_if(is.double, formatC, digits = 2, format = "f") %>%
     select(model_no, term, estimate) %>%
     spread(term, estimate) %>%
-    select(-model_no)
+    select(-model_no) %>% 
+    as.matrix()
     
+  # combine the table with sample size and p-value of F-test
   cbind(
     map_int(df_model$model, function(x) nrow(x$model)),
-    df_est %>% as.matrix(),
+    df_est,
     map_chr(
       df_model$model, function(x) formatC(
         waldtest(x, ~ control - cashtreat | control - equiptreat)["p.F"],
@@ -96,6 +112,8 @@ table2_sub <- function(data) {
   )
 }
 
+# combine the variable labels and two summary statistics tables for 
+# two subsamples
 cbind(
   var_label, 
   table2_sub(data), 

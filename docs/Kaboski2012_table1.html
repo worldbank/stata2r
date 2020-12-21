@@ -319,6 +319,14 @@ $(document).ready(function () {
 
 <div id="table-1-in-kaboski-and-townsend-2012-the-impact-of-credit-on-village-economies" class="section level1">
 <h1>Table 1 in Kaboski and Townsend (2012), “The Impact of Credit on Village Economies”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+<li>makecell</li>
+</ul>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -327,7 +335,6 @@ packages &lt;- c(
   &quot;stargazer&quot;,
   &quot;broom&quot;,
   &quot;kableExtra&quot;,
-  &quot;labelled&quot;,
   &quot;XML&quot;,
   &quot;scales&quot;,
   &quot;magrittr&quot;
@@ -337,6 +344,8 @@ pacman::p_load(packages, character.only = TRUE, install = TRUE)
 
 # Load an example dataset ---------------
 data_short &lt;- read_dta(&quot;Kaboski2012_replication/AEJApp2009-0115_data/documentation/AnnualData_ShortSample.dta&quot;)</code></pre>
+<div id="data-cleaning" class="section level2">
+<h2>Data cleaning</h2>
 <pre class="r"><code>data_table1 &lt;- data_short %&gt;% 
   mutate(
     vfstn = ifelse(year %in% c(6, 7), vfst, NA),
@@ -350,53 +359,50 @@ data_short &lt;- read_dta(&quot;Kaboski2012_replication/AEJApp2009-0115_data/doc
       !is.na(och),
       ifelse((och &gt; -5) &amp; (och &lt;= 15), 1, 0),
       0
-    ),
-    age2h = ageh^2
+    )
   ) %&gt;% 
   group_by(case_id) %&gt;% 
   mutate(
     invHHi = mean(ifelse(year == 6, lead(1 / vHH), NA), na.rm = TRUE)
   ) %&gt;% 
   ungroup()</code></pre>
-<pre class="r"><code>credit_varlist &lt;- c(
+</div>
+<div id="create-table" class="section level2">
+<h2>Create table</h2>
+<pre class="r"><code># outcome variables
+credit_varlist &lt;- c(
   &quot;newst&quot;, &quot;vfstn&quot;, &quot;vfstpn&quot;, &quot;baacst&quot;, &quot;cbst&quot;, &quot;infst&quot;, 
   &quot;agst&quot;, &quot;busst&quot;, &quot;frtst&quot;, &quot;const&quot;
-)
-
+  )
 credit_market_varlist &lt;- c(
   &quot;rst&quot;, &quot;defcrp&quot;
-)
-
+  )
 cons_varlist &lt;- c(
   &quot;tc&quot;, &quot;educ&quot;, &quot;grain&quot;, &quot;milk&quot;, &quot;meat&quot;, &quot;alch1&quot;, 
   &quot;alch2&quot;, &quot;fuel&quot;, &quot;tobac&quot;, &quot;cerem&quot;, &quot;houserep&quot;, &quot;vehicrep&quot;, 
   &quot;clothes&quot;, &quot;mealaway&quot;
-)
-
+  )
 inc_varlist &lt;- c(
   &quot;netinc&quot;, &quot;buspro&quot;, &quot;wageinc&quot;, 
   &quot;riceinc&quot;, &quot;cropinc&quot;, &quot;liveinc&quot;, &quot;gassd&quot;
-)
-
+  )
 invest_varlist &lt;- c(
  &quot;bsnew&quot;, &quot;tbinv&quot;, &quot;finv&quot;,
  &quot;frtexp&quot;, &quot;twage&quot;
-)
-
+  )
 other_varlist &lt;- c(
   &quot;maleh&quot;, &quot;ageh&quot;, &quot;educh&quot;,
   &quot;madult&quot;, &quot;fadult&quot;, &quot;kids&quot;, &quot;farm&quot;
-)
-
+  )
 iv_varlist &lt;- c(
   &quot;invHHi&quot;
   )
-
 all_varlist &lt;- c(
   credit_varlist, credit_market_varlist, cons_varlist, inc_varlist,
   invest_varlist, other_varlist, iv_varlist
-)
+  )
 
+# variable labels
 var_label_list &lt;- c(
   &quot;New short-term credit (total)&quot;, &quot;Village fund credit, post-program&quot;,
   &quot;Village fund loan received dummy, post-program&quot;,
@@ -417,18 +423,16 @@ var_label_list &lt;- c(
   &quot;Female adults in household&quot;, &quot;Kids in household&quot;,
   &quot;Farming dummy for household head&#39;s\n\\hspace{1em}primary occupation&quot;,
   &quot;Inverse village size&quot;
-)
+  )
 
+# get N, mean, and SD
 base_sumstat &lt;- data_table1 %&gt;% 
   select(all_of(all_varlist)) %&gt;% 
-  map( ~ tibble(
+  map_df( ~ tibble(
     obs = format(sum(!is.na(.x)), digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;),
     mean_var = mean(.x, na.rm = TRUE), 
     sd_var = sd(.x, na.rm = TRUE)
-    )
-    ) %&gt;% 
-  tibble() %&gt;% 
-  unnest(&quot;.&quot;)
+    )) 
 
 cross_sectional_sd &lt;- data_table1 %&gt;% 
   group_by(case_id) %&gt;% 
@@ -436,21 +440,26 @@ cross_sectional_sd &lt;- data_table1 %&gt;%
   summarise_all(mean, na.rm = TRUE) %&gt;% 
   ungroup() %&gt;% 
   select(-case_id) %&gt;% 
-  map( ~ tibble(
+  map_df( ~ tibble(
     cross_section_sd_var = sd(.x, na.rm = TRUE)
-    )
-    ) %&gt;% 
-  tibble() %&gt;% 
-  unnest(&quot;.&quot;)
+    ))
   
 cbind(var_label_list, base_sumstat, cross_sectional_sd) %&gt;% 
   mutate_if(is.double, ~ ifelse(
     .x &gt;= 100,
     comma_format(accuracy = 1e+2)(.x),
     comma_format(accuracy = 1e-2)(.x)
-    )
+    )) %&gt;% 
+  mutate(
+    var_label_list = linebreak(var_label_list, align = &quot;l&quot;),
+    across(
+      .fns = ~ ifelse(
+        row_number() %in% c(2, 3), 
+        paste0(&quot;\\textit{&quot;, .x, &quot;}&quot;),
+        .x
+        )
+      )
     ) %&gt;% 
-  mutate(var_label_list = linebreak(var_label_list, align = &quot;l&quot;)) %&gt;% 
   set_colnames(NULL) %&gt;%
   kable(&quot;latex&quot;, booktabs = TRUE, escape = FALSE, align = c(&quot;l&quot;, rep(&quot;r&quot;, 4))) %&gt;%
   kable_styling(latex_options = &quot;scale_down&quot;) %&gt;%
@@ -468,6 +477,7 @@ cbind(var_label_list, base_sumstat, cross_sectional_sd) %&gt;%
     )) %&gt;%
   save_kable(&quot;tex/Kaboski2012_table1_replicate.tex&quot;)</code></pre>
 <p><img src="table_figures/Kaboski2012_table1_replicate.png" style="width:100.0%" /></p>
+</div>
 </div>
 
 

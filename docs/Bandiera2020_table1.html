@@ -319,6 +319,14 @@ $(document).ready(function () {
 
 <div id="table-1-in-bandiera-et-al.-2020-womens-empowerment-in-action-evidence-from-a-randomized-control-trial-in-africa" class="section level1">
 <h1>Table 1 in Bandiera et al. (2020), “Women’s Empowerment in Action: Evidence from a Randomized Control Trial in Africa”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+<li>makecell</li>
+</ul>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -334,11 +342,13 @@ pacman::p_load(packages, character.only = TRUE, install = TRUE)
 
 # Load an example dataset ---------------
 data &lt;- read_dta(&quot;Bandiera2020_replication/ELA.dta&quot;)</code></pre>
-<pre class="r"><code>var_panelA &lt;- c(&quot;age&quot;, &quot;E_Denrolled&quot;, &quot;M_children&quot;, &quot;partner&quot;)
+<pre class="r"><code># outcome variables
+var_panelA &lt;- c(&quot;age&quot;, &quot;E_Denrolled&quot;, &quot;M_children&quot;, &quot;partner&quot;)
 var_panelB &lt;- c(&quot;Entrep_total&quot;, &quot;selfempl&quot;, &quot;empl&quot;, &quot;worry_job&quot;)
 var_panelC &lt;- c(&quot;R_sexunwilling&quot;, &quot;sex_pregnancy&quot;, &quot;Rhiv_skillsALT&quot;, &quot;always_condom&quot;, &quot;other_contraceptive&quot;)
 var_panelD &lt;- c(&quot;empowerment&quot;, &quot;M_idealmarry_ageF&quot;)
 
+# variable labels
 var_label &lt;- c(
   &quot;Age&quot;, &quot;Currently enrolled in school&quot;,
   &quot;Has child(ren)&quot;, &quot;Married or cohabiting&quot;,
@@ -354,6 +364,7 @@ var_label &lt;- c(
   &quot;Suitable age at marriage for a woman&quot;
 )
 
+# mean and SD of variables
 sum_mat &lt;- data %&gt;% 
   group_by(treatment) %&gt;% 
   summarise_at(
@@ -365,13 +376,16 @@ sum_mat &lt;- data %&gt;%
   select(- treatment) %&gt;% 
   ungroup()
 
+# mean of variables
 mean_mat &lt;- sum_mat %&gt;% 
   select(ends_with(&quot;_mean&quot;)) %&gt;% 
   t()
 
+# SD of variables
 sd_mat &lt;- sum_mat %&gt;% 
   select(ends_with(&quot;_sd&quot;)) %&gt;% 
   t()
+# SD of variables (as string)
 sd_mat_str &lt;- sd_mat %&gt;%
   formatC(digits = 3, format = &quot;f&quot;) %&gt;% 
   as_tibble() %&gt;% 
@@ -381,15 +395,17 @@ sd_mat_str &lt;- sd_mat %&gt;%
     )
   )
 
+# difference in outcomes between treatment and control
+# (s.e. clustered by villid)
 diff &lt;- map_df(
   c(var_panelA, var_panelB, var_panelC, var_panelD),
   function(x) felm(
     formula(
       paste0(
         x, &quot;~ treatment | 0 | 0 | villid&quot;
-      )
-    ), 
-    data = data
+        )
+      ), 
+      data = data
     ) %&gt;% 
     summary() %&gt;% 
     .$coefficients %&gt;% 
@@ -399,13 +415,15 @@ diff &lt;- map_df(
   mutate(
     se = paste0(&quot;[&quot;, `Cluster s.e.`, &quot;]&quot;),
     diff = paste(Estimate, se)
-  ) %&gt;% 
+    ) %&gt;% 
   select(diff) %&gt;% 
   as.matrix()
 
+# normalized difference
 norm_diff &lt;- ((mean_mat[,1] - mean_mat[,2]) / sqrt(sd_mat[,1]^2 + sd_mat[,2]^2)) %&gt;% 
   formatC(digits = 3, format = &quot;f&quot;)
 
+# matrix without standard deviations
 mat_wo_sd &lt;- cbind(
   var_label,
   mean_mat %&gt;%
@@ -414,6 +432,7 @@ mat_wo_sd &lt;- cbind(
   norm_diff
 )
 
+# output matrix (add SD to mat_wo_sd)
 output_mat &lt;- c()
 for (i in seq(nrow(mat_wo_sd))) {
   output_mat &lt;- rbind(output_mat, mat_wo_sd[i,])
@@ -421,7 +440,6 @@ for (i in seq(nrow(mat_wo_sd))) {
     output_mat &lt;- rbind(output_mat, c(&quot;&quot;, sd_mat_str[i,], &quot;&quot;, &quot;&quot;))
   }
 }
-
 output_mat %&gt;% 
   set_colnames(NULL) %&gt;% 
   kable(&quot;latex&quot;, booktabs = TRUE, escape = FALSE, align = c(&quot;l&quot;, rep(&quot;c&quot;, 4))) %&gt;%

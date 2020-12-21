@@ -319,6 +319,13 @@ $(document).ready(function () {
 
 <div id="table-2-in-fafchamps-et-al.-2014-microenterprise-growth-and-the-flypaper-effect-evidence-from-a-randomized-experiment-in-ghana" class="section level1">
 <h1>Table 2 in Fafchamps et al. (2014), “Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+</ul>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -334,7 +341,8 @@ pacman::p_load(packages, character.only = TRUE, install = TRUE)
 
 # Load an example dataset ---------------
 data &lt;- read_dta(&quot;data/ReplicationDataGhanaJDE.dta&quot;)</code></pre>
-<pre class="r"><code>data &lt;- data %&gt;%
+<pre class="r"><code># Add variables
+data &lt;- data %&gt;%
   mutate(realfinalprofit_wave1 = ifelse(wave == 1, realfinalprofit, NA)) %&gt;%
   group_by(sheno) %&gt;%
   mutate(
@@ -343,6 +351,7 @@ data &lt;- read_dta(&quot;data/ReplicationDataGhanaJDE.dta&quot;)</code></pre>
     ) %&gt;%
   ungroup()
 
+# variable list
 var_list &lt;- c(
   &quot;realfinalprofit&quot;, &quot;fem&quot;, &quot;highcapture&quot;, &quot;highcapital&quot;, 
   &quot;male_male&quot;, &quot;male_mixed&quot;, &quot;female_female&quot;, &quot;female_mixed&quot;, 
@@ -353,6 +362,7 @@ var_list &lt;- c(
   &quot;gaspeaker&quot;, &quot;age&quot;
 )
 
+# variable labels
 var_label &lt;- c(
   &quot;Monthly profits in January 2009&quot;, &quot;Female&quot;, 
   &quot;High capture&quot;, &quot;High baseline capital stock&quot;, 
@@ -368,8 +378,11 @@ var_label &lt;- c(
   &quot;Owner is Ga/Dangme speaker&quot;, &quot;Owner&#39;s age&quot;
 )
 
+# function to create a table for subsample
 table2_sub &lt;- function(data) {
   
+  # regress outcome on control, cash treatment, and in-kind treatment
+  # to get their means
   df_model &lt;- map(var_list, function(x) lm(
     as.formula(
       paste(x, paste(
@@ -379,6 +392,8 @@ table2_sub &lt;- function(data) {
     ) %&gt;%
     enframe(&quot;model_no&quot;, &quot;model&quot;)
   
+  # extract coefficients from the regression results
+  # and keep as matrix form
   df_est &lt;- df_model %&gt;%
     mutate(tidied = map(model, tidy)) %&gt;%
     select(model_no, tidied) %&gt;%
@@ -386,11 +401,13 @@ table2_sub &lt;- function(data) {
     mutate_if(is.double, formatC, digits = 2, format = &quot;f&quot;) %&gt;%
     select(model_no, term, estimate) %&gt;%
     spread(term, estimate) %&gt;%
-    select(-model_no)
+    select(-model_no) %&gt;% 
+    as.matrix()
     
+  # combine the table with sample size and p-value of F-test
   cbind(
     map_int(df_model$model, function(x) nrow(x$model)),
-    df_est %&gt;% as.matrix(),
+    df_est,
     map_chr(
       df_model$model, function(x) formatC(
         waldtest(x, ~ control - cashtreat | control - equiptreat)[&quot;p.F&quot;],
@@ -400,6 +417,8 @@ table2_sub &lt;- function(data) {
   )
 }
 
+# combine the variable labels and two summary statistics tables for 
+# two subsamples
 cbind(
   var_label, 
   table2_sub(data), 

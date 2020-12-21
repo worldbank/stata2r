@@ -10,6 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Table 2 in Bandiera et al. (2020), "Women’s Empowerment in Action: Evidence from a Randomized Control Trial in Africa"
 
+To read the created `.tex` file, the following $\LaTeX$ packages are required:
+
+- float
+- pdflscape
+- booktabs
+- multicol
+- makecell
+
 ```{r, warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -36,12 +44,14 @@ data <- data %>%
 
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
+# RHS variables
 var_list_lin <- c(
    "age", "E_Denrolled", "partner","M_children", 
    "igaALL", "control_bodyALL", "aspirationALL"
    )
 var_list <- c(var_list_lin, paste0(var_list_lin, ":treatment"))
 
+# variable labels
 var_label <- c(
   "Treatment",
   "Age", 
@@ -59,19 +69,23 @@ var_label <- c(
   "\\makecell[l]{Treatment $\\times$ aspiration\\\\\\hspace{1em}index}"
 )
 
+# outcome variables
 outcome_list <- c(
   rep("follow_up", 3),
   rep("endline", 3),
   rep("follow_endline", 3)
 )
 
+# list of control variables
 control_list <- vector(mode = "list", length = length(outcome_list))
 for (i in c(3, 6, 9)) {
   control_list[[i]] <- var_list
 }
 
+# fixed effects used in each regression
 fe_list <- rep(c("0", "branch_name", "branch_name"), 3)
 
+# regression results
 reg_res <- pmap(
   list(outcome_list, control_list, fe_list),
   function(outcome, control, fe) felm(
@@ -85,6 +99,7 @@ reg_res <- pmap(
     data = data
   )
 )
+# mean of outcome variables
 mean_dep <- pmap_chr(
   list(outcome_list, reg_res, seq(9)),
   function(x, y, z) ifelse(
@@ -95,6 +110,7 @@ mean_dep <- pmap_chr(
   )
 branch_dummies <- rep(c("No", "Yes", "Yes"), 3)
 
+# F-test that all interactions have 0 coefficients
 fstat_list <- c()
 for (i in seq(length(outcome_list))) {
   if (i %in% c(3, 6, 9)) {
@@ -107,6 +123,7 @@ for (i in seq(length(outcome_list))) {
   }
 }
 
+# table output
 reg_res %>% 
   stargazer(
     dep.var.labels.include = FALSE,

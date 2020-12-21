@@ -10,6 +10,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Table 1B in Banerjee et al. (2015), "The Mircle of Microfinance? Evidence from a Randomized Evaluation"
 
+To read the created `.tex` file, the following $\LaTeX$ packages are required:
+
+- float
+- pdflscape
+- booktabs
+- multicol
+
 ```{r, warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -25,7 +32,6 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = TRUE)
 
 # Load an example dataset ---------------
-data_baseline <- read_dta("Banerjee2015_replication/2013-0533_data_baseline.dta")
 data_endline <- read_dta("Banerjee2015_replication/2013-0533_data_endlines1and2.dta")
 ```
 
@@ -33,6 +39,7 @@ data_endline <- read_dta("Banerjee2015_replication/2013-0533_data_endlines1and2.
 
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
+# outcome variables
 hh_composition <- c(
   "hhsize", "adults", "children", "male_head", "head_age", "head_noeduc"
   )
@@ -56,20 +63,26 @@ businesses_allHH <- c(
 consumption <- c(
   "total_exp_mo", "nondurable_exp_mo", "durables_exp_mo", "home_durable_index"
   )
-
 all_varlist <- c(
   hh_composition, credit_access, loan_amt, self_emp_activ,
   businesses, businesses_allHH, consumption
-)
+  )
 
+# data cleaning
 data_table1B <- data_endline
 for (i in seq(2)) {
   data_table1B <- data_table1B %>% 
     mutate(
       across(
         .cols = paste0(businesses, "_", as.character(i)),
-        .fns = ~ ifelse(eval(parse(text = paste0("total_biz_", as.character(i)))) == 0, 0, .x),
+        .fns = ~ .x,
         .names = paste0("{col}_allHH_", as.character(i))
+      )
+    ) %>% 
+    mutate(
+      across(
+        .cols = paste0(businesses, "_", as.character(i)),
+        .fns = ~ ifelse(eval(parse(text = paste0("total_biz_", as.character(i)))) == 0, NaN, .x)
       )
     ) %>% 
     rename_with(
@@ -77,31 +90,31 @@ for (i in seq(2)) {
     )
 }
 
-for (i in seq(2)) {
-  var_label(data_table1B)[paste0(all_varlist, "_", as.character(i))] <- c(
-    "Number members", "Number adults \n \\hspace{1em}($>=$ 16 years old)",
-    "Number children \n \\hspace{1em}($<$ 16 years old)",
-    "Male head", "Head's age", "Head with no education",
-    "Loan from Spandana", "Loan from other MFI",
-    "Loan from a bank", "Informal loan",
-    "Any type of loan",
-    "Spandana", "Other MFI", "Bank", "Informal loan",
-    "Total",
-    "Number of activities", 
-    "Number of activities \n \\hspace{1em}managed by women",
-    "Share of HH activities \n \\hspace{1em}managed by women",
-    "Revenue / month (Rs)", "Expenses / month (Rs)",
-    "Investment / month (Rs)", "Employment (employees)",
-    "Self-employment (hours per week)",
-    "Revenue / month (Rs)", "Expenses / month (Rs)",
-    "Investment / month (Rs)", "Employment (employees)",
-    "Self-employment (hours per week)",
-    "Total consumption (Rs)", "Nondurables consumption (Rs)",
-    "Durables consumption (Rs)", "Asset index"
-  )
-}
+# variable labels
+var_labels <- c(
+  "Number members", "Number adults \n \\hspace{1em}($>=$ 16 years old)",
+  "Number children \n \\hspace{1em}($<$ 16 years old)",
+  "Male head", "Head's age", "Head with no education",
+  "Loan from Spandana", "Loan from other MFI",
+  "Loan from a bank", "Informal loan",
+  "Any type of loan",
+  "Spandana", "Other MFI", "Bank", "Informal loan",
+  "Total",
+  "Number of activities", 
+  "Number of activities \n \\hspace{1em}managed by women",
+  "Share of HH activities \n \\hspace{1em}managed by women",
+  "Revenue / month (Rs)", "Expenses / month (Rs)",
+  "Investment / month (Rs)", "Employment (employees)",
+  "Self-employment (hours per week)",
+  "Revenue / month (Rs)", "Expenses / month (Rs)",
+  "Investment / month (Rs)", "Employment (employees)",
+  "Self-employment (hours per week)",
+  "Total consumption (Rs)", "Nondurables consumption (Rs)",
+  "Durables consumption (Rs)", "Asset index"
+)
 
-control_group_sumstat <- function(varlist, data) {
+# function to create a panel for control group
+control_group_sumstat <- function(varlist, var_labels, data) {
   
   output <- data %>% 
     select(all_of(varlist)) %>% 
@@ -114,7 +127,7 @@ control_group_sumstat <- function(varlist, data) {
     tibble() %>% 
     unnest(".") %>% 
     mutate(
-      col_names = unlist(var_label(data)[varlist]),
+      col_names = var_labels,
       mean_var = ifelse(
         mean_var >= 100, 
         formatC(mean_var, digits = 0, format = "f", big.mark = ","), 
@@ -135,6 +148,7 @@ control_group_sumstat <- function(varlist, data) {
   return(output)
 }
 
+# function to create a panel comparing two endlines
 EL2_EL1_sumstat <- function(varlist, data) {
   
   data_long <- data %>% 
@@ -153,16 +167,16 @@ EL2_EL1_sumstat <- function(varlist, data) {
     ) %>%
     enframe("model_no", "model") %>% 
     mutate(
-      estimate = map(model, function(x) summary(x)$coefficients["as.factor(endline)_2", c("Estimate", "Pr(>|t|)")])
+      estimate = map_dbl(
+        model, 
+        function(x) summary(x)$coefficients["as.factor(endline)_2", "Estimate"]
+        ),
+      p_value = map_dbl(
+        model, 
+        function(x) waldtest(x, "as.factor(endline)_2")["p.F"]
+        )
     ) %>% 
-    unnest(estimate) %>% 
-    group_by(model_no) %>% 
-    mutate(
-      term = ifelse(row_number() == 1, "estimate", "p_value")
-      ) %>% 
-    pivot_wider(names_from = term, values_from = estimate) %>% 
-    ungroup() %>% 
-    select(- c(model_no, model)) %>% 
+    select(estimate, p_value) %>% 
     mutate(
       across(
         .cols = c(estimate, p_value),
@@ -177,10 +191,19 @@ EL2_EL1_sumstat <- function(varlist, data) {
   return(output)
 }
 
+# combine panels
 cbind(
-  control_group_sumstat(paste0(all_varlist, "_1"), data_table1B %>% filter(treatment == 0)) %>% 
+  control_group_sumstat(
+    paste0(all_varlist, "_1"), 
+    var_labels, 
+    data_table1B %>% filter(treatment == 0)
+    ) %>% 
     rename_with(.fn = function(x) paste0(x, "_1"), .cols = obs:sd_var),
-  control_group_sumstat(paste0(all_varlist, "_2"), data_table1B %>% filter(treatment == 0)) %>% 
+  control_group_sumstat(
+    paste0(all_varlist, "_2"), 
+    var_labels, 
+    data_table1B %>% filter(treatment == 0)
+    ) %>% 
     rename_with(.fn = function(x) paste0(x, "_2"), .cols = obs:sd_var) %>% 
     select(-col_names),
   EL2_EL1_sumstat(all_varlist, data_table1B)

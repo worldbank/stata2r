@@ -319,6 +319,14 @@ $(document).ready(function () {
 
 <div id="table-2-in-banerjee-et-al.-2015-the-mircle-of-microfinance-evidence-from-a-randomized-evaluation" class="section level1">
 <h1>Table 2 in Banerjee et al. (2015), “The Mircle of Microfinance? Evidence from a Randomized Evaluation”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+<li>makecell</li>
+</ul>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -334,47 +342,42 @@ packages &lt;- c(
 pacman::p_load(packages, character.only = TRUE, install = TRUE)
 
 # Load an example dataset ---------------
-data_baseline &lt;- read_dta(&quot;Banerjee2015_replication/2013-0533_data_baseline.dta&quot;)
 data_endline &lt;- read_dta(&quot;Banerjee2015_replication/2013-0533_data_endlines1and2.dta&quot;)</code></pre>
 <div id="table-2" class="section level2">
 <h2>Table 2</h2>
-<pre class="r"><code>area_controls &lt;- c(
+<pre class="r"><code># outcome variables
+area_controls &lt;- c(
   &quot;area_pop_base&quot;, &quot;area_debt_total_base&quot;, &quot;area_business_total_base&quot;, 
   &quot;area_exp_pc_mean_base&quot;, &quot;area_literate_head_base&quot;, &quot;area_literate_base&quot;
   )
-
 outcome_el1_credit &lt;- c(
   &quot;spandana_1&quot;, &quot;othermfi_1&quot;, &quot;anymfi_1&quot;, &quot;anybank_1&quot;, &quot;anyinformal_1&quot;, 
   &quot;anyloan_1&quot;, &quot;everlate_1&quot;, &quot;mfi_loan_cycles_1&quot;, &quot;credit_index_1&quot;
   )
-
 outcome_el1_amt &lt;- c(
   &quot;spandana_amt_1&quot;, &quot;othermfi_amt_1&quot;, &quot;anymfi_amt_1&quot;, 
   &quot;bank_amt_1&quot;, &quot;informal_amt_1&quot;, &quot;anyloan_amt_1&quot;
   )
-
 outcome_el2_credit &lt;- c(
   &quot;spandana_2&quot;, &quot;othermfi_2&quot;, &quot;anymfi_2&quot;, &quot;anybank_2&quot;, &quot;anyinformal_2&quot;, 
   &quot;anyloan_2&quot;, &quot;everlate_2&quot;, &quot;mfi_loan_cycles_2&quot;, &quot;credit_index_2&quot;
   )
-
 outcome_el2_amt &lt;- c(
   &quot;spandana_amt_2&quot;, &quot;othermfi_amt_2&quot;, &quot;anymfi_amt_2&quot;, 
   &quot;bank_amt_2&quot;, &quot;informal_amt_2&quot;, &quot;anyloan_amt_2&quot;
   )
-
 outcome_index_el1 &lt;- c(
   &quot;credit_index_1&quot;, &quot;biz_index_all_1&quot;, &quot;biz_index_old_1&quot;, 
   &quot;biz_index_new_1&quot;, &quot;income_index_1&quot;, &quot;labor_index_1&quot;, 
   &quot;total_exp_mo_pc_1&quot;, &quot;social_index_1&quot;
-)
-
+  )
 outcome_index_el2 &lt;- c(
   &quot;credit_index_2&quot;, &quot;biz_index_all_2&quot;, &quot;biz_index_old_2&quot;, 
   &quot;income_index_2&quot;, &quot;labor_index_2&quot;, 
   &quot;total_exp_mo_pc_2&quot;, &quot;social_index_2&quot;
-)</code></pre>
-<pre class="r"><code>reg_func &lt;- function(varlist, weight, data, area_controls) {
+  )</code></pre>
+<pre class="r"><code># function for regressions with lfe::felm
+reg_func &lt;- function(varlist, weight, data, area_controls) {
   tibble(
     model = map(
       varlist, 
@@ -392,8 +395,18 @@ outcome_index_el2 &lt;- c(
     )
 }
 
+# Hockberg-corrected p-values
 res_index_el1 &lt;- reg_func(outcome_index_el1, data_endline$w1, data_endline, area_controls)
-pval_index_el1 &lt;- map_dbl(res_index_el1$model, function(x) summary(x)$coefficients[&quot;treatment&quot;, &quot;Pr(&gt;|t|)&quot;])
+pval_index_el1 &lt;- map_dbl(
+  res_index_el1$model, 
+  function(x) waldtest(x, &quot;treatment&quot;)[&quot;p.F&quot;]
+  )
+# (correct way to calculate Hockberg-corrected p-values is
+#   p.adjust(pval_index_el1)
+# or
+#   (pval_index_el1 * (length(pval_index_el1) + 1 - rank(pval_index_el1))),
+# but to replicate the original table, we follow the calculation method in the original code
+# )
 adj_pval_index_el1 &lt;- (pval_index_el1 * (length(pval_index_el1) + 1 - rank(- pval_index_el1))) 
 adj_pval_index_el1_str &lt;- ifelse(
   adj_pval_index_el1 &gt; 1, &quot;&gt; 0.999&quot;, 
@@ -401,13 +414,17 @@ adj_pval_index_el1_str &lt;- ifelse(
   )
 
 res_index_el2 &lt;- reg_func(outcome_index_el2, data_endline$w2, data_endline, area_controls)
-pval_index_el2 &lt;- map_dbl(res_index_el2$model, function(x) summary(x)$coefficients[&quot;treatment&quot;, &quot;Pr(&gt;|t|)&quot;])
+pval_index_el2 &lt;- map_dbl(
+  res_index_el2$model, 
+  function(x) waldtest(x, &quot;treatment&quot;)[&quot;p.F&quot;]
+  )
 adj_pval_index_el2 &lt;- (pval_index_el2 * (length(pval_index_el2) + 1 - rank(- pval_index_el2)))
 adj_pval_index_el2_str &lt;- ifelse(
   adj_pval_index_el2 &gt; 1, &quot;&gt; 0.999&quot;, 
   formatC(adj_pval_index_el2, digits = 3, format = &quot;f&quot;)
   )</code></pre>
-<pre class="r"><code>tab2_reg_func &lt;- function(
+<pre class="r"><code># function to create a panel of regression results
+tab2_reg_func &lt;- function(
   varlist, weight, data, digits, area_controls, outfile
   ) {
   res_reg &lt;- reg_func(varlist, weight, data, area_controls)
@@ -424,7 +441,7 @@ adj_pval_index_el2_str &lt;- ifelse(
         colMeans((model.frame(x) %&gt;% filter(treatment == 0))[y]), 
         digits = 3, format = &quot;f&quot;, big.mark = &quot;,&quot;
         )
-    )
+      )
     )
 
   res_reg %&gt;% 
@@ -467,6 +484,7 @@ tab2_reg_func(
   0, area_controls, &quot;Banerjee_table2Bamt.html&quot;
 )
 
+# function to read .html data and keep as matrix
 tab2_read_html &lt;- function(filename) {
   readHTMLTable(file.path(&quot;html&quot;, filename)) %&gt;% 
     .$`Replication of Table 2 in Banerjee et al. (2015)` %&gt;% 
@@ -477,7 +495,6 @@ tab2_read_html &lt;- function(filename) {
     set_colnames(NULL)
 }
 
-
 tab2Acredit &lt;- tab2_read_html(&quot;Banerjee_table2Acredit.html&quot;)
 tab2Aamt &lt;- tab2_read_html(&quot;Banerjee_table2Aamt.html&quot;) %&gt;% 
   cbind(&quot;&quot;, &quot;&quot;, &quot;&quot;)
@@ -485,6 +502,7 @@ tab2Bcredit &lt;- tab2_read_html(&quot;Banerjee_table2Bcredit.html&quot;)
 tab2Bamt &lt;- tab2_read_html(&quot;Banerjee_table2Bamt.html&quot;) %&gt;% 
   cbind(&quot;&quot;, &quot;&quot;, &quot;&quot;)
 
+# combine panels and save as .tex file
 rbind(
   tab2Acredit, 
   c(&quot;Hochberg-corrected\n$p$-value&quot;, rep(&quot;&quot;, 8), adj_pval_index_el1_str[1]), 

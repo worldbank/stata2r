@@ -319,6 +319,13 @@ $(document).ready(function () {
 
 <div id="table-1b-in-banerjee-et-al.-2015-the-mircle-of-microfinance-evidence-from-a-randomized-evaluation" class="section level1">
 <h1>Table 1B in Banerjee et al. (2015), “The Mircle of Microfinance? Evidence from a Randomized Evaluation”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+</ul>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -333,11 +340,11 @@ packages &lt;- c(
 pacman::p_load(packages, character.only = TRUE, install = TRUE)
 
 # Load an example dataset ---------------
-data_baseline &lt;- read_dta(&quot;Banerjee2015_replication/2013-0533_data_baseline.dta&quot;)
 data_endline &lt;- read_dta(&quot;Banerjee2015_replication/2013-0533_data_endlines1and2.dta&quot;)</code></pre>
 <div id="table-1b" class="section level2">
 <h2>Table 1B</h2>
-<pre class="r"><code>hh_composition &lt;- c(
+<pre class="r"><code># outcome variables
+hh_composition &lt;- c(
   &quot;hhsize&quot;, &quot;adults&quot;, &quot;children&quot;, &quot;male_head&quot;, &quot;head_age&quot;, &quot;head_noeduc&quot;
   )
 credit_access &lt;- c(
@@ -360,20 +367,26 @@ businesses_allHH &lt;- c(
 consumption &lt;- c(
   &quot;total_exp_mo&quot;, &quot;nondurable_exp_mo&quot;, &quot;durables_exp_mo&quot;, &quot;home_durable_index&quot;
   )
-
 all_varlist &lt;- c(
   hh_composition, credit_access, loan_amt, self_emp_activ,
   businesses, businesses_allHH, consumption
-)
+  )
 
+# data cleaning
 data_table1B &lt;- data_endline
 for (i in seq(2)) {
   data_table1B &lt;- data_table1B %&gt;% 
     mutate(
       across(
         .cols = paste0(businesses, &quot;_&quot;, as.character(i)),
-        .fns = ~ ifelse(eval(parse(text = paste0(&quot;total_biz_&quot;, as.character(i)))) == 0, 0, .x),
+        .fns = ~ .x,
         .names = paste0(&quot;{col}_allHH_&quot;, as.character(i))
+      )
+    ) %&gt;% 
+    mutate(
+      across(
+        .cols = paste0(businesses, &quot;_&quot;, as.character(i)),
+        .fns = ~ ifelse(eval(parse(text = paste0(&quot;total_biz_&quot;, as.character(i)))) == 0, NaN, .x)
       )
     ) %&gt;% 
     rename_with(
@@ -381,31 +394,31 @@ for (i in seq(2)) {
     )
 }
 
-for (i in seq(2)) {
-  var_label(data_table1B)[paste0(all_varlist, &quot;_&quot;, as.character(i))] &lt;- c(
-    &quot;Number members&quot;, &quot;Number adults \n \\hspace{1em}($&gt;=$ 16 years old)&quot;,
-    &quot;Number children \n \\hspace{1em}($&lt;$ 16 years old)&quot;,
-    &quot;Male head&quot;, &quot;Head&#39;s age&quot;, &quot;Head with no education&quot;,
-    &quot;Loan from Spandana&quot;, &quot;Loan from other MFI&quot;,
-    &quot;Loan from a bank&quot;, &quot;Informal loan&quot;,
-    &quot;Any type of loan&quot;,
-    &quot;Spandana&quot;, &quot;Other MFI&quot;, &quot;Bank&quot;, &quot;Informal loan&quot;,
-    &quot;Total&quot;,
-    &quot;Number of activities&quot;, 
-    &quot;Number of activities \n \\hspace{1em}managed by women&quot;,
-    &quot;Share of HH activities \n \\hspace{1em}managed by women&quot;,
-    &quot;Revenue / month (Rs)&quot;, &quot;Expenses / month (Rs)&quot;,
-    &quot;Investment / month (Rs)&quot;, &quot;Employment (employees)&quot;,
-    &quot;Self-employment (hours per week)&quot;,
-    &quot;Revenue / month (Rs)&quot;, &quot;Expenses / month (Rs)&quot;,
-    &quot;Investment / month (Rs)&quot;, &quot;Employment (employees)&quot;,
-    &quot;Self-employment (hours per week)&quot;,
-    &quot;Total consumption (Rs)&quot;, &quot;Nondurables consumption (Rs)&quot;,
-    &quot;Durables consumption (Rs)&quot;, &quot;Asset index&quot;
-  )
-}
+# variable labels
+var_labels &lt;- c(
+  &quot;Number members&quot;, &quot;Number adults \n \\hspace{1em}($&gt;=$ 16 years old)&quot;,
+  &quot;Number children \n \\hspace{1em}($&lt;$ 16 years old)&quot;,
+  &quot;Male head&quot;, &quot;Head&#39;s age&quot;, &quot;Head with no education&quot;,
+  &quot;Loan from Spandana&quot;, &quot;Loan from other MFI&quot;,
+  &quot;Loan from a bank&quot;, &quot;Informal loan&quot;,
+  &quot;Any type of loan&quot;,
+  &quot;Spandana&quot;, &quot;Other MFI&quot;, &quot;Bank&quot;, &quot;Informal loan&quot;,
+  &quot;Total&quot;,
+  &quot;Number of activities&quot;, 
+  &quot;Number of activities \n \\hspace{1em}managed by women&quot;,
+  &quot;Share of HH activities \n \\hspace{1em}managed by women&quot;,
+  &quot;Revenue / month (Rs)&quot;, &quot;Expenses / month (Rs)&quot;,
+  &quot;Investment / month (Rs)&quot;, &quot;Employment (employees)&quot;,
+  &quot;Self-employment (hours per week)&quot;,
+  &quot;Revenue / month (Rs)&quot;, &quot;Expenses / month (Rs)&quot;,
+  &quot;Investment / month (Rs)&quot;, &quot;Employment (employees)&quot;,
+  &quot;Self-employment (hours per week)&quot;,
+  &quot;Total consumption (Rs)&quot;, &quot;Nondurables consumption (Rs)&quot;,
+  &quot;Durables consumption (Rs)&quot;, &quot;Asset index&quot;
+)
 
-control_group_sumstat &lt;- function(varlist, data) {
+# function to create a panel for control group
+control_group_sumstat &lt;- function(varlist, var_labels, data) {
   
   output &lt;- data %&gt;% 
     select(all_of(varlist)) %&gt;% 
@@ -418,7 +431,7 @@ control_group_sumstat &lt;- function(varlist, data) {
     tibble() %&gt;% 
     unnest(&quot;.&quot;) %&gt;% 
     mutate(
-      col_names = unlist(var_label(data)[varlist]),
+      col_names = var_labels,
       mean_var = ifelse(
         mean_var &gt;= 100, 
         formatC(mean_var, digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;), 
@@ -439,6 +452,7 @@ control_group_sumstat &lt;- function(varlist, data) {
   return(output)
 }
 
+# function to create a panel comparing two endlines
 EL2_EL1_sumstat &lt;- function(varlist, data) {
   
   data_long &lt;- data %&gt;% 
@@ -457,16 +471,16 @@ EL2_EL1_sumstat &lt;- function(varlist, data) {
     ) %&gt;%
     enframe(&quot;model_no&quot;, &quot;model&quot;) %&gt;% 
     mutate(
-      estimate = map(model, function(x) summary(x)$coefficients[&quot;as.factor(endline)_2&quot;, c(&quot;Estimate&quot;, &quot;Pr(&gt;|t|)&quot;)])
+      estimate = map_dbl(
+        model, 
+        function(x) summary(x)$coefficients[&quot;as.factor(endline)_2&quot;, &quot;Estimate&quot;]
+        ),
+      p_value = map_dbl(
+        model, 
+        function(x) waldtest(x, &quot;as.factor(endline)_2&quot;)[&quot;p.F&quot;]
+        )
     ) %&gt;% 
-    unnest(estimate) %&gt;% 
-    group_by(model_no) %&gt;% 
-    mutate(
-      term = ifelse(row_number() == 1, &quot;estimate&quot;, &quot;p_value&quot;)
-      ) %&gt;% 
-    pivot_wider(names_from = term, values_from = estimate) %&gt;% 
-    ungroup() %&gt;% 
-    select(- c(model_no, model)) %&gt;% 
+    select(estimate, p_value) %&gt;% 
     mutate(
       across(
         .cols = c(estimate, p_value),
@@ -481,10 +495,19 @@ EL2_EL1_sumstat &lt;- function(varlist, data) {
   return(output)
 }
 
+# combine panels
 cbind(
-  control_group_sumstat(paste0(all_varlist, &quot;_1&quot;), data_table1B %&gt;% filter(treatment == 0)) %&gt;% 
+  control_group_sumstat(
+    paste0(all_varlist, &quot;_1&quot;), 
+    var_labels, 
+    data_table1B %&gt;% filter(treatment == 0)
+    ) %&gt;% 
     rename_with(.fn = function(x) paste0(x, &quot;_1&quot;), .cols = obs:sd_var),
-  control_group_sumstat(paste0(all_varlist, &quot;_2&quot;), data_table1B %&gt;% filter(treatment == 0)) %&gt;% 
+  control_group_sumstat(
+    paste0(all_varlist, &quot;_2&quot;), 
+    var_labels, 
+    data_table1B %&gt;% filter(treatment == 0)
+    ) %&gt;% 
     rename_with(.fn = function(x) paste0(x, &quot;_2&quot;), .cols = obs:sd_var) %&gt;% 
     select(-col_names),
   EL2_EL1_sumstat(all_varlist, data_table1B)

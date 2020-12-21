@@ -319,6 +319,14 @@ $(document).ready(function () {
 
 <div id="table-3-in-bandiera-et-al.-2020-womens-empowerment-in-action-evidence-from-a-randomized-control-trial-in-africa" class="section level1">
 <h1>Table 3 in Bandiera et al. (2020), “Women’s Empowerment in Action: Evidence from a Randomized Control Trial in Africa”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+<li>makecell</li>
+</ul>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -353,17 +361,17 @@ data &lt;- data %&gt;%
     RlivelihoodMOREfew = livelihoodMOREfew,
     Rboth_training = both_training
   )</code></pre>
-<pre class="r"><code>var_list_1 &lt;- c(
+<pre class="r"><code># outcome variables
+var_list_1 &lt;- c(
     &quot;C_clubheard&quot;, &quot;C_clubparticipateIMP&quot;
     )
-
 var_list_2 &lt;- c(
     &quot;C_stillgoing&quot;, &quot;often3WEEK&quot;, &quot;often1WEEK&quot;, 
     &quot;lifeskillMOREfew&quot;, &quot;livelihoodMOREfew&quot;, &quot;both_training&quot;
     )
-
 var_list &lt;- c(var_list_1, var_list_2)
 
+# variable labels
 var_label &lt;- c(
   &quot;Have heard about club?&quot;,
   &quot;Have ever participated in
@@ -378,6 +386,7 @@ var_label &lt;- c(
   &quot;Received life and vocational\n\\hspace{1em}skills training&quot;
 )
 
+# function to make a panel
 make_table &lt;- function(data, var_list, panel) {
   
   if (panel == &quot;follow_up&quot;) {
@@ -448,6 +457,7 @@ make_table &lt;- function(data, var_list, panel) {
 table_follow_up &lt;- make_table(data, var_list, panel = &quot;follow_up&quot;)
 table_endline &lt;- make_table(data, var_list, panel = &quot;endline&quot;)
 
+# combine panels for output table
 cbind(
   var_label,
   table_follow_up[[1]],

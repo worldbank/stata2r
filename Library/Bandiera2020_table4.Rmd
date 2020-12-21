@@ -10,6 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Table 4 in Bandiera et al. (2020), "Women’s Empowerment in Action: Evidence from a Randomized Control Trial in Africa"
 
+To read the created `.tex` file, the following $\LaTeX$ packages are required:
+
+- float
+- pdflscape
+- booktabs
+- multicol
+- makecell
+
 ```{r, warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -34,11 +42,13 @@ data <- read_dta("Bandiera2020_replication/ELA.dta")
 
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
+# outcome variables
 outcome_list <- c(
   "Entrep_total", "any_iga", "selfempl", 
   "empl", "Expenditure_totDF", "iga"
-)
+  )
 
+# outcome variable labels
 outcome_label <- c(
   "1. Entrepreneurial\n\\hspace{1em}ability index\n\\hspace{1em}{[0-100 score]}",
   "2. Any income-\n\\hspace{1em}generating\n\\hspace{1em}activity",
@@ -46,8 +56,9 @@ outcome_label <- c(
   "4. Wage employed",
   "5. Expenditure on\n\\hspace{1em}goods in the last\n\\hspace{1em}month (UGX)",
   "Economic empowerment-\n\\hspace{1em}ment index"
-)
+  )
 
+# summary statistics (mean and sd)
 sum_mat <- data %>% 
   filter(treatment == 0, panel == 1, !is.na(age)) %>% 
   mutate(
@@ -65,6 +76,7 @@ sum_mat <- data %>%
     na.rm = TRUE
   )
 
+# mean of outcomes (as string)
 mean_mat <- sum_mat %>% 
   mutate(
     across(
@@ -77,6 +89,7 @@ mean_mat <- sum_mat %>%
   ) %>% 
   select(ends_with("_mean")) %>% 
   t()
+# SD of outcomes (as string)
 sd_mat <- sum_mat %>% 
   mutate(
     across(
@@ -95,22 +108,22 @@ cont_col <- paste0(
   "{[", sd_mat, "]}"
 )
 
+# N of midline
 N_ml <- map_int(
   paste0("R", outcome_list),
   function(x) data %>% 
     filter(panel == 1, !is.na(age)) %>% 
-    .[x] %>% 
-    drop_na() %>% 
+    drop_na(x) %>% 
     nrow()
   ) %>% 
   formatC(digits = 0, format = "f", big.mark = ",")
 
+# N of endline
 N_el <- map_int(
   paste0("Q", outcome_list),
   function(x) data %>% 
     filter(panel == 1, !is.na(age)) %>% 
-    .[x] %>% 
-    drop_na() %>% 
+    drop_na(x) %>% 
     nrow()
   ) %>% 
   formatC(digits = 0, format = "f", big.mark = ",")
@@ -123,6 +136,7 @@ N_col <- paste0(
 
 
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
+# function to make a table
 make_table <- function(outcome_list, type, cont) {
 
   var_prefix <- ifelse(type == "midline", "R", "Q")
@@ -188,6 +202,7 @@ endline_nocont <- make_table(outcome_list, type = "endline", cont = FALSE)
 
 
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
+# obtain Lee bounds using Stata command "leebounds"
 leebounds_stata_func <- function(outcome, type) {
   
   if (type == "midline") {

@@ -10,6 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Table 1 in Bandiera et al. (2020), "Women’s Empowerment in Action: Evidence from a Randomized Control Trial in Africa"
 
+To read the created `.tex` file, the following $\LaTeX$ packages are required:
+
+- float
+- pdflscape
+- booktabs
+- multicol
+- makecell
+
 ```{r, warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -30,11 +38,13 @@ data <- read_dta("Bandiera2020_replication/ELA.dta")
 
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
+# outcome variables
 var_panelA <- c("age", "E_Denrolled", "M_children", "partner")
 var_panelB <- c("Entrep_total", "selfempl", "empl", "worry_job")
 var_panelC <- c("R_sexunwilling", "sex_pregnancy", "Rhiv_skillsALT", "always_condom", "other_contraceptive")
 var_panelD <- c("empowerment", "M_idealmarry_ageF")
 
+# variable labels
 var_label <- c(
   "Age", "Currently enrolled in school",
   "Has child(ren)", "Married or cohabiting",
@@ -50,6 +60,7 @@ var_label <- c(
   "Suitable age at marriage for a woman"
 )
 
+# mean and SD of variables
 sum_mat <- data %>% 
   group_by(treatment) %>% 
   summarise_at(
@@ -61,13 +72,16 @@ sum_mat <- data %>%
   select(- treatment) %>% 
   ungroup()
 
+# mean of variables
 mean_mat <- sum_mat %>% 
   select(ends_with("_mean")) %>% 
   t()
 
+# SD of variables
 sd_mat <- sum_mat %>% 
   select(ends_with("_sd")) %>% 
   t()
+# SD of variables (as string)
 sd_mat_str <- sd_mat %>%
   formatC(digits = 3, format = "f") %>% 
   as_tibble() %>% 
@@ -77,15 +91,17 @@ sd_mat_str <- sd_mat %>%
     )
   )
 
+# difference in outcomes between treatment and control
+# (s.e. clustered by villid)
 diff <- map_df(
   c(var_panelA, var_panelB, var_panelC, var_panelD),
   function(x) felm(
     formula(
       paste0(
         x, "~ treatment | 0 | 0 | villid"
-      )
-    ), 
-    data = data
+        )
+      ), 
+      data = data
     ) %>% 
     summary() %>% 
     .$coefficients %>% 
@@ -95,13 +111,15 @@ diff <- map_df(
   mutate(
     se = paste0("[", `Cluster s.e.`, "]"),
     diff = paste(Estimate, se)
-  ) %>% 
+    ) %>% 
   select(diff) %>% 
   as.matrix()
 
+# normalized difference
 norm_diff <- ((mean_mat[,1] - mean_mat[,2]) / sqrt(sd_mat[,1]^2 + sd_mat[,2]^2)) %>% 
   formatC(digits = 3, format = "f")
 
+# matrix without standard deviations
 mat_wo_sd <- cbind(
   var_label,
   mean_mat %>%
@@ -110,6 +128,7 @@ mat_wo_sd <- cbind(
   norm_diff
 )
 
+# output matrix (add SD to mat_wo_sd)
 output_mat <- c()
 for (i in seq(nrow(mat_wo_sd))) {
   output_mat <- rbind(output_mat, mat_wo_sd[i,])
@@ -117,7 +136,6 @@ for (i in seq(nrow(mat_wo_sd))) {
     output_mat <- rbind(output_mat, c("", sd_mat_str[i,], "", ""))
   }
 }
-
 output_mat %>% 
   set_colnames(NULL) %>% 
   kable("latex", booktabs = TRUE, escape = FALSE, align = c("l", rep("c", 4))) %>%
@@ -134,7 +152,6 @@ output_mat %>%
     "Panel D. Beliefs and aspirations" = length(var_panelD)
     )) %>%
   save_kable("tex/Bandiera2020_table1_replicate.tex")
-
 
 ```
 

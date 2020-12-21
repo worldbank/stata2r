@@ -10,18 +10,23 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Table 3 in Kaboski and Townsend (2012), "The Impact of Credit on Village Economies"
 
+To read the created `.tex` file, the following $\LaTeX$ packages are required:
+
+- float
+- pdflscape
+- booktabs
+- multicol
+- makecell
+
 ```{r, warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
   "haven",
   "lfe",
-  "broom",
   "stargazer",
   "broom",
   "kableExtra",
-  "labelled",
-  "XML",
   "scales",
   "magrittr"
 )
@@ -32,11 +37,13 @@ pacman::p_load(packages, character.only = TRUE, install = TRUE)
 data_short <- read_dta("Kaboski2012_replication/AEJApp2009-0115_data/documentation/AnnualData_ShortSample.dta")
 ```
 
+## Data cleaning
+
 ```{r, warning = FALSE, results = 'hide', eval = FALSE}
 
 table3_outcome_list <- c(
   "newst", "tc", "dlgassd", "dnetinc"
-)
+  )
 
 data_table3 <- data_short %>% 
   group_by(case_id) %>% 
@@ -66,6 +73,13 @@ data_table3 <- data_short %>%
   ungroup() %>% 
   filter(year < 8)
   
+```
+
+## Create table
+
+```{r, warning = FALSE, results = 'hide', eval = FALSE}
+
+# list of functions to filter data to create subsample
 table3_filter_list <- list(
   function (x) {filter(
     x, newst <= 315000,
@@ -83,8 +97,9 @@ table3_filter_list <- list(
     x, dnetinc >= -2.605709, dnetinc <= 2.848096,
     vHHi < 250, vHHi >= 50, year < 8
     )}
-)
+  )
 
+# function for regressions
 reg_func <- function(varlist, filterlist, iv, data) {
   varlist %>% 
     enframe("model_no", "outcome") %>% 
@@ -101,8 +116,9 @@ reg_func <- function(varlist, filterlist, iv, data) {
         data = y(data)
       ))
     )
-}
+  }
 
+# functions to arrange regression results for output table
 table_arrange <- function(reg_output) {
   
   main_rhs = "`vfst(fit)`"
@@ -149,7 +165,9 @@ table_arrange <- function(reg_output) {
     select(coef, se) %>% 
     as.matrix() %>% 
     t()
-}
+  }
+
+# OLS regression
 table3_ols_output <- reg_func(
   table3_outcome_list, 
   replicate(
@@ -161,6 +179,7 @@ table3_ols_output <- reg_func(
   ) %>% 
   table_arrange()
 
+# IV regression
 table3_baseline_iv_output <- reg_func(
   table3_outcome_list, 
   replicate(
@@ -172,6 +191,7 @@ table3_baseline_iv_output <- reg_func(
   ) %>% 
   table_arrange()
 
+# IV regression, all villages
 table3_all_iv_output <- reg_func(
   table3_outcome_list, 
   replicate(
@@ -183,6 +203,7 @@ table3_all_iv_output <- reg_func(
   ) %>% 
   table_arrange()
 
+# IV regression with truncation
 table3_no_outlier_iv_output <- reg_func(
   table3_outcome_list, 
   table3_filter_list,
@@ -191,6 +212,7 @@ table3_no_outlier_iv_output <- reg_func(
   ) %>% 
   table_arrange()
 
+# combine results for output table
 c(
   "OLS regression", "",
   "Baseline IV regression: only villages", "\\hspace{1em}with 50-200 households",

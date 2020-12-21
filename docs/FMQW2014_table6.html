@@ -319,6 +319,15 @@ $(document).ready(function () {
 
 <div id="table-6-in-fafchamps-et-al.-2014-microenterprise-growth-and-the-flypaper-effect-evidence-from-a-randomized-experiment-in-ghana" class="section level1">
 <h1>Table 6 in Fafchamps et al. (2014), “Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+<li>makecell</li>
+</ul>
+<p>The means of outcome variables are added to the table, which do not appear in the original table in the paper.</p>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -337,11 +346,13 @@ pacman::p_load(packages, character.only = TRUE, install = TRUE)
 data &lt;- read_dta(&quot;data/ReplicationDataGhanaJDE.dta&quot;)</code></pre>
 <div id="data-cleaning" class="section level2">
 <h2>Data cleaning</h2>
-<pre class="r"><code>lhs_var_list &lt;- c(
+<pre class="r"><code># variable labels
+lhs_var_list &lt;- c(
   &quot;weeklyfood&quot;, &quot;clothingshoes&quot;, &quot;healthedn&quot;, 
   &quot;expend_ceremonies_3months&quot;, &quot;expend_total&quot;, &quot;expend_logtotal&quot;
   )
 
+# data cleaning
 df_table6 &lt;- data %&gt;%
   filter(is.na(trimgroup)) %&gt;%
   group_by(groupnum) %&gt;%
@@ -388,12 +399,14 @@ df_table6 &lt;- data %&gt;%
 </div>
 <div id="regression" class="section level2">
 <h2>Regression</h2>
-<pre class="r"><code>lhs_var_list_trunc &lt;- c(
+<pre class="r"><code># list of names of truncated variables
+lhs_var_list_trunc &lt;- c(
   &quot;totalK&quot;, &quot;totalK_trunc&quot;, &quot;madetransfersout&quot;, &quot;amounttransferout&quot;, 
   sapply(lhs_var_list, function(x) paste0(x, &quot;_trunc&quot;))
   ) %&gt;%
   set_names(NULL)
 
+# function to run regressions with fixed effects 
 felm_table6 &lt;- function(outcome, fe, rhs_var, control_var, iv, cluster, data) {
   as.formula(
     paste(
@@ -406,6 +419,7 @@ felm_table6 &lt;- function(outcome, fe, rhs_var, control_var, iv, cluster, data)
   )
 }
 
+# function to create a panel of regression results
 create_table6_sub &lt;- function(panel) {
   
   fe_1 &lt;- &quot;groupnum&quot;
@@ -451,6 +465,7 @@ create_table6_sub &lt;- function(panel) {
     }
   }
   
+  # list of functions to conduct F-test in each regression
   test_fun_list &lt;- replicate(2, vector(mode = &quot;list&quot;, length = 10), FALSE)
   if (panel == &quot;A&quot;) {
     for (i in seq(10)) {
@@ -484,6 +499,7 @@ create_table6_sub &lt;- function(panel) {
     }
   }
   
+  # run regressions
   reg_res_table6 &lt;- tibble(
     model = pmap(
         list(a = lhs_var_list_trunc, b = fe_list, c = control_var_list), 
@@ -520,6 +536,8 @@ create_table6_sub &lt;- function(panel) {
     test_2_label &lt;- &quot;In-kind treatments equal&quot;
   }
   
+  # create a panel of regression results
+  # and save as .html file
   reg_res_table6 %&gt;%
     pull(model) %&gt;%
     stargazer(
@@ -545,19 +563,22 @@ create_table6_sub &lt;- function(panel) {
 
 create_table6_sub(&quot;A&quot;)
 create_table6_sub(&quot;B&quot;)</code></pre>
-<pre class="r"><code>table6_A &lt;- readHTMLTable(&quot;html/FMQW2014_table6_replicate_A.html&quot;) %&gt;%
+<pre class="r"><code># read .html file as a table and remove irrelevant rows
+table6_A &lt;- readHTMLTable(&quot;html/FMQW2014_table6_replicate_A.html&quot;) %&gt;%
   .$Table %&gt;%
   drop_na() %&gt;%
   filter(!apply(., 1, function(x) all(x == &quot;&quot;))) %&gt;%
   slice(-1) %&gt;%
   as.matrix() %&gt;%
   set_colnames(NULL)
+# add indentations
 table6_A[(nrow(table6_A) - 2):(nrow(table6_A) - 1), 1] &lt;- paste0(
   &quot;\\hspace{1em} &quot;, 
   table6_A[(nrow(table6_A) - 2):(nrow(table6_A) - 1), 1]
   )
 table6_A[,1] &lt;- str_replace(table6_A[,1], &quot;p-values&quot;, &quot;$p$-values&quot;)
 
+# read .html file as a table and remove irrelevant rows
 table6_B &lt;- readHTMLTable(&quot;html/FMQW2014_table6_replicate_B.html&quot;) %&gt;%
   .$Table %&gt;%
   drop_na() %&gt;%
@@ -565,12 +586,14 @@ table6_B &lt;- readHTMLTable(&quot;html/FMQW2014_table6_replicate_B.html&quot;) 
   slice(-1) %&gt;%
   as.matrix() %&gt;%
   set_colnames(NULL)
+# add indentations
 table6_B[(nrow(table6_B) - 2):(nrow(table6_B) - 1), 1] &lt;- paste0(
   &quot;\\hspace{1em} &quot;, 
   table6_B[(nrow(table6_B) - 2):(nrow(table6_B) - 1), 1]
   )
 table6_B[,1] &lt;- str_replace(table6_B[,1], &quot;p-values&quot;, &quot;$p$-values&quot;)
 
+# combine two panels and make .tex file
 rbind(table6_A, table6_B) %&gt;%
   kable(&quot;latex&quot;, booktabs = TRUE, escape = FALSE) %&gt;%
   kable_styling(latex_options = &quot;scale_down&quot;) %&gt;%
@@ -590,7 +613,8 @@ rbind(table6_A, table6_B) %&gt;%
     &quot;Log\nannual\nspending&quot;
     )) %&gt;%
   pack_rows(index = c(
-    &quot;Panel A: Males and females&quot; = nrow(table6_A), &quot;Panel B: Female sub-sample&quot; = nrow(table6_B)
+    &quot;Panel A: Males and females&quot; = nrow(table6_A), 
+    &quot;Panel B: Female sub-sample&quot; = nrow(table6_B)
     )) %&gt;%
   save_kable(&quot;tex/FMQW2014_table6_replicate.tex&quot;)</code></pre>
 <p><img src="table_figures/FMQW2014_table6_replicate.png" style="width:100.0%" /></p>

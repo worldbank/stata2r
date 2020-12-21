@@ -319,6 +319,14 @@ $(document).ready(function () {
 
 <div id="table-8-in-fafchamps-et-al.-2014-microenterprise-growth-and-the-flypaper-effect-evidence-from-a-randomized-experiment-in-ghana" class="section level1">
 <h1>Table 8 in Fafchamps et al. (2014), “Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+</ul>
+<p>The means of outcome variables are added to the table, which do not appear in the original table in the paper.</p>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -356,6 +364,7 @@ data &lt;- read_dta(&quot;data/ReplicationDataGhanaJDE.dta&quot;)</code></pre>
   fill(basesusu, matches(&quot;^mr(1|2)&quot;), mwave2lowK, .direction = &quot;downup&quot;) %&gt;%
   ungroup()
 
+# function to obtain the first principal component from PCA
 pca_prediction &lt;- function(var_list, data) {
   predict(
       prcomp(
@@ -396,6 +405,7 @@ fe_2 &lt;- &quot;sheno&quot;
 iv &lt;- &quot;0&quot;
 cluster &lt;- &quot;sheno&quot;
 
+# list of right hand-side variables for each regression
 rhs_var_list &lt;- vector(mode = &quot;list&quot;, length = 9)
 for (i in seq(9)) {
   if (i == 1) {
@@ -407,6 +417,7 @@ for (i in seq(9)) {
   }
 }
 
+# list of functions to filter data and create subsample for each regression
 data_filter_list &lt;- vector(mode = &quot;list&quot;, length = 9)
 for (i in seq(9)) {
   if (i %in% c(1, 2, 3)) {
@@ -420,19 +431,16 @@ for (i in seq(9)) {
   }
 }
 
+# function to run regressions with fixed effects
 felm_table8 &lt;- function(rhs_var, data_filter, data) {
   as.formula(
     paste(
       paste(
         outcome, 
-        paste(
-          &quot;(atreatcash + atreatequip + factor(wave))&quot;, 
-          paste0(
-            &quot;(atreatcash + atreatequip + factor(wave)):&quot;, 
-            paste0(&quot;(&quot;, paste(rhs_var, collapse = &quot; + &quot;), &quot;)&quot;)
-            ),
-          sep = &quot; + &quot;
-        ), 
+        paste0(
+          &quot;(atreatcash + atreatequip + factor(wave))*&quot;, 
+          paste0(&quot;(&quot;, paste(rhs_var, collapse = &quot; + &quot;), &quot;)&quot;)
+          ),
         sep = &quot; ~ &quot;
       ), fe_2, iv, cluster, sep = &quot; | &quot;
     )
@@ -442,6 +450,7 @@ felm_table8 &lt;- function(rhs_var, data_filter, data) {
     )
 }
 
+# list of functions to conduct F-test in each regression
 test_fun_list &lt;- replicate(4, vector(mode = &quot;list&quot;, length = 9), FALSE)
 for (i in seq(9)) {
   test_fun_list[[1]][[i]] &lt;- ifelse(
@@ -454,7 +463,6 @@ for (i in seq(9)) {
       },
       function(x) {return(&quot;&quot;)}
     )
-  
   test_fun_list[[2]][[i]] &lt;- ifelse(
     i %in% seq(2, 9),
     function(x) {
@@ -465,7 +473,6 @@ for (i in seq(9)) {
       },
       function(x) {return(&quot;&quot;)}
     )
-  
   test_fun_list[[3]][[i]] &lt;- ifelse(
     i %in% c(2, 4, 6, 8),
     function(x) {
@@ -476,7 +483,6 @@ for (i in seq(9)) {
     },
     function(x) {return(&quot;&quot;)}
   )
-  
   test_fun_list[[4]][[i]] &lt;- ifelse(
     i %in% c(3, 5, 7, 9),
     function(x) {
@@ -489,6 +495,7 @@ for (i in seq(9)) {
   )
 }
 
+# run regressions
 reg_res_table8 &lt;- map2(
   rhs_var_list, 
   data_filter_list, 
@@ -548,7 +555,7 @@ reg_res_table8 &lt;- map2(
     type = &quot;latex&quot;,
     out = &quot;tex/FMQW2014_table8_replicate.tex&quot;,
     omit.stat = c(&quot;rsq&quot;, &quot;adj.rsq&quot;, &quot;ser&quot;),
-    table.layout = &quot;=#c-t-sa-n&quot;,
+    table.layout = &quot;=c#-t-sa-n&quot;,
     digits = 2
   )</code></pre>
 <p><img src="table_figures/FMQW2014_table8_replicate.png" style="width:100.0%" /></p>

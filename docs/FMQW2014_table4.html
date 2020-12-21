@@ -319,6 +319,13 @@ $(document).ready(function () {
 
 <div id="table-4-in-fafchamps-et-al.-2014-microenterprise-growth-and-the-flypaper-effect-evidence-from-a-randomized-experiment-in-ghana" class="section level1">
 <h1>Table 4 in Fafchamps et al. (2014), “Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+</ul>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -335,21 +342,21 @@ pacman::p_load(packages, character.only = TRUE, install = TRUE)
 
 # Load an example dataset ---------------
 data &lt;- read_dta(&quot;data/ReplicationDataGhanaJDE.dta&quot;)</code></pre>
-<pre class="r"><code>create_formula_table4 &lt;- function(outcome, category, fe, iv, cluster) {
+<pre class="r"><code># function to create formula, which will be passed to lfe::felm
+create_formula_table4 &lt;- function(outcome, category, fe, iv, cluster) {
   category &lt;- paste0(&quot;(&quot;, paste(category, collapse = &quot; + &quot;), &quot;)&quot;)
   as.formula(
     paste(
-      paste(outcome, paste(
-        c(
-          paste0(&quot;(atreatcash + atreatequip):&quot;, category), 
-          paste0(&quot;factor(wave):&quot;, category)
-          ), collapse = &quot; + &quot;
-        ), sep = &quot; ~ &quot;),
+      paste(outcome,
+        paste0(&quot;(atreatcash + atreatequip + factor(wave)):&quot;, category), 
+        sep = &quot; ~ &quot;
+        ),
       fe, iv, cluster, sep = &quot; | &quot;
     )
   )
 }
 
+# function to run FE regressions with different category variables
 felm_category &lt;- function(category, fe, data, outcome, iv, cluster) {
   df &lt;- data %&gt;%
     rename(
@@ -362,6 +369,7 @@ felm_category &lt;- function(category, fe, data, outcome, iv, cluster) {
     )
 }
 
+# function to create a panel of regression results
 create_panel_table4 &lt;- function(gender) {
   
   outcome &lt;- &quot;realfinalprofit&quot;
@@ -388,6 +396,7 @@ create_panel_table4 &lt;- function(gender) {
     category_4, category_4
   )
   
+  # list of cuntions to conduct F-tests in each regression
   test_fun_list &lt;- replicate(3, vector(mode = &quot;list&quot;, length = length(category_list)), FALSE)
   for (i in seq_along(category_list)) {
     test_fun_list[[1]][[i]] &lt;- function(x) {
@@ -414,6 +423,7 @@ create_panel_table4 &lt;- function(gender) {
       }
   }
   
+  # run regressions and get associated statistics
   reg_res_table4 &lt;- tibble(
       category_list = category_list,
       fe = rep(c(fe_1, fe_2), 4),
@@ -430,6 +440,8 @@ create_panel_table4 &lt;- function(gender) {
       n_firm = map_int(model, function(x) n_distinct(model.frame(x)$sheno))
       )
   
+  # create a panel of regression results
+  # and save as .html file
   reg_res_table4 %&gt;%
     pull(model) %&gt;%
     stargazer(
@@ -464,19 +476,22 @@ create_panel_table4(&quot;male&quot;)</code></pre>
 </div>
 <div id="table-output" class="section level1">
 <h1>Table output</h1>
-<pre class="r"><code>table4_female &lt;- readHTMLTable(&quot;html/FMQW2014_table4_replicate_female.html&quot;) %&gt;%
+<pre class="r"><code># read .html file as a table and remove irrelevant rows
+table4_female &lt;- readHTMLTable(&quot;html/FMQW2014_table4_replicate_female.html&quot;) %&gt;%
   .$Table %&gt;%
   drop_na() %&gt;%
   filter(!apply(., 1, function(x) all(x == &quot;&quot;))) %&gt;%
   slice(-c(1, 2)) %&gt;%
   as.matrix() %&gt;%
   set_colnames(NULL)
+# add indentations
 table4_female[(nrow(table4_female) - 2):nrow(table4_female),1] &lt;- paste0(
   &quot;\\hspace{1em} &quot;, 
   table4_female[(nrow(table4_female) - 2):nrow(table4_female),1]
   )
 table4_female[,1] &lt;- str_replace(table4_female[,1], &quot;p-values&quot;, &quot;$p$-values&quot;)
 
+# read .html file as a table and remove irrelevant rows
 table4_male &lt;- readHTMLTable(&quot;html/FMQW2014_table4_replicate_male.html&quot;) %&gt;%
   .$Table %&gt;%
   drop_na() %&gt;%
@@ -484,17 +499,17 @@ table4_male &lt;- readHTMLTable(&quot;html/FMQW2014_table4_replicate_male.html&q
   slice(-c(1, 2)) %&gt;%
   as.matrix() %&gt;%
   set_colnames(NULL)
+# add indentations
 table4_male[(nrow(table4_male) - 2):nrow(table4_male),1] &lt;- paste0(
   &quot;\\hspace{1em} &quot;, 
   table4_male[(nrow(table4_male) - 2):nrow(table4_male),1]
   )
 table4_male[,1] &lt;- str_replace(table4_male[,1], &quot;p-values&quot;, &quot;$p$-values&quot;)
 
+# combine two panels and make .tex file
 rbind(table4_female, table4_male) %&gt;%
   kable(&quot;latex&quot;, booktabs = TRUE, escape = FALSE) %&gt;%
   kable_styling(latex_options = &quot;scale_down&quot;) %&gt;%
-  add_header_above(c(&quot;&quot;, sapply(seq(8), function(x) paste0(&quot;(&quot;, x, &quot;)&quot;)))) %&gt;%
-  add_header_above(c(&quot; &quot;, rep(c(&quot;OLS&quot;, &quot;FE&quot;), 4))) %&gt;%
   add_header_above(c(
     &quot;Interaction category B&quot; = 1, 
     &quot;Mixed industry&quot; = 2, 
@@ -509,6 +524,8 @@ rbind(table4_female, table4_male) %&gt;%
     &quot;Low capital&quot; = 2,
     &quot;Low profits&quot; = 2
     )) %&gt;%
+  add_header_above(c(&quot; &quot;, rep(c(&quot;OLS&quot;, &quot;FE&quot;), 4))) %&gt;%
+  add_header_above(c(&quot;&quot;, sapply(seq(8), function(x) paste0(&quot;(&quot;, x, &quot;)&quot;)))) %&gt;%
   pack_rows(index = c(
     &quot;Panel A: Females&quot; = nrow(table4_female), &quot;Panel B: Males&quot; = nrow(table4_male)
     )) %&gt;%

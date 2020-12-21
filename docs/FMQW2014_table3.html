@@ -319,6 +319,14 @@ $(document).ready(function () {
 
 <div id="table-3-in-fafchamps-et-al.-2014-microenterprise-growth-and-the-flypaper-effect-evidence-from-a-randomized-experiment-in-ghana" class="section level1">
 <h1>Table 3 in Fafchamps et al. (2014), “Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+</ul>
+<p>Following <a href="https://dimewiki.worldbank.org/wiki/Checklist:_Submit_Table">the checklist for tables by DIME Analytics</a>, the <code>Constant</code> coefficient is dropped and means of outcome variables are added instead.</p>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -350,6 +358,7 @@ fe_2 &lt;- &quot;sheno&quot;
 iv &lt;- &quot;0&quot;
 cluster &lt;- &quot;sheno&quot;
 
+# function to create formula which will be passed to lfe::felm
 create_formula &lt;- function(outcome, rhs_var, control_var, fe, iv, cluster) {
   as.formula(
     paste(
@@ -359,6 +368,7 @@ create_formula &lt;- function(outcome, rhs_var, control_var, fe, iv, cluster) {
   )
 }
 
+# data.frame of formulas
 formulas &lt;- c(
   replicate(2, create_formula(outcome, rhs_var_1, control_var_1, fe_1, iv, cluster)),
   replicate(2, create_formula(outcome, rhs_var_1, control_var_1, fe_2, iv, cluster)),
@@ -368,6 +378,8 @@ formulas &lt;- c(
   ) %&gt;%
   enframe(&quot;model_no&quot;, &quot;formula&quot;)
 
+# list of functions to filter data, which will be used to create subsamples
+# in each regression
 data_filter_list &lt;- vector(mode = &quot;list&quot;, length = 10)
 for (i in seq(10)) {
   if (i %in% c(1, 3, 5, 7)) {
@@ -381,6 +393,7 @@ for (i in seq(10)) {
   }
 }
 
+# list of functions to conduct F-test
 test_fun_list &lt;- replicate(5, vector(mode = &quot;list&quot;, length = 10), FALSE)
 for (i in seq(10)) {
   if (i &lt;= 4) {
@@ -423,6 +436,7 @@ for (i in seq(10)) {
   }
 }
 
+# regression results and p-values from F-test
 reg_res &lt;- formulas %&gt;%
   mutate(
     model = map2(formula, data_filter_list, function(x, y) felm(x, y(data))),
@@ -435,6 +449,7 @@ reg_res &lt;- formulas %&gt;%
     mean_outcome = map_chr(model, function(x) formatC(colMeans(model.frame(x)[outcome]), 2, format = &quot;f&quot;))
     )
 
+# result output as .tex file, using stargazer package
 reg_res %&gt;%
   pull(model) %&gt;%
   stargazer(

@@ -319,17 +319,22 @@ $(document).ready(function () {
 
 <div id="table-3-in-kaboski-and-townsend-2012-the-impact-of-credit-on-village-economies" class="section level1">
 <h1>Table 3 in Kaboski and Townsend (2012), “The Impact of Credit on Village Economies”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+<li>makecell</li>
+</ul>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
   &quot;haven&quot;,
   &quot;lfe&quot;,
-  &quot;broom&quot;,
   &quot;stargazer&quot;,
   &quot;broom&quot;,
   &quot;kableExtra&quot;,
-  &quot;labelled&quot;,
-  &quot;XML&quot;,
   &quot;scales&quot;,
   &quot;magrittr&quot;
 )
@@ -338,9 +343,11 @@ pacman::p_load(packages, character.only = TRUE, install = TRUE)
 
 # Load an example dataset ---------------
 data_short &lt;- read_dta(&quot;Kaboski2012_replication/AEJApp2009-0115_data/documentation/AnnualData_ShortSample.dta&quot;)</code></pre>
+<div id="data-cleaning" class="section level2">
+<h2>Data cleaning</h2>
 <pre class="r"><code>table3_outcome_list &lt;- c(
   &quot;newst&quot;, &quot;tc&quot;, &quot;dlgassd&quot;, &quot;dnetinc&quot;
-)
+  )
 
 data_table3 &lt;- data_short %&gt;% 
   group_by(case_id) %&gt;% 
@@ -368,8 +375,11 @@ data_table3 &lt;- data_short %&gt;%
     )
   ) %&gt;% 
   ungroup() %&gt;% 
-  filter(year &lt; 8)
-  
+  filter(year &lt; 8)</code></pre>
+</div>
+<div id="create-table" class="section level2">
+<h2>Create table</h2>
+<pre class="r"><code># list of functions to filter data to create subsample
 table3_filter_list &lt;- list(
   function (x) {filter(
     x, newst &lt;= 315000,
@@ -387,8 +397,9 @@ table3_filter_list &lt;- list(
     x, dnetinc &gt;= -2.605709, dnetinc &lt;= 2.848096,
     vHHi &lt; 250, vHHi &gt;= 50, year &lt; 8
     )}
-)
+  )
 
+# function for regressions
 reg_func &lt;- function(varlist, filterlist, iv, data) {
   varlist %&gt;% 
     enframe(&quot;model_no&quot;, &quot;outcome&quot;) %&gt;% 
@@ -405,8 +416,9 @@ reg_func &lt;- function(varlist, filterlist, iv, data) {
         data = y(data)
       ))
     )
-}
+  }
 
+# functions to arrange regression results for output table
 table_arrange &lt;- function(reg_output) {
   
   main_rhs = &quot;`vfst(fit)`&quot;
@@ -453,7 +465,9 @@ table_arrange &lt;- function(reg_output) {
     select(coef, se) %&gt;% 
     as.matrix() %&gt;% 
     t()
-}
+  }
+
+# OLS regression
 table3_ols_output &lt;- reg_func(
   table3_outcome_list, 
   replicate(
@@ -465,6 +479,7 @@ table3_ols_output &lt;- reg_func(
   ) %&gt;% 
   table_arrange()
 
+# IV regression
 table3_baseline_iv_output &lt;- reg_func(
   table3_outcome_list, 
   replicate(
@@ -476,6 +491,7 @@ table3_baseline_iv_output &lt;- reg_func(
   ) %&gt;% 
   table_arrange()
 
+# IV regression, all villages
 table3_all_iv_output &lt;- reg_func(
   table3_outcome_list, 
   replicate(
@@ -487,6 +503,7 @@ table3_all_iv_output &lt;- reg_func(
   ) %&gt;% 
   table_arrange()
 
+# IV regression with truncation
 table3_no_outlier_iv_output &lt;- reg_func(
   table3_outcome_list, 
   table3_filter_list,
@@ -495,6 +512,7 @@ table3_no_outlier_iv_output &lt;- reg_func(
   ) %&gt;% 
   table_arrange()
 
+# combine results for output table
 c(
   &quot;OLS regression&quot;, &quot;&quot;,
   &quot;Baseline IV regression: only villages&quot;, &quot;\\hspace{1em}with 50-200 households&quot;,
@@ -529,6 +547,7 @@ c(
     )) %&gt;%
   save_kable(&quot;tex/Kaboski2012_table3_replicate.tex&quot;)</code></pre>
 <p><img src="table_figures/Kaboski2012_table3_replicate.png" style="width:100.0%" /></p>
+</div>
 </div>
 
 

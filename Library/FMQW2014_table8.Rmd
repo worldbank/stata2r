@@ -10,6 +10,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Table 8 in Fafchamps et al. (2014), "Microenterprise growth and the flypaper effect: Evidence from a randomized experiment in Ghana"
 
+To read the created `.tex` file, the following $\LaTeX$ packages are required:
+
+- float
+- pdflscape
+- booktabs
+- multicol
+
+The means of outcome variables are added to the table, which do not appear in the original table in the paper.
+
+
 ```{r, warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -52,6 +62,7 @@ df_table8 <- data %>%
   fill(basesusu, matches("^mr(1|2)"), mwave2lowK, .direction = "downup") %>%
   ungroup()
 
+# function to obtain the first principal component from PCA
 pca_prediction <- function(var_list, data) {
   predict(
       prcomp(
@@ -95,6 +106,7 @@ fe_2 <- "sheno"
 iv <- "0"
 cluster <- "sheno"
 
+# list of right hand-side variables for each regression
 rhs_var_list <- vector(mode = "list", length = 9)
 for (i in seq(9)) {
   if (i == 1) {
@@ -106,6 +118,7 @@ for (i in seq(9)) {
   }
 }
 
+# list of functions to filter data and create subsample for each regression
 data_filter_list <- vector(mode = "list", length = 9)
 for (i in seq(9)) {
   if (i %in% c(1, 2, 3)) {
@@ -119,19 +132,16 @@ for (i in seq(9)) {
   }
 }
 
+# function to run regressions with fixed effects
 felm_table8 <- function(rhs_var, data_filter, data) {
   as.formula(
     paste(
       paste(
         outcome, 
-        paste(
-          "(atreatcash + atreatequip + factor(wave))", 
-          paste0(
-            "(atreatcash + atreatequip + factor(wave)):", 
-            paste0("(", paste(rhs_var, collapse = " + "), ")")
-            ),
-          sep = " + "
-        ), 
+        paste0(
+          "(atreatcash + atreatequip + factor(wave))*", 
+          paste0("(", paste(rhs_var, collapse = " + "), ")")
+          ),
         sep = " ~ "
       ), fe_2, iv, cluster, sep = " | "
     )
@@ -141,6 +151,7 @@ felm_table8 <- function(rhs_var, data_filter, data) {
     )
 }
 
+# list of functions to conduct F-test in each regression
 test_fun_list <- replicate(4, vector(mode = "list", length = 9), FALSE)
 for (i in seq(9)) {
   test_fun_list[[1]][[i]] <- ifelse(
@@ -153,7 +164,6 @@ for (i in seq(9)) {
       },
       function(x) {return("")}
     )
-  
   test_fun_list[[2]][[i]] <- ifelse(
     i %in% seq(2, 9),
     function(x) {
@@ -164,7 +174,6 @@ for (i in seq(9)) {
       },
       function(x) {return("")}
     )
-  
   test_fun_list[[3]][[i]] <- ifelse(
     i %in% c(2, 4, 6, 8),
     function(x) {
@@ -175,7 +184,6 @@ for (i in seq(9)) {
     },
     function(x) {return("")}
   )
-  
   test_fun_list[[4]][[i]] <- ifelse(
     i %in% c(3, 5, 7, 9),
     function(x) {
@@ -188,6 +196,7 @@ for (i in seq(9)) {
   )
 }
 
+# run regressions
 reg_res_table8 <- map2(
   rhs_var_list, 
   data_filter_list, 
@@ -251,7 +260,7 @@ reg_res_table8 %>%
     type = "latex",
     out = "tex/FMQW2014_table8_replicate.tex",
     omit.stat = c("rsq", "adj.rsq", "ser"),
-    table.layout = "=#c-t-sa-n",
+    table.layout = "=c#-t-sa-n",
     digits = 2
   )
 

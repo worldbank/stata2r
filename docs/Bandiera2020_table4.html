@@ -319,6 +319,14 @@ $(document).ready(function () {
 
 <div id="table-4-in-bandiera-et-al.-2020-womens-empowerment-in-action-evidence-from-a-randomized-control-trial-in-africa" class="section level1">
 <h1>Table 4 in Bandiera et al. (2020), “Women’s Empowerment in Action: Evidence from a Randomized Control Trial in Africa”</h1>
+<p>To read the created <code>.tex</code> file, the following <span class="math inline">\(\LaTeX\)</span> packages are required:</p>
+<ul>
+<li>float</li>
+<li>pdflscape</li>
+<li>booktabs</li>
+<li>multicol</li>
+<li>makecell</li>
+</ul>
 <pre class="r"><code># Install and load packages ---------------
 packages &lt;- c(
   &quot;tidyverse&quot;,
@@ -338,11 +346,13 @@ options(&quot;RStata.StataPath&quot; = &quot;/Applications/Stata/StataSE.app/Con
 
 # Load an example dataset ---------------
 data &lt;- read_dta(&quot;Bandiera2020_replication/ELA.dta&quot;)</code></pre>
-<pre class="r"><code>outcome_list &lt;- c(
+<pre class="r"><code># outcome variables
+outcome_list &lt;- c(
   &quot;Entrep_total&quot;, &quot;any_iga&quot;, &quot;selfempl&quot;, 
   &quot;empl&quot;, &quot;Expenditure_totDF&quot;, &quot;iga&quot;
-)
+  )
 
+# outcome variable labels
 outcome_label &lt;- c(
   &quot;1. Entrepreneurial\n\\hspace{1em}ability index\n\\hspace{1em}{[0-100 score]}&quot;,
   &quot;2. Any income-\n\\hspace{1em}generating\n\\hspace{1em}activity&quot;,
@@ -350,8 +360,9 @@ outcome_label &lt;- c(
   &quot;4. Wage employed&quot;,
   &quot;5. Expenditure on\n\\hspace{1em}goods in the last\n\\hspace{1em}month (UGX)&quot;,
   &quot;Economic empowerment-\n\\hspace{1em}ment index&quot;
-)
+  )
 
+# summary statistics (mean and sd)
 sum_mat &lt;- data %&gt;% 
   filter(treatment == 0, panel == 1, !is.na(age)) %&gt;% 
   mutate(
@@ -369,6 +380,7 @@ sum_mat &lt;- data %&gt;%
     na.rm = TRUE
   )
 
+# mean of outcomes (as string)
 mean_mat &lt;- sum_mat %&gt;% 
   mutate(
     across(
@@ -381,6 +393,7 @@ mean_mat &lt;- sum_mat %&gt;%
   ) %&gt;% 
   select(ends_with(&quot;_mean&quot;)) %&gt;% 
   t()
+# SD of outcomes (as string)
 sd_mat &lt;- sum_mat %&gt;% 
   mutate(
     across(
@@ -399,22 +412,22 @@ cont_col &lt;- paste0(
   &quot;{[&quot;, sd_mat, &quot;]}&quot;
 )
 
+# N of midline
 N_ml &lt;- map_int(
   paste0(&quot;R&quot;, outcome_list),
   function(x) data %&gt;% 
     filter(panel == 1, !is.na(age)) %&gt;% 
-    .[x] %&gt;% 
-    drop_na() %&gt;% 
+    drop_na(x) %&gt;% 
     nrow()
   ) %&gt;% 
   formatC(digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;)
 
+# N of endline
 N_el &lt;- map_int(
   paste0(&quot;Q&quot;, outcome_list),
   function(x) data %&gt;% 
     filter(panel == 1, !is.na(age)) %&gt;% 
-    .[x] %&gt;% 
-    drop_na() %&gt;% 
+    drop_na(x) %&gt;% 
     nrow()
   ) %&gt;% 
   formatC(digits = 0, format = &quot;f&quot;, big.mark = &quot;,&quot;)
@@ -422,7 +435,8 @@ N_el &lt;- map_int(
 N_col &lt;- paste0(
   N_ml, &quot;/&quot;, N_el
   )</code></pre>
-<pre class="r"><code>make_table &lt;- function(outcome_list, type, cont) {
+<pre class="r"><code># function to make a table
+make_table &lt;- function(outcome_list, type, cont) {
 
   var_prefix &lt;- ifelse(type == &quot;midline&quot;, &quot;R&quot;, &quot;Q&quot;)
   
@@ -482,7 +496,8 @@ midline_cont &lt;- make_table(outcome_list, type = &quot;midline&quot;, cont = T
 endline_cont &lt;- make_table(outcome_list, type = &quot;endline&quot;, cont = TRUE)
 midline_nocont &lt;- make_table(outcome_list, type = &quot;midline&quot;, cont = FALSE)
 endline_nocont &lt;- make_table(outcome_list, type = &quot;endline&quot;, cont = FALSE)</code></pre>
-<pre class="r"><code>leebounds_stata_func &lt;- function(outcome, type) {
+<pre class="r"><code># obtain Lee bounds using Stata command &quot;leebounds&quot;
+leebounds_stata_func &lt;- function(outcome, type) {
   
   if (type == &quot;midline&quot;) {
     var_prefix &lt;- &quot;R&quot;
