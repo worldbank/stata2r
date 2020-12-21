@@ -1,6 +1,6 @@
 # R Table Replication
 
-[View the full website](https://mizuhirosuzuki.github.io/Stata2R/)
+[View the full website](https://worldbank.github.io/Stata2R/)
 
 This repository contains tables created in R to explore impact evaluation data sets and display results. The `Library` folder in the repository contains the `.Rmd` files that can be used to replicate the tables in the Library.
 
