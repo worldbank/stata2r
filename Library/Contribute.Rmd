@@ -48,5 +48,6 @@ We also recommend that you create a GitHub account and include your GitHub handl
 + Output tables and a screenshot of the table should be saved in docs/table\_figures
 + Rendered HTML files should be saved in docs.
 
-
+If your are using [our template Markdown file](https://github.com/worldbank/r-econ-visual-library/blob/master/contribution-template.Rmd), the HTML file and the tables will be automatically saved in the correct folder, as long as the Markdown file is saved in the _Library_ folder.
+The only adjustment to the template needed for this to replace `table_result` in file paths in the template file with `(author and year)_(table number)` (eg. `Fafchamps2014_table1`).
 
