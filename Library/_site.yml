@@ -15,9 +15,9 @@ navbar:
     - text: "Contribute"
       href: Contribute.html
     - text: "License"
-      href: https://github.com/worldbank/r-econ-visual-library/blob/master/LICENSE
+      href: https://github.com/worldbank/stata2r/blob/main/LICENSE
     - text: "GitHub"
-      href: https://github.com/worldbank/r-econ-visual-library
+      href: https://github.com/worldbank/stata2r
 output:
   html_document:
     theme: cerulean

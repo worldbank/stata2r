@@ -8,7 +8,7 @@ date: ""
 
 ## Bug reports and feature requests
 
-If you have suggestions of tables you would like to see in this library and are not currently here, you can open an [issue](https://github.com/worldbank/r-econ-visual-library/issues) describing your suggestion.
+If you have suggestions of tables you would like to see in this library and are not currently here, you can open an [issue](https://github.com/worldbank/stata2r/issues) describing your suggestion.
 No previous knowledge of GitHub is needed to do this.
 Please read already existing issues to check whether someone else has made the same suggestion or reported the same error before creating a new issue.
   
@@ -30,7 +30,7 @@ We also recommend that you create a GitHub account and include your GitHub handl
 ## Code conventions
 
 + We recommend following the [tidyverse style guide](https://style.tidyverse.org/index.html) for all styling relevant to the code submitted.
-+ [R Markdown](https://rmarkdown.rstudio.com/) files are the preferred format for code contributions. You can use [out template Markdown file](https://github.com/worldbank/r-econ-visual-library/blob/master/contribution-template.Rmd) for guidelines on how to organize your script.
++ [R Markdown](https://rmarkdown.rstudio.com/) files are the preferred format for code contributions. You can use [out template Markdown file](https://github.com/worldbank/stata2r/blob/main/contribution-template.Rmd) for guidelines on how to organize your script.
 + If you have an R code and are not comfortable using R Markdown or the template file, you can share a common .R script for the table.
 
 ## GitHub conventions
@@ -38,8 +38,8 @@ We also recommend that you create a GitHub account and include your GitHub handl
 ### Branches
 
 + Make pull requests to the master branch only if you wish to contribute to README, LICENSE or similar meta data files.
-+ To contribute with R code files, create a fork from the [develop branch](https://github.com/worldbank/r-econ-visual-library/tree/develop) and point your pull request back to the same branch.
-+ If your pull request is related to an [open issue](https://github.com/worldbank/r-econ-visual-library/issues), reference the issue in your PR message. If the contribution solves the issue, add the message "Solves issue #X".
++ To contribute with R code files, create a fork from the [develop branch](https://github.com/worldbank/stata2r/tree/develop) and point your pull request back to the same branch.
++ If your pull request is related to an [open issue](https://github.com/worldbank/stata2r/issues), reference the issue in your PR message. If the contribution solves the issue, add the message "Solves issue #X".
 
 ### Folder structure
 
@@ -48,6 +48,6 @@ We also recommend that you create a GitHub account and include your GitHub handl
 + Output tables and a screenshot of the table should be saved in docs/table\_figures
 + Rendered HTML files should be saved in docs.
 
-If your are using [our template Markdown file](https://github.com/worldbank/r-econ-visual-library/blob/master/contribution-template.Rmd), the HTML file and the tables will be automatically saved in the correct folder, as long as the Markdown file is saved in the _Library_ folder.
+If your are using [our template Markdown file](https://github.com/worldbank/stata2r/blob/main/contribution-template.Rmd), the HTML file and the tables will be automatically saved in the correct folder, as long as the Markdown file is saved in the _Library_ folder.
 The only adjustment to the template needed for this to replace `table_result` in file paths in the template file with `(author and year)_(table number)` (eg. `Fafchamps2014_table1`).
 

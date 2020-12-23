@@ -41,8 +41,8 @@
 # located unless you explicitly ignore that folder
 
 # Stata
-!/**/*.do
-!/**/*.ado
+#!/**/*.do
+#!/**/*.ado
 
 # R
 !/**/*.R
@@ -95,8 +95,6 @@ password/
 passwords/
 
 !/Library/*.Rmd
-!/Library/Data/*.dta
-/Library/Data/ReplicationDataGhanaJDE.dta
 !/docs/*.html
 !/docs/figures/**/*
 !/docs/site_libs/**/*
